@@ -1,2 +1,2 @@
 # Watering System v2
-Watering System version 2
+WateringSystem version 2 based on WateringSystem version 1
