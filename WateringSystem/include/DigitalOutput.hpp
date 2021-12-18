@@ -38,6 +38,8 @@ public:
     bool init();
     /* Public method -  Set the level of an output pin. The level should be either 0 (LOW) or 1 (HIGH). */
     void setLevel(const uint32_t &level_);
+    /* Getter */
+    gpio_num_t getDigiGpioNum() const;
 };
 
 #endif /* __DIGITALOUTPUT_H__ */

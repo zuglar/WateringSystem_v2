@@ -16,6 +16,7 @@ void setup()
 {
   // put your setup code here, to run once:
   delay(DELAY_2SEC);
+  printf("APP Start SETUP.\n");
   mainInitError = false;
   /* If startUp function return result is false than the program stops */
   if (!startUp())
@@ -23,15 +24,24 @@ void setup()
     mainInitError = true;
     return;
   }
-  
-  delay(DELAY_2SEC);
+
+  delay(DELAY_1SEC);
+  printf("mainInitError: %d\n", mainInitError);
+  // printf("APP End SETUP.\n");
   /* When the setup has been finished successfully the green LED turns ON */
-    controller->getGreenLED()->setLevel(HIGH);
+  delay(DELAY_1SEC);
+  controller->getGreenLED()->setLevel(HIGH);
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
+  if (mainInitError)
+  {
+    controller->getRedLED()->setLevel(HIGH);
+    delay(5000);
+    return;
+  }
 }
 
 bool startUp(void)
@@ -41,17 +51,66 @@ bool startUp(void)
     return false;
   /* If configuration of Digital Outputs have been finished successfully the LED
     turns on-off first green LED after red LED */
-  ledFlashMessage(controller->getGreenLED(), 1, DELAY_SHORT);
-  ledFlashMessage(controller->getRedLED(), 1, DELAY_SHORT);
+  ledFlashMessage(controller->getGreenLED(), 1, DELAY_03_SEC);
+  ledFlashMessage(controller->getRedLED(), 1, DELAY_03_SEC);
   delay(DELAY_1SEC);
-  
+
   /* Initialization DS3231RTC object */
   if (!controller->controllerDS3231RTCInit())
     return false;
   /* If initialization of DS3231RTC has been finished successfully the green LED flashes one time. */
-  ledFlashMessage(controller->getGreenLED(), 1, DELAY_SHORT);
+  ledFlashMessage(controller->getGreenLED(), 1, DELAY_03_SEC);
+  delay(DELAY_1SEC);
+  /* Initialization SDCard object */
+  if (!controller->controllerSDCardInit())
+    return false;
+  /* If initialization of SDcard has been finished successfully the green LED flashes two times. */
+  ledFlashMessage(controller->getGreenLED(), 2, DELAY_03_SEC);
+  delay(DELAY_1SEC);
+  /* Initialization Aht20Bmp280 object */
+  if (!controller->controllerAht20Bmp280Init())
+    return false;
+  /* If initialization of Aht20Bmp280 has been finished successfully the green LED flashes three times. */
+  ledFlashMessage(controller->getGreenLED(), 3, DELAY_03_SEC);
+  delay(DELAY_1SEC);
+  /* Configure analog inputs */
+  if (!controller->controllerAnalogInputsInit())
+    return false;
+  /* If initialization of Analog Inputs have been finished successfully the green led flashes four times. */
+  ledFlashMessage(controller->getGreenLED(), 4, DELAY_03_SEC);
+  delay(DELAY_1SEC);
+
+  /* START - Collecting data from ws.ini file and Analog Inputs */
+  /* Create array of analog sensors threshold values */
+  if (!controller->analogSensorsThresholdToArray())
+    return false;
+  /* If creation of array has been finished successfully the red led flashes one time. */
+  ledFlashMessage(controller->getRedLED(), 1, DELAY_03_SEC);
+  /* Get max dryness and wetness values of soil from ws.ini file */
+  if (!controller->getSoilMaxDrynessWetnessValues())
+    return false;
+  /* If getting max dryness and wetness values of soil have been finished successfully the red led flashes two times. */
+  ledFlashMessage(controller->getRedLED(), 2, DELAY_03_SEC);
+  delay(DELAY_1SEC);
+  /* Read Aht20Bmp280 sensor values - temperature, humidity, air pressure */
+  if(!controller->controllerGetAht20Bmp280Data())
+    return false;
+  /* If reading data from sensor has been finished successfully the red led flashes three times */
+  ledFlashMessage(controller->getRedLED(), 3, DELAY_03_SEC);
+  delay(DELAY_1SEC);
+  /* Read Analog sensors value / power channel */
+  controller->getPowerSensorsCH1()->setLevel(HIGH);
+  delay(DELAY_1SEC);
+  controller->controllerReadAnalogInputPinValue(POWER_SENORS_1_5_CH1);
+  controller->getPowerSensorsCH1()->setLevel(LOW);
+  controller->getPowerSensorsCH2()->setLevel(HIGH);
+  delay(DELAY_1SEC);
+  controller->controllerReadAnalogInputPinValue(POWER_SENORS_6_10_CH2);
+  controller->getPowerSensorsCH2()->setLevel(LOW);
+  delay(DELAY_1SEC);
   
-  
+  /* END - Collecting data from ws.ini file and Analog Inputs */
+
   return true;
 }
 

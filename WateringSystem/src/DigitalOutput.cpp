@@ -15,12 +15,21 @@ bool DigitalOutput::init()
 
     /* Set the level of the pin to 0 (LOW)*/
     if (gpio_set_level(digiGpioNum, 0) != ESP_OK)
+    {
+        printf("Digital Output GPIO%d Erro!\n", digiGpioNum);
         return false;
+    }
 
-    printf("...Digital Output GPIO%d configured...\n", digiGpioNum);
+    printf("Digital Output GPIO%d OK.\n", digiGpioNum);
     return true;
 }
 
-void DigitalOutput::setLevel(const uint32_t &level_) {
+void DigitalOutput::setLevel(const uint32_t &level_)
+{
     gpio_set_level(digiGpioNum, level_);
+}
+
+gpio_num_t DigitalOutput::getDigiGpioNum() const
+{
+    return digiGpioNum;
 }

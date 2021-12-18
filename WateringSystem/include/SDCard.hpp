@@ -10,17 +10,40 @@
 *       CS   ------ VSPI SS-GPIO5    
 */
 /* SDCard header */
-#ifndef __SDCARD_H__
-#define __SDCARD_H__
+#ifndef __SDCARD_HPP__
+#define __SDCARD_HPP__
+
+#include <SPI.h>
+#include <SD.h>
+#include <FS.h>
+#include "DefsVarsFuncs.hpp"
+#include "DS3231RTC.hpp"
+#include "minIni.h"
 
 class SDCard
 {
 private:
     /* data */
+    minIni *wsIni;                  /* Main wsIni object */
+    DS3231RTC *ds3231rtc;
+    /* Private method - Opening the ws.ini file and check is file opened successfully */
+    bool openingWsIniFile();
 public:
-    SDCard(/* args */);
+    /* Default Constructor */
+    SDCard();
+    /* Default Destructor */
     ~SDCard();
+    /* Public method - init SDCard - if initialization successful the return is TRUE else FALSE */
+    bool init();
+    /* Public method - write log message into log file - if successful the return is TRUE else FALSE */
+    bool writeLogFile(String logMessage_);
+    /* Public method - remove log files older than four days */
+    void removeOldLogFiles();
+    /* Public method - Save analog sensors threshold values from ini file to array */
+    bool saveThresholdValuesToArray(int *array_);
+    /* Public method - Read section and key from ini file and return the string */
+    String getValueFromIni(String section_, String key_);
 };
 
 
-#endif /* __SDCARD_H__ */
+#endif /* __SDCARD_HPP__ */
