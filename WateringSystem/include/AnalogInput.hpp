@@ -41,7 +41,6 @@ private:
     AnalogInput *wetnessSensor_2_6;
     AnalogInput *wetnessSensor_3_7;
     AnalogInput *wetnessSensor_4_8;
-    void showErrorMessage(adc1_channel_t adc1Channel_);
 
 public:
     /* Default Constructor */

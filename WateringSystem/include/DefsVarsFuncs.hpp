@@ -73,8 +73,16 @@
 #define WETNESS_DRYNESS_SECTION "WetnessDryness"
 #define WETNESS_KEY "WETNESS"
 #define DRYNESS_KEY "DRYNESS"
+/* WiFi32s Defines */
+#define PAGE_WIFI "wifi"
+#define PAGE_WATERING "watering"
+#define INDEX_HTM_FILE "/index.htm"
+#define ERROR_HTM_FILE "/error.htm"
+#define CORRECT_HTM_FILE "/correct.htm"
 
 /* Main Variables */
-extern volatile bool mainInitError;
+extern volatile bool mainAppError;
+extern volatile bool asyncTcpWdt;
 /* Main Functions */
+
 #endif /* __DEFSVARSFUNCS_HPP__ */

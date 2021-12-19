@@ -3,7 +3,8 @@
 #include "DefsVarsFuncs.hpp"
 #include "Controller.hpp"
 
-volatile bool mainInitError;
+volatile bool mainAppError;
+volatile bool asyncTcpWdt;
 /* Create Controller object */
 Controller *controller = new Controller();
 
@@ -16,32 +17,58 @@ void setup()
 {
   // put your setup code here, to run once:
   delay(DELAY_2SEC);
-  printf("APP Start SETUP.\n");
-  mainInitError = false;
+  printf("APP SETUP Start.\n");
+  mainAppError = false;
+  asyncTcpWdt = false;
+  // printf("1. mainAppError: %d\n", mainAppError);
   /* If startUp function return result is false than the program stops */
-  if (!startUp())
+  bool startUpFinished = false;
+  bool startUpResult = false;
+  while (!startUpFinished)
   {
-    mainInitError = true;
+    startUpResult = startUp();
+    startUpFinished = true;
+  }
+  
+  // printf("1. startUpResult: %d\n", startUpResult);
+  if (!startUpResult && startUpFinished)
+  {
+    // printf("2. mainAppError: %d\n", mainAppError);
+    mainAppError = true;
     return;
   }
 
-  delay(DELAY_1SEC);
-  printf("mainInitError: %d\n", mainInitError);
-  // printf("APP End SETUP.\n");
+  mainAppError = false;
+  // printf("3. mainInitErmainAppErrorror: %d\n", mainAppError);
+  printf("APP SETUP End.\n");
   /* When the setup has been finished successfully the green LED turns ON */
-  delay(DELAY_1SEC);
+  delay(DELAY_03_SEC);
+  mainAppError = controller->getSdCard()->writeLogFile("Watering System MCU Started.");
   controller->getGreenLED()->setLevel(HIGH);
+  delay(DELAY_03_SEC);
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
-  if (mainInitError)
+  if (mainAppError)
   {
+    printf("LOOP: mainAppError: %d\n", mainAppError);
+    delay(DELAY_03_SEC);
     controller->getRedLED()->setLevel(HIGH);
     delay(5000);
     return;
   }
+
+  if(asyncTcpWdt)
+  {
+    delay(1);
+    printf("1. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
+    controller->wifi32s->getClientData();
+    asyncTcpWdt = false;
+    printf("2. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
+  }
+  delay(1);
 }
 
 bool startUp(void)
@@ -93,7 +120,7 @@ bool startUp(void)
   ledFlashMessage(controller->getRedLED(), 2, DELAY_03_SEC);
   delay(DELAY_1SEC);
   /* Read Aht20Bmp280 sensor values - temperature, humidity, air pressure */
-  if(!controller->controllerGetAht20Bmp280Data())
+  if (!controller->controllerGetAht20Bmp280Data())
     return false;
   /* If reading data from sensor has been finished successfully the red led flashes three times */
   ledFlashMessage(controller->getRedLED(), 3, DELAY_03_SEC);
@@ -107,9 +134,18 @@ bool startUp(void)
   delay(DELAY_1SEC);
   controller->controllerReadAnalogInputPinValue(POWER_SENORS_6_10_CH2);
   controller->getPowerSensorsCH2()->setLevel(LOW);
-  delay(DELAY_1SEC);
-  
+  delay(DELAY_03_SEC);
+  controller->setActiveValves();
+  controller->valvesTurnOffOn();
   /* END - Collecting data from ws.ini file and Analog Inputs */
+  delay(DELAY_1SEC);
+  /* Initialization WiFi32s object */
+  if (!controller->controllerWiFi32sInit())
+    return false;
+  /* If initialization of WiFi32s has been finished successfully the red LED flashes four times. */
+  ledFlashMessage(controller->getRedLED(), 4, DELAY_03_SEC);
+  /* Start Web Htm */
+  controller->controllerStartWebHtm();
 
   return true;
 }

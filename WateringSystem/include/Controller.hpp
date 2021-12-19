@@ -8,6 +8,9 @@
 #include "SDCard.hpp"
 #include "Aht20Bmp280.hpp"
 #include "AnalogInput.hpp"
+#include "WiFi32s.hpp"
+
+class WiFi32s;
 
 class Controller
 {
@@ -25,12 +28,14 @@ private:
     SDCard *sdCard;
     /* Aht20Bmp280 object */
     Aht20Bmp280 *aht20Bmp280;
-    /* analog Input object */
+    /* Analog Input object */
     AnalogInput *analogInputs;
+    
     /* Private property - To store activ valves to integer*/
     int valvesNumber;
     /* Private method - Convert analog input value to percentage */
     int valueToPercentage(int analogInputValue_);
+
 public:
     /* Constructor */
     Controller(/* args */);
@@ -38,20 +43,12 @@ public:
     ~Controller();
     /* Public method - Configure Digital Outputs */
     bool controllerDigitalOutputInit();
-    /* Getter Green Led Digital Output */
-    DigitalOutput *getGreenLED() const;
-    /* Getter Red Led Digital Output */
-    DigitalOutput *getRedLED() const;
-
     /* Public method - Configure DS3231RTC */
     bool controllerDS3231RTCInit();
-
     /* Public method - Configure SDCard */
     bool controllerSDCardInit();
-
     /* Public method - Configure Aht20Bmp280 */
     bool controllerAht20Bmp280Init();
-
     /* Public method - Configure Analog Inputs */
     bool controllerAnalogInputsInit();
     /* Public method - Save Analog Sensors threshold value to array */
@@ -66,11 +63,23 @@ public:
     void valvesTurnOffOn();
     /* Public method - get data from Aht20Bmp280 sensors*/
     bool controllerGetAht20Bmp280Data();
+    /* Public method - Configure and init WiFi32s */
+    bool controllerWiFi32sInit();
+    /* Public method - Start Single Page App htm page */
+    void controllerStartWebHtm();
 
+    /* Getter Green Led Digital Output */
+    DigitalOutput *getGreenLED() const;
+    /* Getter Red Led Digital Output */
+    DigitalOutput *getRedLED() const;
     /* Getter - Power Sensors Channel 1 Digital Output */
     DigitalOutput *getPowerSensorsCH1() const;
     /* Getter - Power Sensors Channel 2 Digital Output */
     DigitalOutput *getPowerSensorsCH2() const;
+    /* Getter - sdCard object */
+    SDCard *getSdCard() const;
+    /* Getter - ds3231rtc object */
+    DS3231RTC *getDs3231rtc() const;
 
     /* Public property - To store Analog Sensors threshold values from ws.ini file to array */
     String thresholdSensorsValueString;
@@ -92,9 +101,11 @@ public:
     float relativeHumidity;
     /* Public property - To store value of air pressure measured by Aht20Bmp280 sensor */
     float airPressure;
-    
-    
-};
 
+
+
+    /* WiFi32s object */
+    WiFi32s *wifi32s;
+};
 
 #endif /* __CONTROLLER_HPP__ */

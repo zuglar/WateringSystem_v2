@@ -60,3 +60,32 @@ String DS3231RTC::oldLogFileDate()
     DateTime dateTimePast = rtc.now() - TimeSpan(3, 0, 0, 0);
     return (dateTimePast.timestamp(DateTime::TIMESTAMP_DATE));
 }
+
+/* https://lastminuteengineers.com/ds3231-rtc-arduino-tutorial/ */
+String DS3231RTC::getAdminPwd()
+{
+    unsigned int addr = EEPROM_24C32_READ_START_ADDRESS; //first address
+    String pwd = String();
+    /* Access the first address from the memory */
+    byte b = i2c24C32EEPROMReadByte(EEPROM_24C32_READ_START_ADDRESS);
+    while (b != 0)
+    {
+        pwd += (char)b;
+        addr++;                           /* increase address */
+        b = i2c24C32EEPROMReadByte(addr); /* access an address from the memory */
+    }
+    return pwd;
+}
+
+byte DS3231RTC::i2c24C32EEPROMReadByte(unsigned int eepromaddress_)
+{
+    byte rdata = 0xFF;
+    Wire.beginTransmission(EEPROM_24C32_ADDRESS);
+    Wire.write((int)(eepromaddress_ >> 8));   // MSB
+    Wire.write((int)(eepromaddress_ & 0xFF)); // LSB
+    Wire.endTransmission();
+    Wire.requestFrom(EEPROM_24C32_ADDRESS, 1);
+    if (Wire.available())
+        rdata = Wire.read();
+    return rdata;
+}

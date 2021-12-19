@@ -37,17 +37,13 @@ bool AnalogInput::init()
     if (wetnessSensor_4_8->result != ESP_OK)
         return false;
 
-    printf("Analog Inputs: %d, %d OK.\n", RSG_1_2, WSG_1_5);
+    /* printf("Analog Inputs: %d, %d, %d, %d, %d OK.\n", RSG_1_2, WSG_1_5, WSG_2_6, WSG_3_7, WSG_4_8); */
     return true;
 }
 
 int AnalogInput::readAnalogInputPinValue(const adc1_channel_t analogPin_) 
 {
     return adc1_get_raw(analogPin_);
-}
-
-void AnalogInput::showErrorMessage(adc1_channel_t adc1Channel_) {
-    printf("Analog Input \n");
 }
 
 void AnalogInput::storeAnalogInputPinValue(const gpio_num_t powerChannel_, int *array_)

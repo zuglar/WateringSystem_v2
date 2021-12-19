@@ -22,6 +22,7 @@ class DS3231RTC
 {
 private:
     /* data */
+    byte i2c24C32EEPROMReadByte(unsigned int eeaddress_);
 
 public:
     /* Constructor */
@@ -38,6 +39,8 @@ public:
     String getDateTimeNow();
     /* Public method - old log file name - return date and time into string */
     String oldLogFileDate();
+    /* Public method - get master admin password from EEPROM 24C32 which is integrated on DS3231 module */
+    String getAdminPwd();
 };
 
 #endif /* __DS3231RTC_HPP__ */

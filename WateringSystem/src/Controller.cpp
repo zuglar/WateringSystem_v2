@@ -91,11 +91,11 @@ bool Controller::controllerAht20Bmp280Init()
     aht20Bmp280 = new Aht20Bmp280();
     if (!aht20Bmp280->init())
     {
-        mainInitError = sdCard->writeLogFile("AHT20 and BMP280 init failed.");
+        mainAppError = sdCard->writeLogFile("AHT20 and BMP280 init failed.");
         return false;
     }
 
-    mainInitError = sdCard->writeLogFile("AHT20 and BMP280 init OK.");
+    mainAppError = sdCard->writeLogFile("AHT20 and BMP280 init OK.");
     return true;
 }
 
@@ -106,14 +106,14 @@ bool Controller::controllerAnalogInputsInit()
     if (!analogInputs->init())
     {
         printf("Analog Inputs Error!\n");
-        mainInitError = sdCard->writeLogFile("Analog Inputs init failed.");
+        mainAppError = sdCard->writeLogFile("Analog Inputs init failed.");
         return false;
     }
     /* Analog Inputs store in array. Index 0 = Rain sensor group, Index 1-5 are wetness sensor groups*/
     /* analogInputArraySize = sizeof analogInputs->objectOfAnalogInput / sizeof analogInputs->objectOfAnalogInput[0]; */
     // printf("Analog Input Array size: %d\n", analogInputArraySize);
-    mainInitError = sdCard->writeLogFile("Analog Inputs OK.");
-    printf("AnalogInputs_OK.\n");
+    mainAppError = sdCard->writeLogFile("Analog Inputs OK.");
+    printf("Analog Inputs OK.\n");
     return true;
 }
 
@@ -122,7 +122,7 @@ bool Controller::analogSensorsThresholdToArray()
     if (!sdCard->saveThresholdValuesToArray(thresholdAnalogSensorsArray))
     {
         printf("Controller-Cannot store analog inputs threshold values to array Error!\n");
-        mainInitError = sdCard->writeLogFile("Controller-Cannot store analog inputs threshold values to array Error!");
+        mainAppError = sdCard->writeLogFile("Controller-Cannot store analog inputs threshold values to array Error!");
         return false;
     }
 
@@ -131,8 +131,8 @@ bool Controller::analogSensorsThresholdToArray()
     {
         thresholdSensorsValueString += String(thresholdAnalogSensorsArray[i]) + ";";
     }
-    printf("Analog inputs threshold values: %s\n", thresholdSensorsValueString.c_str());
-    mainInitError = sdCard->writeLogFile("Analog inputs threshold values: " + thresholdSensorsValueString);
+    printf("Analog Inputs threshold values: %s\n", thresholdSensorsValueString.c_str());
+    mainAppError = sdCard->writeLogFile("Analog Inputs threshold values: " + thresholdSensorsValueString);
     return true;
 
     /* return sdCard->saveThresholdValuesToArray(thresholdAnalogsensorsArray); */
@@ -157,11 +157,11 @@ bool Controller::getSoilMaxDrynessWetnessValues()
     if (maxDryness.equals(EMPTY_STRING) || maxWetness.equals(EMPTY_STRING))
     {
         printf("Cannot get max dryness and wetness values of soil from %s.", WS_INI_FILE);
-        mainInitError = sdCard->writeLogFile("Cannot get max dryness and wetness values of soil from " + String(WS_INI_FILE));
+        mainAppError = sdCard->writeLogFile("Cannot get max dryness and wetness values of soil from " + String(WS_INI_FILE));
         return false;
     }
-    printf("Get Max dryness: %s and wetness: %s values of soil.", maxDryness.c_str(), maxWetness.c_str());
-    mainInitError = sdCard->writeLogFile("Get Max dryness: " + maxDryness + " and wetness: " + maxWetness + " values of soil.");
+    printf("Max dryness: %s and wetness: %s values of soil.\n", maxDryness.c_str(), maxWetness.c_str());
+    mainAppError = sdCard->writeLogFile("Max dryness: " + maxDryness + " and wetness: " + maxWetness + " values of soil.");
     soilSensorMaxDrynessValue = maxDryness.toInt();
     soilSensorMaxWetnessValue = maxWetness.toInt();
     return true;
@@ -169,7 +169,8 @@ bool Controller::getSoilMaxDrynessWetnessValues()
 
 void Controller::controllerReadAnalogInputPinValue(const gpio_num_t powerChannel_)
 {
-    printf("...Controler Power Channel: %d...!!!\n", powerChannel_);
+    printf("Controler Power Channel: %d switched on.\n", powerChannel_);
+    mainAppError = sdCard->writeLogFile("Controler Power Channel: " + String(powerChannel_) + " switched on.");
     analogInputs->storeAnalogInputPinValue(powerChannel_, measuredValueAnalogSensorsArray);
 }
 
@@ -180,13 +181,13 @@ void Controller::setActiveValves()
 
     for (int i = 0; i < ANALOG_DATA_ARRAY_SIZE; i++)
     {
-        printf("...Sensor: %d - threshold: %d - measured: %d - ", i + 1, thresholdAnalogSensorsArray[i], measuredValueAnalogSensorsArray[i]);
+        // printf("...Sensor: %d - threshold: %d - measured: %d - ", i + 1, thresholdAnalogSensorsArray[i], measuredValueAnalogSensorsArray[i]);
         /* If threshold value is 0 then the measured value of sensor will not be used, percentage is 0% */
 
         if (thresholdAnalogSensorsArray[i] == 0)
         {
             measuredSensorsValueString += String(SENSOR_NOT_IN_USE) + ";";
-            printf("soil wetness: %s%% - ", SENSOR_NOT_IN_USE);
+            // printf("soil wetness: %s%% - ", SENSOR_NOT_IN_USE);
         }
         else
         {
@@ -195,17 +196,17 @@ void Controller::setActiveValves()
             if (i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY))
             {
                 measuredSensorsValueString += String(value) + ";";
-                printf("soil wetness: %d%% - ", value);
+                // printf("soil wetness: %d%% - ", value);
                 /* Store number which valves will be turned off or on */
                 if (thresholdAnalogSensorsArray[i] > value && i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY))
                 {
                     valvesNumber += pow(2, i);
-                    printf("valveOnOff: %d", valvesNumber);
+                    // printf("valveOnOff: %d", valvesNumber);
                 }
             }
             else
             {
-                printf("rain sensor: %d%% - ", value);
+                // printf("rain sensor: %d%% - ", value);
                 if (thresholdAnalogSensorsArray[i] > value && i >= (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY) && i < ANALOG_DATA_ARRAY_SIZE)
                 {
                     measuredSensorsValueString += RAIN_SENSOR_NOT_RAINS;
@@ -218,9 +219,10 @@ void Controller::setActiveValves()
                 }
             }
         }
-        printf("\n");
+        // printf("\n");
     }
-    printf("...measuredSensorsValueString: %s\n", measuredSensorsValueString.c_str());
+    printf("Analog Inputs measured values: %s\n", measuredSensorsValueString.c_str());
+    mainAppError = sdCard->writeLogFile("Analog Inputs measured values: " + measuredSensorsValueString);
 }
 
 void Controller::valvesTurnOffOn()
@@ -232,14 +234,15 @@ void Controller::valvesTurnOffOn()
         valvesBinaryString = "0" + valvesBinaryString;
     }
 
-    printf("Valves Binary String: %s\n", valvesBinaryString.c_str());
-
     for (int i = 0; i < SN74HC595_STEPS; i++)
     {
         st_cp->setLevel(HIGH);
         shiftOut(ds->getDigiGpioNum(), sh_cp->getDigiGpioNum(), MSBFIRST, valvesNumber);
         st_cp->setLevel(LOW);
     }
+
+    printf("Active valves binary mode: %s\n", valvesBinaryString.c_str());
+    mainAppError = sdCard->writeLogFile("Active valves binary mode: " + valvesBinaryString);
 }
 
 DigitalOutput *Controller::getPowerSensorsCH1() const
@@ -252,20 +255,54 @@ DigitalOutput *Controller::getPowerSensorsCH2() const
     return powerSensorsCH2;
 }
 
+DS3231RTC *Controller::getDs3231rtc() const
+{
+    return ds3231rtc;
+}
+
+SDCard *Controller::getSdCard() const
+{
+    return sdCard;
+}
+
 bool Controller::controllerGetAht20Bmp280Data()
 {
-    printf("...Date/Time: %s...!!!\n", ds3231rtc->getDateTimeNow().c_str());
+    printf("Date/Time: %s\n", ds3231rtc->getDateTimeNow().c_str());
     if (!aht20Bmp280->getAht20Bmp280Data(temperature, relativeHumidity, airPressure))
     {
         printf("Error occurred while reading temperature, humidity  and air pressure values from Aht20Bmp280 sensor.\n");
-        mainInitError = sdCard->writeLogFile("Error occurred while reading temperature, humidity  and air pressure values from Aht20Bmp280 sensor.");
+        mainAppError = sdCard->writeLogFile("Error occurred while reading temperature, humidity  and air pressure values from Aht20Bmp280 sensor.");
         temperature = 0.0;
         relativeHumidity = 0.0;
         airPressure = 0.0;
         return false;
     }
     printf("Aht20Bmp280 data - Temp: %.2f, Hum: %.2f, Press: %.2f\n", temperature, relativeHumidity, airPressure);
-    mainInitError = sdCard->writeLogFile("Aht20Bmp280 data - Temp: " + String(temperature, 2) + ", Hum: " 
-                    + String(relativeHumidity, 2) + ", Press: " + String(airPressure, 2));
+    mainAppError = sdCard->writeLogFile("Aht20Bmp280 data - Temp: " + String(temperature, 2) + ", Hum: " + String(relativeHumidity, 2) + ", Press: " + String(airPressure, 2));
     return true;
+}
+
+bool Controller::controllerWiFi32sInit()
+{
+    wifi32s = new WiFi32s(this);
+    return (wifi32s->init(sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_HIDDEN_KEY).toInt(),
+                          sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_SSID_KEY).c_str(),
+                          sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_PWD_KEY).c_str(),
+                          sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_CHANNEL_KEY).toInt(),
+                          sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_MAX_CONNECTION_KEY).toInt(),
+                          sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_STASET_KEY).toInt(),
+                          sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_SSID_KEY).c_str(),
+                          sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_PWD_KEY).c_str(),
+                          sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_STATIC_IP_KEY).toInt(),
+                          sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_IP_KEY).c_str(),
+                          sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_SUBNET_KEY).c_str(),
+                          sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_GATEWAY_KEY).c_str(),
+                          sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_DNS_KEY).c_str()));
+}
+
+void Controller::controllerStartWebHtm()
+{
+    wifi32s->startWebHtm();
+    printf("Web Htm Started.\n");
+    mainAppError = sdCard->writeLogFile("Web Htm Started.");
 }

@@ -33,10 +33,11 @@ bool SDCard::init()
         return false;
     }
 
-    printf("SDCard OK.\n");
-    if (!writeLogFile("SDCard init OK."))
+    if (writeLogFile("SDCard init OK."))
         return false;
     removeOldLogFiles();
+
+    printf("SDCard OK.\n");
     return true;
 }
 
@@ -45,7 +46,7 @@ bool SDCard::writeLogFile(String logMessage_)
     if (!SD.exists(LOG_DIR_NAME))
     {
         printf("SDCard writeLogFile ERROR. Dir: %s is not exists!\n", LOG_DIR_NAME);
-        return false;
+        return true;
     }
         
     String logFile = String(LOG_DIR_NAME) + "/" + ds3231rtc->getDateNow() + ".log";
@@ -54,18 +55,18 @@ bool SDCard::writeLogFile(String logMessage_)
     if (!file)
     {
         printf("Failed to open file %s for appending!\n", logFile.c_str());
-        return false;
+        return true;
     }
     String message = ds3231rtc->getDateTimeNow() + " - " + logMessage_;
     if (!file.println(message))
     {
         printf("Data appended in to file %s failed!\n", logFile.c_str());
         file.close();
-        return false;
+        return true;
     }
     file.close();
 
-    return true;
+    return false;
 }
 
 void SDCard::removeOldLogFiles()
@@ -75,7 +76,7 @@ void SDCard::removeOldLogFiles()
     if (!logDir)
     {
         printf("Failed to open directory %s!\n", LOG_DIR_NAME);
-        mainInitError = false;
+        mainAppError = true;
         return;
     }
 
@@ -88,11 +89,11 @@ void SDCard::removeOldLogFiles()
         {
             if (!SD.remove(file.name()))
             {
-                mainInitError = writeLogFile("Delete " + String(file.name()) + " failed!");
+                mainAppError = writeLogFile("Delete " + String(file.name()) + " failed!");
             }
             else
             {
-                mainInitError = writeLogFile("Delete file: " + String(file.name()));
+                mainAppError = writeLogFile("Delete file: " + String(file.name()));
             }
         }
         file = logDir.openNextFile();
@@ -104,7 +105,7 @@ bool SDCard::openingWsIniFile() {
     wsIni = new minIni(String(WS_INI_FILE));
     if (!wsIni->getbool(READY_SECTION, READY_KEY))
     {
-        mainInitError = writeLogFile("Failed open " + String(WS_INI_FILE) + " file.");
+        mainAppError = writeLogFile("Failed open " + String(WS_INI_FILE) + " file.");
         printf("...Failed open %s file...\n", WS_INI_FILE);
         delete wsIni;
         return false;
@@ -141,4 +142,20 @@ String SDCard::getValueFromIni(String section_, String key_)
     delete wsIni;
 
     return result;
+}
+
+bool SDCard::storeValueToIni(String section_, String key_, String value_) {
+    if(!openingWsIniFile())
+        return false;
+    
+    if(!wsIni->put(section_, key_, value_))
+    {
+        mainAppError = writeLogFile("Error occurred during saving new values: " + section_ + ", "
+                        + "key_" + ", " + value_ + "into " + String(WS_INI_FILE) + " file.");
+        return false;
+    }
+
+    mainAppError = writeLogFile("Save new values: " + section_ + ", "
+                        + "key_" + ", " + value_ + "into " + String(WS_INI_FILE) + " file.");
+    return true;
 }

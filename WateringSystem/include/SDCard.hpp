@@ -33,9 +33,9 @@ public:
     SDCard();
     /* Default Destructor */
     ~SDCard();
-    /* Public method - init SDCard - if initialization successful the return is TRUE else FALSE */
+    /* Public method - init SDCard - if initialization successful the return value is TRUE else FALSE */
     bool init();
-    /* Public method - write log message into log file - if successful the return is TRUE else FALSE */
+    /* Public method - write log message into log file - If error occurs the return value is TRUE else FALSE */
     bool writeLogFile(String logMessage_);
     /* Public method - remove log files older than four days */
     void removeOldLogFiles();
@@ -43,6 +43,8 @@ public:
     bool saveThresholdValuesToArray(int *array_);
     /* Public method - Read section and key from ini file and return the string */
     String getValueFromIni(String section_, String key_);
+    /* Public method - Stores the text parameter that in the given section and at the given key. 1/true on success, 0/false on failure*/
+    bool storeValueToIni(String section_, String key_, String value_);
 };
 
 
