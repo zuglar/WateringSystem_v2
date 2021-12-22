@@ -65,8 +65,6 @@ public:
     bool controllerGetAht20Bmp280Data();
     /* Public method - Configure and init WiFi32s */
     bool controllerWiFi32sInit();
-    /* Public method - Start Single Page App htm page */
-    void controllerStartWebHtm();
 
     /* Getter Green Led Digital Output */
     DigitalOutput *getGreenLED() const;

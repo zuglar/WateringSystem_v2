@@ -79,6 +79,8 @@
 #define INDEX_HTM_FILE "/index.htm"
 #define ERROR_HTM_FILE "/error.htm"
 #define CORRECT_HTM_FILE "/correct.htm"
+#define FTP_USER "ftp"
+#define FTP_PASSWORD "ftp"
 
 /* Main Variables */
 extern volatile bool mainAppError;

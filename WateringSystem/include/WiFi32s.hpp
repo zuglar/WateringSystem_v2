@@ -5,6 +5,8 @@
 #include "WiFi.h"
 #include "AsyncTCP.h"
 #include "ESPAsyncWebServer.h"
+#include "ESP-FTP-Server-Lib.h"
+#include "FTPFilesystem.h"
 #include "Controller.hpp"
 
 class Controller;
@@ -43,10 +45,14 @@ public:
     AsyncWebServer server = AsyncWebServer(80);
     /* Public method - create htm file and start web server */
     void startWebHtm();
+    /* Public method - Start FTP server. Browse SDCard */
+    bool startFTPServer();
     /* Public method - save new wifi settings */
     bool saveWifiSettings(AsyncWebServerRequest *request_);
     /* Public property - char array of html file */
     char *htmFile;
+    /* Fublic - FTP Object */
+    FTPServer *ftp;
 
     void getClientData();
 };

@@ -46,6 +46,7 @@ void setup()
   mainAppError = controller->getSdCard()->writeLogFile("Watering System MCU Started.");
   controller->getGreenLED()->setLevel(HIGH);
   delay(DELAY_03_SEC);
+  ESP.getFreePsram();
 }
 
 void loop()
@@ -69,6 +70,7 @@ void loop()
     printf("2. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
   }
   delay(1);
+  controller->wifi32s->ftp->handle();
 }
 
 bool startUp(void)
@@ -142,10 +144,11 @@ bool startUp(void)
   /* Initialization WiFi32s object */
   if (!controller->controllerWiFi32sInit())
     return false;
-  /* If initialization of WiFi32s has been finished successfully the red LED flashes four times. */
+  /* If initialization of WiFi32s has been finished successfully the red LED flashes four times. 
+  WEB and FTP servers have been started */
   ledFlashMessage(controller->getRedLED(), 4, DELAY_03_SEC);
   /* Start Web Htm */
-  controller->controllerStartWebHtm();
+  /* controller->controllerStartWebHtm(); */
 
   return true;
 }

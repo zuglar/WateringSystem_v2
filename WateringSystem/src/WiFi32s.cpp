@@ -189,7 +189,37 @@ void WiFi32s::startWebHtm()
 
 String WiFi32s::processor(const String &var)
 {
-    if (var == "TEMP_PH")
+    String result;
+    if (var == "WEATHER")
+    {
+        result += "<tr>\n";
+        result += "<td style=\"width: 240px;\">Temperature</td>\n";
+        result += "<td style=\"width: 100px;\">" + String(cntrl->temperature, 2) + "</td>\n";
+        result += "<td style=\"width: 100px;\"><img src=\"./icns/temp.png\" alt=\"temp\"></td>\n";
+        result += "</tr>\n";
+
+        result += "<tr>\n";
+        result += "<td style=\"width: 240px;\">Humidity</td>\n";
+        result += "<td style=\"width: 100px;\">" + String(cntrl->relativeHumidity, 2) + "</td>\n";
+        result += "<td style=\"width: 100px;\"><img src=\"./icns/humidity.png\" alt=\"temp\"></td>\n";
+        result += "</tr>\n";
+
+        result += "<tr>\n";
+        result += "<td style=\"width: 240px;\">Atm. Pressure</td>\n";
+        result += "<td style=\"width: 100px;\">" + String((cntrl->airPressure / 1000), 2) + "</td>\n";
+        result += "<td style=\"width: 100px;\"><img src=\"./icns/atmospheric.png\" alt=\"temp\"></td>\n";
+        result += "</tr>\n";
+
+        // printf("\n%s\n", result.c_str());
+        return result;
+    }
+    else if (var == "VALVES")
+        return cntrl->valvesBinaryString;
+    else if (var == "SENSORS_VALUE")
+        return cntrl->measuredSensorsValueString;
+    else if (var == "THRESHOLD_VALUES")
+        return cntrl->thresholdSensorsValueString;
+    /* if (var == "TEMP_PH")
         return String(cntrl->temperature, 2);
 
     if (var == "HUM_PH")
@@ -226,7 +256,7 @@ String WiFi32s::processor(const String &var)
         return cntrl->measuredSensorsValueString;
 
     if (var == "THRESHOLD_VALUES")
-        return cntrl->thresholdSensorsValueString;
+        return cntrl->thresholdSensorsValueString; */
 
     return String();
 }
@@ -351,6 +381,30 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_)
             }
         }
     }
+    return true;
+}
+
+bool WiFi32s::startFTPServer()
+{
+    ftp = new FTPServer();
+    ftp->addUser(FTP_USER, FTP_PASSWORD);
+    ftp->addFilesystem("SD", &SD);
+
+    if (!SD.exists(WS_INI_FILE))
+    {
+        printf("SDCard ERROR ini file %s is not exists!\n", WS_INI_FILE);
+    }
+
+    printf("SDCard ini file %s is exists!\n", WS_INI_FILE);
+
+    if (!ftp->begin())
+    {
+        printf("ESP32 FTP server starting error!\n");
+        mainAppError = cntrl->getSdCard()->writeLogFile("ESP32 FTP server starting error!");
+        return false;
+    }
+    printf("FTP server has been started successfully\n");
+    mainAppError = cntrl->getSdCard()->writeLogFile("FTP server has been started successfully");
     return true;
 }
 
