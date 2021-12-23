@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #698d19;
+            border-radius: 10px;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            text-align: center;
+            padding: 12px 5px 10px 5px;
+            text-decoration: none;
+        }
+
+        div li,
+        a,
+        span {
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 15px;
+            color: whitesmoke;
+            margin: auto;
+        }
+
+        li a:hover {
+            background-color: #74a20c;
+        }
+    </style>
+</head>
+
+<body>
+    <div style=" width: 498px;">
+        <ul>
+            <li><a href="./index.htm">Home</a></li>
+            <li><a href="./wifi.htm">Wifi</a></li>
+            <li><a href="./rules.htm">Rules</a></li>
+            <span style="padding: 0px 0px 0px 100px;"><img src="./icns/garden.png" alt="garden"></span>
+            <span style="float:right; padding: 12px 10px 10px 0px; font-weight: bold;">Watering System</span>
+        </ul>
+        <div id="date_time" style="text-align: center; font-weight: bold; padding: 3px 0px 3px 0px; font-size: 15px;"></div>
+    </div>
+    <script>
+        startTime();
+        function startTime() {
+          const today = new Date();
+          let y = today.getFullYear();
+          let mo = today.getMonth() + 1;
+          let d = today.getDate();
+          let h = today.getHours();
+          let m = today.getMinutes();
+          let s = today.getSeconds();
+          d = checkTime(d);
+          m = checkTime(m);
+          s = checkTime(s);
+          document.getElementById("date_time").innerHTML = y + "." + mo + "." + d + " " + h + ":" + m /* + ":" + s */;
+          setTimeout(startTime, /* 1000 */ 60000);
+        }
+    
+        function checkTime(i) {
+          if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+          return i;
+        }
+      </script>
+</body>
+</html>

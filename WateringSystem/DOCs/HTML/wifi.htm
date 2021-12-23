@@ -18,39 +18,121 @@
 </head>
 
 <body>
-  <div id="main">
+  <div id="container">
     <div class="navbar" style="padding: 1px;"></div>
-    <div id="info">
-      <div class="icon" style="text-align: center;">
-        <img src="./icns/wifi.png" alt="wifi">
-      </div>
-      <div style="text-align: center; font-size: 20px; font-weight: bold;">
-        WiFi Settings
-      </div>
-      <!-- <div>
-        <table style="text-align: center; font-size: 14px; font-weight: bold;">
-          %WEATHER%
-          
-          <tr>
-            <td style="width: 240px;">Temperature</td>
-            <td style="width: 100px;">%TEMP_PH%</td>
-            <td style="width: 100px;"><img src="./icns/temp.png" alt="temp"></td>
-          </tr>
-          <tr>
-            <td style="width: 240px;">Humidity</td>
-            <td style="width: 100px;">%HUM_PH%</td>
-            <td style="width: 100px;"><img src="./icns/humidity.png" alt="temp"></td>
-          </tr>
-          <tr>
-            <td style="width: 240px;">Atm. Pressure</td>
-            <td style="width: 100px;">%AIR_PH%</td>
-            <td style="width: 100px;"><img src="./icns/atmospheric.png" alt="temp"></td>
-          </tr>
-         
-        </table>
-      </div> -->
+    <!-- Weather -->
+    <div>
+      <table class="content-table">
+        <tr>
+          <td colspan="3"><img src="./icns/wifi.png" alt="home"></td>
+        </tr>
+        <tr class="info-tr" >
+          <td colspan="3">Wifi Settings</td>
+        </tr>
+        <tr>
+          <td colspan="3"><hr class="hr"></td>
+        </tr>
+        <tr>
+          <td>Temperature</td>
+          <td>23.30</td>
+          <td><img src="./icns/temp.png" alt="temp"></td>
+        </tr>
+        <tr>
+          <td>Humidity</td>
+          <td>45.31</td>
+          <td><img src="./icns/humidity.png" alt="temp"></td>
+        </tr>
+        <tr>
+          <td>Temperature</td>
+          <td>103.03</td>
+          <td><img src="./icns/atmospheric.png" alt="temp"></td>
+        </tr>
+      </table>
     </div>
+    <hr class="hr">
+    <!-- Valves State -->
+    <div>
+      <table class="content-table">
+        <tr class="info-tr" >
+          <td colspan="8">Valves State</td>
+        </tr>
+        <tr>
+          <td>1.</td>
+          <td>2.</td>
+          <td>3.</td>
+          <td>4.</td>
+          <td>5.</td>
+          <td>6.</td>
+          <td>7.</td>
+          <td>8.</td>
+        </tr>
+        <tr id="valves-state"></tr>
+      </table>
+    </div>
+      
   </div>
+
+  <p hidden id="valves">01100010<!-- %VALVES% --></p>
+  <p hidden id="sensors_value">%SENSORS_VALUE%</p>
+  <!-- <p hidden id="threshold_values">%THRESHOLD_VALUES%</p> -->
+
 </body>
 
 </html>
+
+
+<!-- Valves State -->
+<!-- <table style="text-align: center; font-size: 14px;">
+  <tr>
+    <th class="row" colspan="8">Valves State</th>
+  </tr>
+  <tr>
+    <td class="t8col">1.</td>
+    <td class="t8col">2.</td>
+    <td class="t8col">3.</td>
+    <td class="t8col">4.</td>
+    <td class="t8col">5.</td>
+    <td class="t8col">6.</td>
+    <td class="t8col">7.</td>
+    <td class="t8col">8.</td>
+  </tr>
+  <tr id="valves_state">
+
+  </tr>
+</table>
+<hr class="hr"> -->
+
+<!-- Soil Wetness -->
+<!-- <table>
+  <tr>
+    <td class="row_h" colspan="8">Soil Wetness State</td>
+  </tr>
+  <tr>
+    <td class="t8col">1.</td>
+    <td class="t8col">2.</td>
+    <td class="t8col">3.</td>
+    <td class="t8col">4.</td>
+    <td class="t8col">5.</td>
+    <td class="t8col">6.</td>
+    <td class="t8col">7.</td>
+    <td class="t8col">8.</td>
+  </tr>
+  <tr id="wetness_state">
+
+  </tr>
+</table>
+<hr class="hr"> -->
+
+<!-- Rain Sensors -->
+<!-- <table>
+  <tr>
+    <td class="row_header" colspan="2">Rain Sensors State</td>
+  </tr>
+  <tr>
+    <td class="t8c_col">1.</td>
+    <td class="t8c_col">2.</td>
+  </tr>
+  <tr id="rain_state">
+
+  </tr>
+</table> -->
