@@ -106,6 +106,8 @@ bool WiFi32s::init(int apHidden_, const char *apSSID_, const char *apPWD_, int a
         }
     }
 
+    htmlFileMemoryAllocated = false;
+
     return result;
 }
 
@@ -127,6 +129,35 @@ void WiFi32s::startWebHtm()
                   openHtm(INDEX_HTM_FILE);
                   /* asyncTcpWdt = true; */
                   handleRequest(request); });
+
+    // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
+    server.on("/update", HTTP_GET, [&](AsyncWebServerRequest *request)
+              {
+        /* GET values of weather, state of valves, state of wetness of soil, state of rain sensors
+         on <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2> */
+        /* printf("START - /update\n"); */
+        if (request->hasParam("update"))
+        {
+            /* printf("/update has parameter: update\n"); */
+            if (request->getParam("update")->value().compareTo("1") == 0)
+            {
+                /* printf("/update has parameter are valid\n"); */
+                cntrl->controllerGetAht20Bmp280Data();
+                /* cntrl->setActiveValves(); */
+            }
+        }
+        else
+        {
+            printf("/update did not has parameter: update\n");
+        }
+        /* printf("request->getParam(\"update\")->value(): %s\n", request->getParam("update")->value());
+        printf("Temp: %s\n", String(cntrl->temperature).c_str());
+        printf("Hum: %s\n", String(cntrl->relativeHumidity).c_str());
+        printf("Air: %s\n", String(cntrl->airPressure).c_str());
+        printf("END - /update\n"); */
+        openHtm(INDEX_HTM_FILE);
+        /* asyncTcpWdt = true; */
+        handleRequest(request); });
 
     server.on("/", HTTP_POST, [this](AsyncWebServerRequest *request)
               {
@@ -192,33 +223,33 @@ String WiFi32s::processor(const String &var)
     String result;
     if (var == "WEATHER")
     {
-        result += "<tr>\n";
-        result += "<td style=\"width: 240px;\">Temperature</td>\n";
-        result += "<td style=\"width: 100px;\">" + String(cntrl->temperature, 2) + "</td>\n";
-        result += "<td style=\"width: 100px;\"><img src=\"./icns/temp.png\" alt=\"temp\"></td>\n";
-        result += "</tr>\n";
+        result += "\t\t\t\t<tr>\n";
+        result += "\t\t\t\t\t<td>Temperature</td>\n";
+        result += "\t\t\t\t\t<td>" + String(cntrl->temperature, 2) + "</td>\n";
+        result += "\t\t\t\t\t<td><img src=\"./icns/temp.png\" alt=\"temp\"></td>\n";
+        result += "\t\t\t\t</tr>\n";
 
-        result += "<tr>\n";
-        result += "<td style=\"width: 240px;\">Humidity</td>\n";
-        result += "<td style=\"width: 100px;\">" + String(cntrl->relativeHumidity, 2) + "</td>\n";
-        result += "<td style=\"width: 100px;\"><img src=\"./icns/humidity.png\" alt=\"temp\"></td>\n";
-        result += "</tr>\n";
+        result += "\t\t\t\t<tr>\n";
+        result += "\t\t\t\t\t<td>Humidity</td>\n";
+        result += "\t\t\t\t\t<td>" + String(cntrl->relativeHumidity, 2) + "</td>\n";
+        result += "\t\t\t\t\t<td><img src=\"./icns/humidity.png\" alt=\"temp\"></td>\n";
+        result += "\t\t\t\t</tr>\n";
 
-        result += "<tr>\n";
-        result += "<td style=\"width: 240px;\">Atm. Pressure</td>\n";
-        result += "<td style=\"width: 100px;\">" + String((cntrl->airPressure / 1000), 2) + "</td>\n";
-        result += "<td style=\"width: 100px;\"><img src=\"./icns/atmospheric.png\" alt=\"temp\"></td>\n";
-        result += "</tr>\n";
+        result += "\t\t\t\t<tr>\n";
+        result += "\t\t\t\t\t<td>Atm. Pressure</td>\n";
+        result += "\t\t\t\t\t<td>" + String((cntrl->airPressure / 1000), 2) + "</td>\n";
+        result += "\t\t\t\t\t<td><img src=\"./icns/atmospheric.png\" alt=\"temp\"></td>\n";
+        result += "\t\t\t\t</tr>\n";
 
         // printf("\n%s\n", result.c_str());
         return result;
     }
     else if (var == "VALVES")
         return cntrl->valvesBinaryString;
-    else if (var == "SENSORS_VALUE")
+    else if (var == "WETNESS_AND_RAINS")
         return cntrl->measuredSensorsValueString;
-    else if (var == "THRESHOLD_VALUES")
-        return cntrl->thresholdSensorsValueString;
+    /* else if (var == "THRESHOLD_VALUES")
+        return cntrl->thresholdSensorsValueString; */
     /* if (var == "TEMP_PH")
         return String(cntrl->temperature, 2);
 
@@ -270,6 +301,13 @@ void WiFi32s::handleRequest(AsyncWebServerRequest *request)
 
 void WiFi32s::openHtm(String htmFileName_)
 {
+    if (htmlFileMemoryAllocated)
+    {
+        free(htmFile);
+        htmlFileMemoryAllocated = false;
+    }
+        
+    
     File file = SD.open(htmFileName_);
     if (file)
     {
@@ -278,7 +316,9 @@ void WiFi32s::openHtm(String htmFileName_)
         file.readBytes(htmFile, fileSize);
         htmFile[fileSize] = '\0';
         file.close();
+        htmlFileMemoryAllocated = true;
     }
+    // printf("HTML FILE:\n%s\n", htmFile);
 }
 
 bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_)
@@ -390,13 +430,6 @@ bool WiFi32s::startFTPServer()
     ftp->addUser(FTP_USER, FTP_PASSWORD);
     ftp->addFilesystem("SD", &SD);
 
-    if (!SD.exists(WS_INI_FILE))
-    {
-        printf("SDCard ERROR ini file %s is not exists!\n", WS_INI_FILE);
-    }
-
-    printf("SDCard ini file %s is exists!\n", WS_INI_FILE);
-
     if (!ftp->begin())
     {
         printf("ESP32 FTP server starting error!\n");
@@ -408,10 +441,10 @@ bool WiFi32s::startFTPServer()
     return true;
 }
 
-void WiFi32s::getClientData()
+/* void WiFi32s::getClientData()
 {
     WiFiClient thisClient;
     printf("Client timeout: %d\n", thisClient.getTimeout());
     printf("Client available: %d\n", thisClient.available());
     printf("Client connected: %d\n", thisClient.connected());
-}
+} */

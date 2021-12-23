@@ -27,8 +27,6 @@ private:
     String processor(const String &var);
     /* Private method - web page send request */
     void handleRequest(AsyncWebServerRequest *request);
-    /* Private Controller object */
-    Controller *cntrl;
     int staEnabled;
     int staStaticIP;
     /* Private method - convert htm file from SD card to web html file which will be send to client */
@@ -53,6 +51,10 @@ public:
     char *htmFile;
     /* Fublic - FTP Object */
     FTPServer *ftp;
+    /* Public Controller object */
+    Controller *cntrl;
+
+    bool htmlFileMemoryAllocated;
 
     void getClientData();
 };

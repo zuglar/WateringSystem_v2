@@ -63,10 +63,10 @@ void loop()
 
   if(asyncTcpWdt)
   {
-    delay(1);
     printf("1. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
-    controller->wifi32s->getClientData();
+    /* controller->wifi32s->getClientData(); */
     asyncTcpWdt = false;
+    delay(1);
     printf("2. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
   }
   delay(1);
@@ -115,6 +115,7 @@ bool startUp(void)
     return false;
   /* If creation of array has been finished successfully the red led flashes one time. */
   ledFlashMessage(controller->getRedLED(), 1, DELAY_03_SEC);
+  delay(DELAY_1SEC);
   /* Get max dryness and wetness values of soil from ws.ini file */
   if (!controller->getSoilMaxDrynessWetnessValues())
     return false;

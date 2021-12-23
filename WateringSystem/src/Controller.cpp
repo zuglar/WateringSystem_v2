@@ -223,16 +223,26 @@ void Controller::setActiveValves()
     }
     printf("Analog Inputs measured values: %s\n", measuredSensorsValueString.c_str());
     mainAppError = sdCard->writeLogFile("Analog Inputs measured values: " + measuredSensorsValueString);
-}
 
-void Controller::valvesTurnOffOn()
-{
     valvesBinaryString = String(valvesNumber, BIN);
 
     while (valvesBinaryString.length() != VALVES_BINARY_STRING_LENGHT)
     {
         valvesBinaryString = "0" + valvesBinaryString;
     }
+
+    printf("Active valves binary mode: %s\n", valvesBinaryString.c_str());
+    mainAppError = sdCard->writeLogFile("Active valves binary mode: " + valvesBinaryString);
+}
+
+void Controller::valvesTurnOffOn()
+{
+    /* valvesBinaryString = String(valvesNumber, BIN);
+
+    while (valvesBinaryString.length() != VALVES_BINARY_STRING_LENGHT)
+    {
+        valvesBinaryString = "0" + valvesBinaryString;
+    } */
 
     for (int i = 0; i < SN74HC595_STEPS; i++)
     {
@@ -241,8 +251,8 @@ void Controller::valvesTurnOffOn()
         st_cp->setLevel(LOW);
     }
 
-    printf("Active valves binary mode: %s\n", valvesBinaryString.c_str());
-    mainAppError = sdCard->writeLogFile("Active valves binary mode: " + valvesBinaryString);
+    /* printf("Active valves binary mode: %s\n", valvesBinaryString.c_str());
+    mainAppError = sdCard->writeLogFile("Active valves binary mode: " + valvesBinaryString); */
 }
 
 DigitalOutput *Controller::getPowerSensorsCH1() const
@@ -268,6 +278,9 @@ SDCard *Controller::getSdCard() const
 bool Controller::controllerGetAht20Bmp280Data()
 {
     printf("Date/Time: %s\n", ds3231rtc->getDateTimeNow().c_str());
+    temperature = 0.0;
+    relativeHumidity = 0.0;
+    airPressure = 0.0;
     if (!aht20Bmp280->getAht20Bmp280Data(temperature, relativeHumidity, airPressure))
     {
         printf("Error occurred while reading temperature, humidity  and air pressure values from Aht20Bmp280 sensor.\n");
