@@ -171,11 +171,16 @@ void WiFi32s::startWebHtm()
         logWebTraffic(request);
         openHtm(WIFI_HTM_FILE);
         handleRequest(request); });
+    
+    server.on("/admin.htm", HTTP_GET, [this](AsyncWebServerRequest *request)
+              {
+        logWebTraffic(request);
+        openHtm(ADMIN_HTM_FILE);
+        handleRequest(request); });
 
     server.on("/", HTTP_POST, [this](AsyncWebServerRequest *request)
               {
                   logWebTraffic(request);
-                  client = new WiFiClient();
                   /* List all parameters (Compatibility) */
                   int args = request->args();
                   printf("...args: %d\n", args);
@@ -230,23 +235,23 @@ String WiFi32s::processor(const String &var)
     String result;
     if (var == "WEATHER")
     {
-        result += "\t\t\t\t<tr>\n";
-        result += "\t\t\t\t\t<td>Temperature</td>\n";
-        result += "\t\t\t\t\t<td>" + String(cntrl->temperature, 2) + "</td>\n";
-        result += "\t\t\t\t\t<td><img src=\"./icns/temp.png\" alt=\"temp\"></td>\n";
-        result += "\t\t\t\t</tr>\n";
+        result += "<tr>\n";
+        result += "\t\t\t<td>Temperature</td>\n";
+        result += "\t\t\t<td>" + String(cntrl->temperature, 2) + "</td>\n";
+        result += "\t\t\t<td><img src=\"./icns/temp.png\" alt=\"temp\"></td>\n";
+        result += "\t\t</tr>\n";
 
-        result += "\t\t\t\t<tr>\n";
-        result += "\t\t\t\t\t<td>Humidity</td>\n";
-        result += "\t\t\t\t\t<td>" + String(cntrl->relativeHumidity, 2) + "</td>\n";
-        result += "\t\t\t\t\t<td><img src=\"./icns/humidity.png\" alt=\"temp\"></td>\n";
-        result += "\t\t\t\t</tr>\n";
+        result += "\t\t<tr>\n";
+        result += "\t\t\t<td>Humidity</td>\n";
+        result += "\t\t\t<td>" + String(cntrl->relativeHumidity, 2) + "</td>\n";
+        result += "\t\t\t<td><img src=\"./icns/humidity.png\" alt=\"temp\"></td>\n";
+        result += "\t\t\t</tr>\n";
 
-        result += "\t\t\t\t<tr>\n";
-        result += "\t\t\t\t\t<td>Atm. Pressure</td>\n";
-        result += "\t\t\t\t\t<td>" + String((cntrl->airPressure / 1000), 2) + "</td>\n";
-        result += "\t\t\t\t\t<td><img src=\"./icns/atmospheric.png\" alt=\"temp\"></td>\n";
-        result += "\t\t\t\t</tr>\n";
+        result += "\t\t<tr>\n";
+        result += "\t\t\t<td>Atm. Pressure</td>\n";
+        result += "\t\t\t<td>" + String((cntrl->airPressure / 1000), 2) + "</td>\n";
+        result += "\t\t\t<td><img src=\"./icns/atmospheric.png\" alt=\"temp\"></td>\n";
+        result += "\t\t</tr>\n";
 
         return result;
     }

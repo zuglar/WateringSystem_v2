@@ -1,6 +1,5 @@
 /* Variables */
 var page = "";
-var ip = 0;
 
 $(function () {
     /* Variables for main widow size and element size */
@@ -136,60 +135,67 @@ function wifiSettingsSave() {
     }
     /* Check Station input values */
     if (staCheckBox.checked == true) {
-        if (!checkValueLenght(document.getElementById("sta-ssid").value, 4)) {
-            document.getElementById("sta-ssid").focus();
-            return false;
-        }
-
-        if (!checkValueLenght(document.getElementById("sta-newpwd-1").value, 8)) {
-            document.getElementById("sta-newpwd-1").focus();
-            return false;
-        }
-
-        if (!compareStr(document.getElementById("sta-newpwd-1").value, document.getElementById("sta-newpwd-2").value)) {
-            document.getElementById("sta-newpwd-1").focus();
-            return false;
-        }
-    }
-    /* Check ip addreses input values */
-    if (staStaticIpCheckBox.checked == true) {
-        let staticIP = false;
-        ip = document.getElementById("sta-ip").value;
-        if (ip.length != 0) {
-            if (!checkIPaddress(ip)) {
-                document.getElementById("sta-ip").focus();
-                return false;
-            }
-            staticIP = true;
-        }
-
-        if (staticIP) {
-            ip = document.getElementById("sta-subnet").value;
-            if (!checkIPaddress(ip)) {
-                document.getElementById("sta-subnet").focus();
+        if (document.getElementById("sta-ssid").value.length != 0) {
+            if (!checkValueLenght(document.getElementById("sta-ssid").value, 4)) {
+                document.getElementById("sta-ssid").focus();
                 return false;
             }
 
-            ip = document.getElementById("sta-gateway").value;
-            if (!checkIPaddress(ip)) {
-                document.getElementById("sta-gateway").focus();
+            if (!checkValueLenght(document.getElementById("sta-newpwd-1").value, 8)) {
+                document.getElementById("sta-newpwd-1").focus();
                 return false;
             }
 
-            ip = document.getElementById("sta-dns").value;
-            if (ip.length != 0) {
-                if (!checkIPaddress(ip)) {
-                    document.getElementById("sta-dns").focus();
-                    return false;
+            if (!compareStr(document.getElementById("sta-newpwd-1").value, document.getElementById("sta-newpwd-2").value)) {
+                document.getElementById("sta-newpwd-1").focus();
+                return false;
+            }
+            /* Check ip addreses input values */
+            if (staStaticIpCheckBox.checked == true) {
+                let staticIP = false;
+                let ip = 0;
+                ip = document.getElementById("sta-ip").value;
+                if (ip.length != 0) {
+                    if (!checkIPaddress(ip)) {
+                        document.getElementById("sta-ip").focus();
+                        return false;
+                    }
+                    staticIP = true;
+                }
+
+                if (staticIP) {
+                    ip = document.getElementById("sta-subnet").value;
+                    if (!checkIPaddress(ip)) {
+                        document.getElementById("sta-subnet").focus();
+                        return false;
+                    }
+
+                    ip = document.getElementById("sta-gateway").value;
+                    if (!checkIPaddress(ip)) {
+                        document.getElementById("sta-gateway").focus();
+                        return false;
+                    }
+
+                    ip = document.getElementById("sta-dns").value;
+                    if (ip.length != 0) {
+                        if (!checkIPaddress(ip)) {
+                            document.getElementById("sta-dns").focus();
+                            return false;
+                        }
+                    }
                 }
             }
+        } else {
+            alert("\t\tWARNING!!!\nYou have not filled in input of Station/Route of SSID.\nThe Station/Router will not be configured.");
         }
     }
 
     if (apCheckBox.checked == true || staCheckBox.checked == true) {
         /* Check admin input value */
-        if (!checkValueLenght("adm-pwd"))
+        if (!checkValueLenght(document.getElementById("adm-pwd").value, 8)) {
+            document.getElementById("adm-pwd").focus();
             return false;
+        }
         /* Alert to confirm to save new values */
         if (!window.confirm("Are you sure you want to save the new settings?")) {
             alert("The new settings has not been saved!");
@@ -212,7 +218,6 @@ function apCheckBox(checkbox) {
     }
     enableSave();
 }
-
 /* Function for STA checkbox */
 function staCheckBox(checkbox) {
     if (checkbox.checked) {

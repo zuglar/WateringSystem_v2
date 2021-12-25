@@ -58,6 +58,8 @@ void loop()
     delay(DELAY_03_SEC);
     controller->getRedLED()->setLevel(HIGH);
     delay(5000);
+    printf("LOOP: ESP32 reboot\n");
+    ESP.restart();
     return;
   }
 

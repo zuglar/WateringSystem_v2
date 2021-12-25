@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title> Watering System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="description" content="Watering System">
+  <link rel="stylesheet" href="./resources/style.css">
+  <script src="./resources/jquery-3.6.0.min.js"></script>
+  <link rel="icon" type="image/png" href="./icns/garden.png" sizes="24x24">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <div id="container">
+    <div>
+      <form action="/" method="post" id="wifi-form">
+        <table class="content-table">
+          <tr>
+            <td colspan="2" class="td-paddig"><img src="./icns/user.png" alt="home"></td>
+          </tr>
+          <tr class="info-tr">
+            <td colspan="2" class="td-paddig" style="font-size: 20px; text-decoration: underline">Admin Password Setting</td>
+          </tr>
+          <tr>
+            <td class="td-paddig" style="font-size: 12px;">Old password</td>
+            <td class="td-paddig"><input type="password" id="adm-old-pwd" name="old_pwd" maxlength="25"></td>
+          </tr>
+          <tr>
+            <td class="td-paddig" style="font-size: 12px;">New Password</td>
+            <td class="td-paddig"><input type="password" id="adm-new-pwd-1" name="new_pwd_1" maxlength="25">
+            </td>
+          </tr>
+          <tr>
+            <td class="td-paddig" style="font-size: 12px;">New Password Again</td>
+            <td class="td-paddig"><input type="password" id="adm-new-pwd-2" maxlength="25"></td>
+          </tr>
+          <!-- Save button -->
+          <tr>
+            <td class="td-paddig" colspan="2">
+              <button type="submit" class="save-btn" id="save-wifi-btn" onclick="return newAdminPwd()">Save</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </div>
+  <script>
+
+  </script>
+</body>
+
+</html>

@@ -78,6 +78,11 @@
             </td>
           </tr>
           <tr>
+            <td colspan="2" class="td-padding" style="font-size: 10px; color: lightgray; background-color: #698d19;">
+              If you don't want to use Station/Router don't fill in inputs below. Leave these inputs empty.
+            </td>
+          </tr>
+          <tr>
             <td class="td-paddig">SSID</td>
             <td class="td-paddig"><input type="text" id="sta-ssid" name="sta_ssid" maxlength="25" disabled></td>
           </tr>
@@ -97,6 +102,12 @@
                 <input type="checkbox" id="sta-static-chb" name="sta_static_chb" disabled>
                 <span class="slider round"></span>
               </label>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="td-padding" style="font-size: 10px; color: lightgray; background-color: #698d19;">
+              If you don't want to use Static IP Address of Station/Router don't fill in inputs below. Leave these
+              inputs empty.
             </td>
           </tr>
           <tr>
@@ -139,9 +150,7 @@
       </form>
     </div>
   </div>
-  <p hidden id="wifi-data">
-    <!-- APname;192.168.4.1;STAname;192.168.1.10;255.255.255.0;192.168.1.1;8.8.8.8; -->%WIFI_SETTINGS%
-  </p>
+  <p hidden id="wifi-data"><!-- APname;192.168.4.1;STAname;192.168.1.10;255.255.255.0;192.168.1.1;8.8.8.8; -->%WIFI_SETTINGS%</p>
 </body>
 
 </html>

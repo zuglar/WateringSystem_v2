@@ -80,6 +80,7 @@
 #define WIFI_HTM_FILE "/resources/wifi.htm"
 #define ERROR_HTM_FILE "/resources/error.htm"
 #define CORRECT_HTM_FILE "/resources/correct.htm"
+#define ADMIN_HTM_FILE "/resources/admin.htm"
 #define FTP_USER "ftp"
 #define FTP_PASSWORD "ftp"
 
