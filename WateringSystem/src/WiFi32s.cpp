@@ -100,8 +100,9 @@ bool WiFi32s::init(int apHidden_, const char *apSSID_, const char *apPWD_, int a
         }
         else
         {
-            printf("ESP32 connected to: %s, IP: %s\n", staSSID_, WiFi.localIP().toString().c_str());
-            mainAppError = cntrl->getSdCard()->writeLogFile("ESP32 connected to: " + String(staSSID_) + ", IP: " + WiFi.localIP().toString());
+            staIPString = WiFi.localIP().toString();
+            printf("ESP32 connected to: %s, IP: %s\n", staSSID_, staIPString.c_str());
+            mainAppError = cntrl->getSdCard()->writeLogFile("ESP32 connected to: " + String(staSSID_) + ", IP: " + staIPString);
             result = true;
         }
     }
@@ -124,60 +125,72 @@ void WiFi32s::startWebHtm()
     // https://stackoverflow.com/questions/59575326/passing-a-function-as-a-parameter-within-a-class
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request)
               {
-                  printf("GET Host: %s\n", request->host().c_str());
-                  printf("GET Url %s\n", request->url().c_str());
-                  openHtm(INDEX_HTM_FILE);
-                  /* asyncTcpWdt = true; */
-                  handleRequest(request); });
+        logWebTraffic(request);
+        openHtm(INDEX_HTM_FILE);
+        handleRequest(request); });
 
     // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
     server.on("/update", HTTP_GET, [&](AsyncWebServerRequest *request)
               {
-        /* GET values of weather, state of valves, state of wetness of soil, state of rain sensors
-         on <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2> */
-        /* printf("START - /update\n"); */
+        logWebTraffic(request);
+        /* GET values of weather, state of valves, state of wetness of soil, state of rain sensors on <ESP_IP>/update?update=1 */
         if (request->hasParam("update"))
         {
-            /* printf("/update has parameter: update\n"); */
             if (request->getParam("update")->value().compareTo("1") == 0)
             {
-                /* printf("/update has parameter are valid\n"); */
                 cntrl->controllerGetAht20Bmp280Data();
-                /* cntrl->setActiveValves(); */
+            }
+        }
+        openHtm(INDEX_HTM_FILE);
+        handleRequest(request); });
+
+    server.on("/restart", HTTP_POST, [&](AsyncWebServerRequest *request)
+              {
+        logWebTraffic(request);
+        /* GET values of weather, state of valves, state of wetness of soil, state of rain sensors
+         on <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2> */
+        if (request->hasParam("restart"))
+        {
+            if (request->getParam("restart")->value().compareTo("1") == 0)
+            {
+                mainAppError = cntrl->getSdCard()->writeLogFile("The system restarts.");
+                ESP.restart();
             }
         }
         else
         {
-            printf("/update did not has parameter: update\n");
+            mainAppError = cntrl->getSdCard()->writeLogFile("The system restart failed.");
+            openHtm(ERROR_HTM_FILE);
+            request->send(404, "text/html", htmFile);
         }
-        /* printf("request->getParam(\"update\")->value(): %s\n", request->getParam("update")->value());
-        printf("Temp: %s\n", String(cntrl->temperature).c_str());
-        printf("Hum: %s\n", String(cntrl->relativeHumidity).c_str());
-        printf("Air: %s\n", String(cntrl->airPressure).c_str());
-        printf("END - /update\n"); */
-        openHtm(INDEX_HTM_FILE);
-        /* asyncTcpWdt = true; */
+        /* openHtm(INDEX_HTM_FILE);
+        handleRequest(request); */ });
+
+    server.on("/wifi.htm", HTTP_GET, [this](AsyncWebServerRequest *request)
+              {
+        logWebTraffic(request);
+        openHtm(WIFI_HTM_FILE);
         handleRequest(request); });
 
     server.on("/", HTTP_POST, [this](AsyncWebServerRequest *request)
               {
+                  logWebTraffic(request);
+                  client = new WiFiClient();
                   /* List all parameters (Compatibility) */
-                  printf("POST Host: %s\n", request->host().c_str());
-                  printf("POST Url %s\n", request->url().c_str());
-                  openHtm(INDEX_HTM_FILE);
                   int args = request->args();
                   printf("...args: %d\n", args);
                   for (int i = 0; i < args; i++)
                   {
                       printf("ARG[%s]: %s\n", request->argName(i).c_str(), request->arg(i).c_str());
                   }
-                  /* asyncTcpWdt = true; */
+                  
                   if (request->hasParam("adm_pwd", true))
                   {
                       /* printf("Admin password: %s\n", ds3231RTC->getAdminPwd().c_str());
                       printf("Admin adm_pwd: %s\n", request->getParam("adm_pwd", true)->value().c_str()); */
                       if (request->getParam("adm_pwd", true)->value().compareTo(cntrl->getDs3231rtc()->getAdminPwd()) != 0)
                       {
+                          mainAppError = cntrl->getSdCard()->writeLogFile("Invalid admin password: " + request->getParam("adm_pwd", true)->value());
                           openHtm(ERROR_HTM_FILE);
                           request->send(404, "text/html", htmFile);
                       }
@@ -185,13 +198,6 @@ void WiFi32s::startWebHtm()
                       {
                           if (request->hasParam("page", true))
                           {
-                              if (request->getParam("page", true)->value().compareTo(PAGE_WIFI) != 0 &&
-                                  request->getParam("page", true)->value().compareTo(PAGE_WATERING) != 0)
-                              {
-                                  openHtm(ERROR_HTM_FILE);
-                                  request->send(404, "text/html", htmFile);
-                              }
-
                               if (request->getParam("page", true)->value().compareTo(PAGE_WIFI) == 0)
                               {
                                   if (!saveWifiSettings(request))
@@ -210,6 +216,7 @@ void WiFi32s::startWebHtm()
                   }
                   else
                   {
+                      openHtm(INDEX_HTM_FILE);
                       handleRequest(request);
                   } });
 
@@ -241,53 +248,18 @@ String WiFi32s::processor(const String &var)
         result += "\t\t\t\t\t<td><img src=\"./icns/atmospheric.png\" alt=\"temp\"></td>\n";
         result += "\t\t\t\t</tr>\n";
 
-        // printf("\n%s\n", result.c_str());
         return result;
     }
     else if (var == "VALVES")
         return cntrl->valvesBinaryString;
     else if (var == "WETNESS_AND_RAINS")
         return cntrl->measuredSensorsValueString;
-    /* else if (var == "THRESHOLD_VALUES")
-        return cntrl->thresholdSensorsValueString; */
-    /* if (var == "TEMP_PH")
-        return String(cntrl->temperature, 2);
-
-    if (var == "HUM_PH")
-        return String(cntrl->relativeHumidity, 2);
-
-    if (var == "AIR_PH")
-        return String((cntrl->airPressure / 1000), 2);
-
-    if (var == "APSSID_PH")
-        return WiFi.softAPSSID();
-
-    if (var == "APIP_PH")
-        return WiFi.softAPIP().toString();
-
-    if (var == "STASSID_PH")
-        return WiFi.SSID();
-
-    if (var == "STAIP_PH")
-        return WiFi.localIP().toString();
-
-    if (var == "STASUBNET_PH")
-        return WiFi.subnetMask().toString();
-
-    if (var == "STAGATEWAY_PH")
-        return WiFi.gatewayIP().toString();
-
-    if (var == "STADNS_PH")
-        return WiFi.dnsIP().toString();
-
-    if (var == "VALVES")
-        return cntrl->valvesBinaryString;
-
-    if (var == "SENSORS_VALUE")
-        return cntrl->measuredSensorsValueString;
-
-    if (var == "THRESHOLD_VALUES")
-        return cntrl->thresholdSensorsValueString; */
+    else if (var == "WIFI_SETTINGS")
+        return WiFi.softAPSSID() + ";" + WiFi.softAPIP().toString() + ";" + WiFi.SSID() + ";" + WiFi.localIP().toString() + ";" +
+               WiFi.subnetMask().toString() + ";" + WiFi.gatewayIP().toString() + ";" + WiFi.dnsIP().toString();
+    /*
+        if (var == "THRESHOLD_VALUES")
+            return cntrl->thresholdSensorsValueString; */
 
     return String();
 }
@@ -301,13 +273,13 @@ void WiFi32s::handleRequest(AsyncWebServerRequest *request)
 
 void WiFi32s::openHtm(String htmFileName_)
 {
+    /* If the memory has had allocated we free it */
     if (htmlFileMemoryAllocated)
     {
         free(htmFile);
         htmlFileMemoryAllocated = false;
     }
-        
-    
+
     File file = SD.open(htmFileName_);
     if (file)
     {
@@ -318,7 +290,6 @@ void WiFi32s::openHtm(String htmFileName_)
         file.close();
         htmlFileMemoryAllocated = true;
     }
-    // printf("HTML FILE:\n%s\n", htmFile);
 }
 
 bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_)
@@ -441,10 +412,12 @@ bool WiFi32s::startFTPServer()
     return true;
 }
 
-/* void WiFi32s::getClientData()
+void WiFi32s::logWebTraffic(AsyncWebServerRequest *request)
 {
-    WiFiClient thisClient;
-    printf("Client timeout: %d\n", thisClient.getTimeout());
-    printf("Client available: %d\n", thisClient.available());
-    printf("Client connected: %d\n", thisClient.connected());
-} */
+    client = new WiFiClient();
+    printf("Opened HOST: %s URL: %s\n", request->host().c_str(), request->url().c_str());
+    printf("Client remote IP: %s, remote port: %d\n", client->remoteIP().toString().c_str(), client->remotePort());
+    mainAppError = cntrl->getSdCard()->writeLogFile("Opened HOST: " + request->host() + " URL: " + request->url());
+    mainAppError = cntrl->getSdCard()->writeLogFile("Client remote IP: " + client->remoteIP().toString() + " remote port: " + String(client->remotePort()));
+    delete client;
+}

@@ -2,75 +2,74 @@
 <html>
 
 <head>
-  <link rel="stylesheet" href="./resources/style.css">
- <!--  <style>
-    body {
-      color: #74a20c;
-      font-size: 15px;
-    }
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #698d19;
+            border-radius: 10px;
+        }
 
-    ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background-color: #74a20c;
-    }
+        li {
+            float: left;
+        }
 
-    li {
-      float: left;
-    }
+        li a {
+            display: block;
+            text-align: center;
+            padding: 12px 5px 10px 5px;
+            text-decoration: none;
+        }
 
-    li,
-    a {
-      display: block;
-      color: white;
-      text-align: center;
-      padding: 6px 8px;
-      text-decoration: none;
-    }
+        div li,
+        a,
+        span {
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 15px;
+            color: whitesmoke;
+            margin: auto;
+        }
 
-    li a:hover {
-      background-color: #698d19;
-    }
-  </style> -->
+        li a:hover {
+            background-color: #74a20c;
+        }
+    </style>
 </head>
 
 <body>
-  <ul>
-    <li><a class="active" href="./index.htm">Home</a></li>
-    <li><a href="./wifi.htm">WiFi</a></li>
-    <li><a href="./rules.htm">Rules</a></li>
-    <li style="float: right; padding: 12px 10px; font-weight: bold;">Watering System</li>
-    <li style="float: none; padding: 0px 232px; vertical-align: middle;"><img src="./icns/garden.png" alt="garden"></li>
-  </ul>
-  <div class="date_time" style="background-color: #74a20c; color: white;">
-    <div id="date_time" style="text-align: center; font-weight: bold; padding: 6px 10px; font-size: 14px;"></div>
-  </div>
-
-  <script>
-    startTime();
-    function startTime() {
-      const today = new Date();
-      let y = today.getFullYear();
-      let mo = today.getMonth() + 1;
-      let d = today.getDate();
-      let h = today.getHours();
-      let m = today.getMinutes();
-      let s = today.getSeconds();
-      d = checkTime(d);
-      m = checkTime(m);
-      s = checkTime(s);
-      document.getElementById("date_time").innerHTML = y + "." + mo + "." + d + " " + h + ":" + m /* + ":" + s */;
-      setTimeout(startTime, /* 1000 */ 60000);
-    }
-
-    function checkTime(i) {
-      if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
-      return i;
-    }
-  </script>
-
+    <div style=" max-width: 398px;">
+        <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./wifi.htm">Wifi</a></li>
+            <li><a href="./rules.htm">Rules</a></li>
+            <span style="padding: 0px 0px 0px 50px;"><img src="./icns/garden.png" alt="garden"></span>
+            <span style="float:right; padding: 12px 10px 10px 0px; text-decoration: underline;">Watering System</span>
+        </ul>
+        <div id="date_time" style="text-align: center; font-weight: bold; padding: 3px 0px 3px 0px; font-size: 15px;"></div>
+    </div>
+    <script>
+        startTime();
+        function startTime() {
+          const today = new Date();
+          let y = today.getFullYear();
+          let mo = today.getMonth() + 1;
+          let d = today.getDate();
+          let h = today.getHours();
+          let m = today.getMinutes();
+          let s = today.getSeconds();
+          d = checkTime(d);
+          m = checkTime(m);
+          s = checkTime(s);
+          document.getElementById("date_time").innerHTML = y + "." + mo + "." + d + " " + h + ":" + m /* + ":" + s */;
+          setTimeout(startTime, /* 1000 */ 60000);
+        }
+    
+        function checkTime(i) {
+          if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+          return i;
+        }
+      </script>
 </body>
-
 </html>

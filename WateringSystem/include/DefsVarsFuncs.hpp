@@ -76,9 +76,10 @@
 /* WiFi32s Defines */
 #define PAGE_WIFI "wifi"
 #define PAGE_WATERING "watering"
-#define INDEX_HTM_FILE "/index.htm"
-#define ERROR_HTM_FILE "/error.htm"
-#define CORRECT_HTM_FILE "/correct.htm"
+#define INDEX_HTM_FILE "/resources/index.htm"
+#define WIFI_HTM_FILE "/resources/wifi.htm"
+#define ERROR_HTM_FILE "/resources/error.htm"
+#define CORRECT_HTM_FILE "/resources/correct.htm"
 #define FTP_USER "ftp"
 #define FTP_PASSWORD "ftp"
 

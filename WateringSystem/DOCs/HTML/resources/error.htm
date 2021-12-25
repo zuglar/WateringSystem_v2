@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Watering System">
+    <script src="resources/jquery-3.6.0.min.js"></script>
+    <link rel="icon" type="image/png" href="./icns/garden.png" sizes="24x24">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        .container {
+            width: 400px;
+            margin: auto;
+        }
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p>You will be redirected in <span id="count">5</span> <span id="sec"> seconds.</span></p>
+    </div>
+    
+    <script>
+        window.onload = function () {
+            alert("\t\tERROR !!!\nNew data have not been saved!!!\nCheck input data.\nYou will be redirected to main page in 5 seconds.");
+
+            var count = 5;
+            setInterval(function () {
+                count--;
+                document.getElementById("count").innerHTML = count;
+                if (count > 1) {
+                    document.getElementById("sec").innerHTML = "seconds.";
+                } else {
+                    document.getElementById("sec").innerHTML = "second.";
+                }
+
+                if (count == 0) {
+                    window.location.replace(window.document.referrer);
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

@@ -15,8 +15,6 @@ class WiFi32s
 {
 private:
     /* data */
-    String apIPString;
-    String staIPString;
     IPAddress *staIP;         /* Station Static IP address */
     IPAddress *staSubnet;     /* Station Subnet */
     IPAddress *staGateway;    /* Station Gateway */
@@ -53,10 +51,16 @@ public:
     FTPServer *ftp;
     /* Public Controller object */
     Controller *cntrl;
-
+    /* Public property - Checks memory allocation for htmFile */
     bool htmlFileMemoryAllocated;
+    /* Public method - Start FTP server. Browse SDCard */
+    void logWebTraffic(AsyncWebServerRequest *request);
+    /* Public property - get client data for logging and checking for saving server data */
+    WiFiClient *client;
 
-    void getClientData();
+
+    String apIPString;
+    String staIPString;
 };
 
 #endif /* __WIFI32S_HPP__ */

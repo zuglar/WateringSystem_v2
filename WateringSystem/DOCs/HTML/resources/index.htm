@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" href="./icns/garden.png" sizes="24x24">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- refresh the page for every 5 minutes, 5 * 60 = 300 -->
-  <meta http-equiv="refresh" content="300">
+  <!-- <meta http-equiv="refresh" content="300"> -->
 </head>
 
 <body>
@@ -29,7 +29,8 @@
         <tr class="info-tr" >
           <td colspan="3">Weather</td>
         </tr>
-        <tr>
+        %WEATHER%
+        <!-- <tr>
           <td>Temperature</td>
           <td>23.30</td>
           <td><img src="./icns/temp.png" alt="temp"></td>
@@ -43,7 +44,7 @@
           <td>Temperature</td>
           <td>103.03</td>
           <td><img src="./icns/atmospheric.png" alt="temp"></td>
-        </tr>
+        </tr> -->
       </table>
     </div>
     <hr class="hr">
@@ -102,8 +103,8 @@
     </div>
   </div>
 
-  <p hidden id="valves">01100010<!-- %VALVES% --></p>
-  <p hidden id="wetness-rain">10;20;30;40;44;0;12;100;0;1;<!-- %WETNESS% --></p>
+  <p hidden id="valves"><!-- 01100010 -->%VALVES%</p>
+  <p hidden id="wetness-rain"><!-- 10;20;30;40;44;0;12;100;0;1; -->%WETNESS_AND_RAINS%</p>
 </body>
 </html>
 

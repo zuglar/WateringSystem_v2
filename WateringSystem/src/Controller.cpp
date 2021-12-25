@@ -277,7 +277,7 @@ SDCard *Controller::getSdCard() const
 
 bool Controller::controllerGetAht20Bmp280Data()
 {
-    printf("Date/Time: %s\n", ds3231rtc->getDateTimeNow().c_str());
+    /* printf("Date/Time: %s\n", ds3231rtc->getDateTimeNow().c_str()); */
     temperature = 0.0;
     relativeHumidity = 0.0;
     airPressure = 0.0;
