@@ -64,7 +64,7 @@ String DS3231RTC::oldLogFileDate()
 /* https://lastminuteengineers.com/ds3231-rtc-arduino-tutorial/ */
 String DS3231RTC::getAdminPwd()
 {
-    unsigned int addr = EEPROM_24C32_READ_START_ADDRESS; //first address
+    unsigned int addr = EEPROM_24C32_READ_START_ADDRESS; // first address
     String pwd = String();
     /* Access the first address from the memory */
     byte b = i2c24C32EEPROMReadByte(EEPROM_24C32_READ_START_ADDRESS);
@@ -75,6 +75,21 @@ String DS3231RTC::getAdminPwd()
         b = i2c24C32EEPROMReadByte(addr); /* access an address from the memory */
     }
     return pwd;
+}
+
+bool DS3231RTC::setAdminPwd(String str_)
+{
+    /* Length (with one extra character for the null terminator) */
+    int str_len = str_.length() + 1;
+    /* Prepare the character array (the buffer) */
+    char char_array[str_len];
+    /* Copy it over */
+    str_.toCharArray(char_array, str_len);
+    if(i2c24C32EEPROMWritePage((byte *)char_array, sizeof(char_array)) != 0)
+    {
+        return false;
+    }
+    return true;
 }
 
 byte DS3231RTC::i2c24C32EEPROMReadByte(unsigned int eepromaddress_)
@@ -88,4 +103,18 @@ byte DS3231RTC::i2c24C32EEPROMReadByte(unsigned int eepromaddress_)
     if (Wire.available())
         rdata = Wire.read();
     return rdata;
+}
+
+uint8_t DS3231RTC::i2c24C32EEPROMWritePage(byte *data_, byte length_)
+{
+    uint8_t result = 0;
+    Wire.beginTransmission(EEPROM_24C32_ADDRESS);
+    Wire.write((int)(EEPROM_24C32_READ_START_ADDRESS >> 8));   // MSB
+    Wire.write((int)(EEPROM_24C32_READ_START_ADDRESS & 0xFF)); // LSB
+    byte c;
+    for (c = 0; c < length_; c++)
+        Wire.write(data_[c]);
+    result = Wire.endTransmission();
+
+    return result;
 }

@@ -171,7 +171,7 @@ void WiFi32s::startWebHtm()
         logWebTraffic(request);
         openHtm(WIFI_HTM_FILE);
         handleRequest(request); });
-    
+
     server.on("/admin.htm", HTTP_GET, [this](AsyncWebServerRequest *request)
               {
         logWebTraffic(request);
@@ -216,13 +216,37 @@ void WiFi32s::startWebHtm()
                                       request->send(202, "text/html", htmFile);
                                   }
                               }
+                              else if (request->getParam("page", true)->value().compareTo(PAGE_ADMIN) == 0)
+                              {
+                                  if(request->hasParam("new_pwd_1"), true)
+                                  {
+                                      if (!cntrl->getDs3231rtc()->setAdminPwd(request->getParam("new_pwd_1", true)->value()))
+                                      {
+                                        mainAppError = cntrl->getSdCard()->writeLogFile("New admin password: " + 
+                                                request->getParam("new_pwd_1", true)->value() + " has not been saved.");
+                                        openHtm(ERROR_HTM_FILE);
+                                        request->send(404, "text/html", htmFile);
+                                      }
+                                      else
+                                      {
+                                        mainAppError = cntrl->getSdCard()->writeLogFile("New admin password: " + 
+                                                request->getParam("new_pwd_1", true)->value() + " has been saved.");
+                                        openHtm(CORRECT_HTM_FILE);
+                                        request->send(202, "text/html", htmFile);
+                                      }   
+                                  }
+                              }
+                              else
+                              {
+
+                              }
                           }
                       }
                   }
                   else
                   {
-                      openHtm(INDEX_HTM_FILE);
-                      handleRequest(request);
+                      /* openHtm(INDEX_HTM_FILE);
+                      handleRequest(request); */
                   } });
 
     server.serveStatic("/", SD, "/");

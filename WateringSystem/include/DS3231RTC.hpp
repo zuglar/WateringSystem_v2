@@ -17,12 +17,12 @@
 #include <Wire.h>
 #include "DefsVarsFuncs.hpp"
 
-
 class DS3231RTC
 {
 private:
     /* data */
     byte i2c24C32EEPROMReadByte(unsigned int eeaddress_);
+    uint8_t i2c24C32EEPROMWritePage(byte *data_, byte length_);
 
 public:
     /* Constructor */
@@ -41,6 +41,8 @@ public:
     String oldLogFileDate();
     /* Public method - get master admin password from EEPROM 24C32 which is integrated on DS3231 module */
     String getAdminPwd();
+    /* Public method - set master admin password to EEPROM 24C32 which is integrated on DS3231 module */
+    bool setAdminPwd(String str_);
 };
 
 #endif /* __DS3231RTC_HPP__ */

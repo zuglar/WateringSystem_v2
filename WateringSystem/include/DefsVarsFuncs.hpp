@@ -76,6 +76,7 @@
 /* WiFi32s Defines */
 #define PAGE_WIFI "wifi"
 #define PAGE_WATERING "watering"
+#define PAGE_ADMIN "admin"
 #define INDEX_HTM_FILE "/resources/index.htm"
 #define WIFI_HTM_FILE "/resources/wifi.htm"
 #define ERROR_HTM_FILE "/resources/error.htm"
