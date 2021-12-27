@@ -73,9 +73,10 @@
 #define WETNESS_DRYNESS_SECTION "WetnessDryness"
 #define WETNESS_KEY "WETNESS"
 #define DRYNESS_KEY "DRYNESS"
+#define RULES_SECTION "Rules"
 /* WiFi32s Defines */
 #define PAGE_WIFI "wifi"
-#define PAGE_WATERING "watering"
+#define PAGE_RULES "rules"
 #define PAGE_ADMIN "admin"
 #define INDEX_HTM_FILE "/resources/index.htm"
 #define WIFI_HTM_FILE "/resources/wifi.htm"
@@ -83,6 +84,7 @@
 #define CORRECT_HTM_FILE "/resources/correct.htm"
 #define ADMIN_HTM_FILE "/resources/admin.htm"
 #define NOTFOUND_HTM_FILE "/resources/notfound.htm"
+#define RULES_HTM_FILE "/resources/rules.htm"
 #define FTP_USER "ftp"
 #define FTP_PASSWORD "ftp"
 

@@ -10,129 +10,185 @@
   <meta name="description" content="Watering System">
   <link rel="stylesheet" href="./resources/style.css">
   <script src="./resources/jquery-3.6.0.min.js"></script>
-  <script src="./resources/main.js"></script>
+  <script src="./resources/rules.js"></script>
   <link rel="icon" type="image/png" href="./icns/garden.png" sizes="24x24">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- refresh the page for every 5 minutes, 5 * 60 = 300 -->
-  <meta http-equiv="refresh" content="300">
 </head>
 
 <body>
   <div id="container">
     <div class="navbar" style="padding: 1px;"></div>
-    <!-- Weather -->
     <div>
       <table class="content-table">
         <tr>
-          <td colspan="3"><img src="./icns/rules-book.png" alt="home"></td>
+          <td class="td-padding"><img src="./icns/rules-book.png" alt="home"></td>
         </tr>
-        <tr class="info-tr" >
-          <td colspan="3">Watering Rules Settings</td>
-        </tr>
-        <tr>
-          <td colspan="3"><hr class="hr"></td>
-        </tr>
-        <tr>
-          <td>Temperature</td>
-          <td>23.30</td>
-          <td><img src="./icns/temp.png" alt="temp"></td>
+        <tr class="info-tr">
+          <td class="td-padding" style="font-size: 20px; text-decoration: underline">Watering Rules
+            Settings
+          </td>
         </tr>
         <tr>
-          <td>Humidity</td>
-          <td>45.31</td>
-          <td><img src="./icns/humidity.png" alt="temp"></td>
-        </tr>
-        <tr>
-          <td>Temperature</td>
-          <td>103.03</td>
-          <td><img src="./icns/atmospheric.png" alt="temp"></td>
+          <td class="td-padding">
+            <div class="dropdown">
+              <select id="rules-select" onchange="selectedRule(this)">
+                <!-- options will be set dynamically -->
+              </select>
+            </div>
+          </td>
         </tr>
       </table>
     </div>
-    <hr class="hr">
-    <!-- Valves State -->
+    <br>
     <div>
-      <table class="content-table">
-        <tr class="info-tr" >
-          <td colspan="8">Valves State</td>
-        </tr>
-        <tr>
-          <td>1.</td>
-          <td>2.</td>
-          <td>3.</td>
-          <td>4.</td>
-          <td>5.</td>
-          <td>6.</td>
-          <td>7.</td>
-          <td>8.</td>
-        </tr>
-        <tr id="valves-state"></tr>
-      </table>
+      <form action="/" method="post" id="admin-form">
+        <input type="hidden" name="page" value="rules" />
+        <table class="content-table">
+          <tr>
+            <td class="td-padding" colspan="4" style="color: white; background-color: #698d19;">
+              Define settings of Watering Rule
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" colspan="2">
+              Rule Name
+            </td>
+            <td class="td-padding" colspan="2">
+              <input type="text" id="rule-name" name="rule_name" maxlength="6" size="10" style="text-align: center;">
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" colspan="4">
+              Set Wattering Time (HH:MM AM/PM)
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding">
+              Start:
+            </td>
+            <td class="td-padding">
+              <input type="time" id="start-time" name="start_time">
+            </td>
+            <td class="td-padding">
+              End:
+            </td>
+            <td class="td-padding">
+              <input type="time" id="end-time" name="end_time">
+            </td>
+          </tr>
+        </table>
+        <table class="content-table">
+          <tr>
+            <td class="td-padding" colspan="8">
+              Select the Watering Valve
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding">1.<br>
+              <label class="switch">
+                <input type="checkbox" class="valve-number" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="td-padding">2.<br>
+              <label class="switch">
+                <input type="checkbox" class="valve-number" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="td-padding">3.<br>
+              <label class="switch">
+                <input type="checkbox" class="valve-number" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="td-padding">4.<br>
+              <label class="switch">
+                <input type="checkbox" class="valve-number" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="td-padding">5.<br>
+              <label class="switch">
+                <input type="checkbox" class="valve-number" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="td-padding">6.<br>
+              <label class="switch">
+                <input type="checkbox" class="valve-number" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="td-padding">7.<br>
+              <label class="switch">
+                <input type="checkbox" class="valve-number" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="td-padding">8.<br>
+              <label class="switch">
+                <input type="checkbox" class="valve-number" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" colspan="7" style="text-align: left;">
+              Check wetness of soil before watering
+            </td>
+            <td class="td-padding" colspan="1">
+              <label class="switch">
+                <input type="checkbox" id="soil-sensors-enabled" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" colspan="7" style="text-align: left;">
+              Check if rains during watering
+            </td>
+            <td class="td-padding" colspan="1">
+              <label class="switch">
+                <input type="checkbox" id="rain-sensor-enabled" disabled>
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" colspan="3" style="text-align: left;">
+              Select rain sensor
+            </td>
+            <td class="td-padding" colspan="2" style="text-align: right;">
+              Sensor 1.
+            </td>
+            <td class="td-padding" colspan="1">
+              <label class="switch">
+                <input type="checkbox" id="rain-sensor-number">
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="td-padding" colspan="2" style="text-align: left;">
+              Sensor 2.
+            </td>
+          </tr>
+          
+
+          <!-- Save button -->
+          <tr>
+            <td class="td-padding" colspan="8">
+              <button type="submit" class="save-btn" id="save-adm-btn" onclick="return saveRules()">Save Rule</button>
+            </td>
+          </tr>
+        </table>
+      </form>
     </div>
-      
   </div>
-
-  <p hidden id="valves">01100010<!-- %VALVES% --></p>
-  <p hidden id="sensors_value">%SENSORS_VALUE%</p>
-  <!-- <p hidden id="threshold_values">%THRESHOLD_VALUES%</p> -->
-
+  <p hidden id="rules-name">
+    <!-- RULE1;RULE2 -->%RULES_NAME%
+  </p>
+  <p hidden id="rules-value">%RULES_VALUE%</p>
+  <p hidden id="threshold-values">%THRESHOLD_VALUES%</p>
 </body>
 
 </html>
-
-
-<!-- Valves State -->
-<!-- <table style="text-align: center; font-size: 14px;">
-  <tr>
-    <th class="row" colspan="8">Valves State</th>
-  </tr>
-  <tr>
-    <td class="t8col">1.</td>
-    <td class="t8col">2.</td>
-    <td class="t8col">3.</td>
-    <td class="t8col">4.</td>
-    <td class="t8col">5.</td>
-    <td class="t8col">6.</td>
-    <td class="t8col">7.</td>
-    <td class="t8col">8.</td>
-  </tr>
-  <tr id="valves_state">
-
-  </tr>
-</table>
-<hr class="hr"> -->
-
-<!-- Soil Wetness -->
-<!-- <table>
-  <tr>
-    <td class="row_h" colspan="8">Soil Wetness State</td>
-  </tr>
-  <tr>
-    <td class="t8col">1.</td>
-    <td class="t8col">2.</td>
-    <td class="t8col">3.</td>
-    <td class="t8col">4.</td>
-    <td class="t8col">5.</td>
-    <td class="t8col">6.</td>
-    <td class="t8col">7.</td>
-    <td class="t8col">8.</td>
-  </tr>
-  <tr id="wetness_state">
-
-  </tr>
-</table>
-<hr class="hr"> -->
-
-<!-- Rain Sensors -->
-<!-- <table>
-  <tr>
-    <td class="row_header" colspan="2">Rain Sensors State</td>
-  </tr>
-  <tr>
-    <td class="t8c_col">1.</td>
-    <td class="t8c_col">2.</td>
-  </tr>
-  <tr id="rain_state">
-
-  </tr>
-</table> -->

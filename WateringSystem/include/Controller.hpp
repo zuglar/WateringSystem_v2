@@ -65,6 +65,8 @@ public:
     bool controllerGetAht20Bmp280Data();
     /* Public method - Configure and init WiFi32s */
     bool controllerWiFi32sInit();
+    /* Public method - Get keys and values of watering rules */
+    void controllerGetKeysValuesRules();
 
     /* Getter Green Led Digital Output */
     DigitalOutput *getGreenLED() const;
@@ -99,8 +101,10 @@ public:
     float relativeHumidity;
     /* Public property - To store value of air pressure measured by Aht20Bmp280 sensor */
     float airPressure;
-
-
+    /* Public property - To store keys of watering rules  from ini file */
+    String keysOfWateringRules;
+    /* Public property - To store values of keys of watering rules from ini file */
+    String valuesOfKeysOfRules;
 
     /* WiFi32s object */
     WiFi32s *wifi32s;

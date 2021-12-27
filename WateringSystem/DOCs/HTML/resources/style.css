@@ -3,7 +3,7 @@ body {
   height: 100%;
   color: #698d19;
   font-size: 16px;
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 #container {
@@ -16,17 +16,17 @@ body {
 }
 
 hr {
-  border:none;
-  border-top:2px solid #698d19;
-  color:#fff;
-  background-color:#fff;
-  height:2px;
+  border: none;
+  border-top: 2px solid #698d19;
+  color: #fff;
+  background-color: #fff;
+  height: 2px;
   width: 80%;
 }
 
 .content-table {
   border-collapse: collapse;
-  width: 330px;
+  width: 340px;
   /* font-size: 15px; */
   margin: auto;
 }
@@ -35,12 +35,13 @@ hr {
   text-align: center;
   font-weight: bold;
 }
+
 .content-table .info-tr {
   font-size: 20px;
   font-style: italic;
 }
 
-.content-table .td-paddig {
+.content-table .td-padding {
   padding: 5px;
   font-size: 14px;
 }
@@ -52,7 +53,7 @@ hr {
   height: 21px;
 }
 
-.switch input { 
+.switch input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -82,15 +83,15 @@ hr {
   transition: .4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #698d19;
 }
 
-input:focus + .slider {
+input:focus+.slider {
   box-shadow: 0 0 1px #698d19;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   -webkit-transform: translateX(14px);
   -ms-transform: translateX(14px);
   transform: translateX(14px);
@@ -112,10 +113,35 @@ input:checked + .slider:before {
   width: 130px;
   font-size: 14px;
   /* font-weight:bolder; */
-  font-style:italic;
+  font-style: italic;
   border-radius: 5px;
 }
 
+#rules-select {
+  min-width: 130px;
+  border-radius: 5px;
+  border: none;
+  background-color: #698d19;
+  text-align: center;
+  color: whitesmoke;
+  font-size: 14;
+  font-weight: bold;
+  font-style: italic;
+}
+
+select {
+  /* for Firefox */
+  -moz-appearance: none;
+  /* for Chrome */
+  -webkit-appearance: none;
+}
+
+/* For IE10 */
+select::-ms-expand {
+  display: none;
+}
+
+/* END - dropdown rules button css*/
 /* input:focus {
   border: initial !important;
 } */

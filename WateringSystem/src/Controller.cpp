@@ -300,28 +300,34 @@ bool Controller::controllerWiFi32sInit()
     wifi32s = new WiFi32s(this);
 
     if (!wifi32s->init(sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_HIDDEN_KEY).toInt(),
-                            sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_SSID_KEY).c_str(),
-                            sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_PWD_KEY).c_str(),
-                            sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_CHANNEL_KEY).toInt(),
-                            sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_MAX_CONNECTION_KEY).toInt(),
-                            sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_STASET_KEY).toInt(),
-                            sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_SSID_KEY).c_str(),
-                            sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_PWD_KEY).c_str(),
-                            sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_STATIC_IP_KEY).toInt(),
-                            sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_IP_KEY).c_str(),
-                            sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_SUBNET_KEY).c_str(),
-                            sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_GATEWAY_KEY).c_str(),
-                            sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_DNS_KEY).c_str()))
-        {
-            return false;
-        }
-    
-    
-        wifi32s->startWebHtm();
-        printf("Web Htm Started.\n");
-        mainAppError = sdCard->writeLogFile("Web Htm Started.");
-    
+                       sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_SSID_KEY).c_str(),
+                       sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_PWD_KEY).c_str(),
+                       sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_CHANNEL_KEY).toInt(),
+                       sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_MAX_CONNECTION_KEY).toInt(),
+                       sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_STASET_KEY).toInt(),
+                       sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_SSID_KEY).c_str(),
+                       sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_PWD_KEY).c_str(),
+                       sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_STATIC_IP_KEY).toInt(),
+                       sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_IP_KEY).c_str(),
+                       sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_SUBNET_KEY).c_str(),
+                       sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_GATEWAY_KEY).c_str(),
+                       sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_DNS_KEY).c_str()))
+    {
+        return false;
+    }
+
+    wifi32s->startWebHtm();
+    printf("Web Htm Started.\n");
+    mainAppError = sdCard->writeLogFile("Web Htm Started.");
 
     return wifi32s->startFTPServer();
 }
 
+void Controller::controllerGetKeysValuesRules()
+{
+    keysOfWateringRules = EMPTY_STRING;
+    valuesOfKeysOfRules = EMPTY_STRING;
+    sdCard->getKeysValuesFromSection(RULES_SECTION, keysOfWateringRules, valuesOfKeysOfRules);
+    printf("keysOfWatteringRules: %s\n", keysOfWateringRules.c_str());
+    printf("valuesOfKeysOfRules: %s\n", valuesOfKeysOfRules.c_str());
+}

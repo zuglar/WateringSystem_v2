@@ -41,10 +41,12 @@ public:
     void removeOldLogFiles();
     /* Public method - Save analog sensors threshold values from ini file to array */
     bool saveThresholdValuesToArray(int *array_);
-    /* Public method - Read section and key from ini file and return the string */
+    /* Public method - Reads section and key from ini file and returns a string */
     String getValueFromIni(String section_, String key_);
     /* Public method - Stores the text parameter that in the given section and at the given key. 1/true on success, 0/false on failure*/
     bool storeValueToIni(String section_, String key_, String value_);
+    /* Public method - Reads rules keys with values from given section */
+    void getKeysValuesFromSection(String section_, String &keys_, String &values_);
 };
 
 

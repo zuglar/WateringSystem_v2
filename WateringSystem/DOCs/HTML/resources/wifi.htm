@@ -23,17 +23,17 @@
         <input type="hidden" name="page" value="wifi" />
         <table class="content-table">
           <tr>
-            <td colspan="2" class="td-paddig"><img src="./icns/wifi.png" alt="home"></td>
+            <td colspan="2" class="td-padding"><img src="./icns/wifi.png" alt="home"></td>
           </tr>
           <tr class="info-tr">
-            <td colspan="2" class="td-paddig" style="font-size: 20px; text-decoration: underline">Wifi Settings</td>
+            <td colspan="2" class="td-padding" style="font-size: 20px; text-decoration: underline">Wifi Settings</td>
           </tr>
           <!-- Access Point -->
           <tr>
-            <td class="td-paddig" colspan="2" style="font-size: 18px">Access Point</td>
+            <td class="td-padding" colspan="2" style="font-size: 18px">Access Point</td>
           </tr>
           <tr>
-            <td colspan="2" class="td-paddig">
+            <td colspan="2" class="td-padding">
               <label for="ap-save-chb"> Set new Access Point data</label><br>
               <label class="switch">
                 <input type="checkbox" id="ap-save-chb" name="ap_save_chb" onclick="apCheckBox(this)">
@@ -42,37 +42,37 @@
             </td>
           </tr>
           <tr>
-            <td class="td-paddig">SSID</td>
-            <td class="td-paddig"><input type="text" id="ap-ssid" name="ap_ssid" maxlength="25" disabled></td>
+            <td class="td-padding">SSID</td>
+            <td class="td-padding"><input type="text" id="ap-ssid" name="ap_ssid" maxlength="25" disabled></td>
           </tr>
           <tr>
-            <td class="td-paddig">IPAddress</td>
-            <td class="td-paddig"><input type="text" id="ap-ip" name="ap_ip"
+            <td class="td-padding">IPAddress</td>
+            <td class="td-padding"><input type="text" id="ap-ip" name="ap_ip"
                 style="background-color: lightgray; border: none;" readonly></td>
           </tr>
           <tr>
-            <td class="td-paddig">New Password</td>
-            <td class="td-paddig"><input type="password" id="ap-newpwd-1" name="ap_newpwd_1" maxlength="25" disabled>
+            <td class="td-padding">New Password</td>
+            <td class="td-padding"><input type="password" id="ap-newpwd-1" name="ap_newpwd_1" maxlength="25" disabled>
             </td>
           </tr>
           <tr>
-            <td class="td-paddig">Password Again</td>
-            <td class="td-paddig"><input type="password" id="ap-newpwd-2" maxlength="25" disabled></td>
+            <td class="td-padding">Password Again</td>
+            <td class="td-padding"><input type="password" id="ap-newpwd-2" maxlength="25" disabled></td>
           </tr>
           <tr>
-            <td colspan="2" class="td-paddig">
+            <td colspan="2" class="td-padding">
               <hr class="hr">
             </td>
           </tr>
           <!-- Network Credentials -->
           <tr>
-            <td class="td-paddig" colspan="2" style="font-size: 18px">Network Credentials</td>
+            <td class="td-padding" colspan="2" style="font-size: 18px">Network Credentials</td>
           </tr>
           <tr>
-            <td colspan="2" class="td-paddig">
+            <td colspan="2" class="td-padding">
               <label for="sta-save-chb"> Set or Delete Station/Router data</label><br>
               <label class="switch">
-                <input type="checkbox" id="sta-save-chb" name="sta_save_chb" onclick="staCheckBox(this)"">
+                <input type="checkbox" id="sta-save-chb" name="sta_save_chb" onclick="staCheckBox(this)">
                 <span class=" slider round"></span>
               </label>
             </td>
@@ -83,20 +83,20 @@
             </td>
           </tr>
           <tr>
-            <td class="td-paddig">SSID</td>
-            <td class="td-paddig"><input type="text" id="sta-ssid" name="sta_ssid" maxlength="25" disabled></td>
+            <td class="td-padding">SSID</td>
+            <td class="td-padding"><input type="text" id="sta-ssid" name="sta_ssid" maxlength="25" disabled></td>
           </tr>
           <tr>
-            <td class="td-paddig">New Password</td>
-            <td class="td-paddig"><input type="password" id="sta-newpwd-1" maxlength="25" name="sta_newpwd_1" disabled>
+            <td class="td-padding">New Password</td>
+            <td class="td-padding"><input type="password" id="sta-newpwd-1" maxlength="25" name="sta_newpwd_1" disabled>
             </td>
           </tr>
           <tr>
-            <td class="td-paddig">Password Again</td>
-            <td class="td-paddig"><input type="password" id="sta-newpwd-2" maxlength="25" disabled></td>
+            <td class="td-padding">Password Again</td>
+            <td class="td-padding"><input type="password" id="sta-newpwd-2" maxlength="25" disabled></td>
           </tr>
           <tr>
-            <td class="td-paddig" colspan="2">
+            <td class="td-padding" colspan="2">
               <label for="sta-static-chb"> Set or Delete Static IP address data</label><br>
               <label class="switch">
                 <input type="checkbox" id="sta-static-chb" name="sta_static_chb" disabled>
@@ -111,37 +111,37 @@
             </td>
           </tr>
           <tr>
-            <td class="td-paddig">IPAddress</td>
-            <td class="td-paddig"><input type="text" id="sta-ip" name="sta_ip" maxlength="15"
+            <td class="td-padding">IPAddress</td>
+            <td class="td-padding"><input type="text" id="sta-ip" name="sta_ip" maxlength="15"
                 placeholder="Blank for Dynamic IPAddress" disabled></td>
           </tr>
           <tr>
-            <td class="td-paddig">Subnet</td>
-            <td class="td-paddig"><input type="text" id="sta-subnet" name="sta_subnet" maxlength="15" disabled></td>
+            <td class="td-padding">Subnet</td>
+            <td class="td-padding"><input type="text" id="sta-subnet" name="sta_subnet" maxlength="15" disabled></td>
           </tr>
           <tr>
-            <td class="td-paddig">Gateway</td>
-            <td class="td-paddig"><input type="text" id="sta-gateway" name="sta_gateway" maxlength="15" disabled>
+            <td class="td-padding">Gateway</td>
+            <td class="td-padding"><input type="text" id="sta-gateway" name="sta_gateway" maxlength="15" disabled>
             </td>
           </tr>
           <tr>
-            <td class="td-paddig">DNS</td>
-            <td class="td-paddig"><input type="text" id="sta-dns" name="sta_dns" maxlength="15"
+            <td class="td-padding">DNS</td>
+            <td class="td-padding"><input type="text" id="sta-dns" name="sta_dns" maxlength="15"
                 placeholder="It's not necessary" disabled></td>
           </tr>
           <tr>
-            <td colspan="2" class="td-paddig">
+            <td colspan="2" class="td-padding">
               <hr class="hr">
             </td>
           </tr>
           <!-- Administrator password -->
           <tr>
-            <td class="td-paddig">Admin password</td>
-            <td class="td-paddig"><input type="password" id="adm-pwd" name="adm_pwd" maxlength="25" disabled></td>
+            <td class="td-padding">Admin password</td>
+            <td class="td-padding"><input type="password" id="adm-pwd" name="adm_pwd" maxlength="25" disabled></td>
           </tr>
           <!-- Save button -->
           <tr>
-            <td class="td-paddig" colspan="2">
+            <td class="td-padding" colspan="2">
               <button type="submit" class="save-btn" id="save-wifi-btn" onclick="return wifiSettingsSave()"
                 disabled>Save Settings</button>
             </td>

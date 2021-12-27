@@ -141,6 +141,13 @@ void WiFi32s::startWebHtm()
                 openHtm(ADMIN_HTM_FILE);
                 handleRequest(request); });
 
+    server.on("/rules.htm", HTTP_GET, [this](AsyncWebServerRequest *request)
+              {
+                logWebTraffic(request);
+                cntrl->controllerGetKeysValuesRules();
+                openHtm(RULES_HTM_FILE);
+                handleRequest(request); });
+
     // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
     server.on("/update", HTTP_GET, [&](AsyncWebServerRequest *request)
               {
@@ -309,9 +316,13 @@ String WiFi32s::processor(const String &var)
     else if (var == "WIFI_SETTINGS")
         return WiFi.softAPSSID() + ";" + WiFi.softAPIP().toString() + ";" + WiFi.SSID() + ";" + WiFi.localIP().toString() + ";" +
                WiFi.subnetMask().toString() + ";" + WiFi.gatewayIP().toString() + ";" + WiFi.dnsIP().toString();
-    /*
-        if (var == "THRESHOLD_VALUES")
-            return cntrl->thresholdSensorsValueString; */
+    else if (var == "THRESHOLD_VALUES")
+        return cntrl->thresholdSensorsValueString;
+    else if (var == "RULES_NAME")
+        return cntrl->keysOfWateringRules;
+    else if (var == "RULES_VALUE")
+        return cntrl->valuesOfKeysOfRules;
+
 
     return String();
 }

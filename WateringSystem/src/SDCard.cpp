@@ -11,7 +11,7 @@ bool SDCard::init()
         printf("SD begin error!\n");
         return false;
     }
-    
+
     if (!SD.exists(LOG_DIR_NAME))
     {
         if (!ds3231rtc->isRtcRunning())
@@ -48,7 +48,7 @@ bool SDCard::writeLogFile(String logMessage_)
         printf("SDCard writeLogFile ERROR. Dir: %s is not exists!\n", LOG_DIR_NAME);
         return true;
     }
-        
+
     String logFile = String(LOG_DIR_NAME) + "/" + ds3231rtc->getDateNow() + ".log";
     File file = SD.open(logFile, FILE_APPEND);
 
@@ -101,7 +101,8 @@ void SDCard::removeOldLogFiles()
     logDir.close();
 }
 
-bool SDCard::openingWsIniFile() {
+bool SDCard::openingWsIniFile()
+{
     wsIni = new minIni(String(WS_INI_FILE));
     if (!wsIni->getbool(READY_SECTION, READY_KEY))
     {
@@ -115,11 +116,11 @@ bool SDCard::openingWsIniFile() {
 
 bool SDCard::saveThresholdValuesToArray(int *array_)
 {
-    if(!openingWsIniFile())
+    if (!openingWsIniFile())
         return false;
 
     String key;
-    
+
     for (int i = 0; key = wsIni->getkey(ANALOGSENSORS_SECTION, i), key.length() > 0; i++)
     {
         array_[i] = wsIni->geti(ANALOGSENSORS_SECTION, key, 0);
@@ -132,11 +133,11 @@ bool SDCard::saveThresholdValuesToArray(int *array_)
     return true;
 }
 
-String SDCard::getValueFromIni(String section_, String key_) 
+String SDCard::getValueFromIni(String section_, String key_)
 {
-    if(!openingWsIniFile())
+    if (!openingWsIniFile())
         return EMPTY_STRING;
-    
+
     String result;
     result = wsIni->gets(section_, key_);
     delete wsIni;
@@ -144,18 +145,34 @@ String SDCard::getValueFromIni(String section_, String key_)
     return result;
 }
 
-bool SDCard::storeValueToIni(String section_, String key_, String value_) {
-    if(!openingWsIniFile())
+bool SDCard::storeValueToIni(String section_, String key_, String value_)
+{
+    if (!openingWsIniFile())
         return false;
-    
-    if(!wsIni->put(section_, key_, value_))
+
+    if (!wsIni->put(section_, key_, value_))
     {
-        mainAppError = writeLogFile("Error occurred during saving new values: " + section_ + ", "
-                        + key_ + ", " + value_ + "into " + String(WS_INI_FILE) + " file.");
+        mainAppError = writeLogFile("Error occurred during saving new values: " + section_ + ", " + key_ + ", " + value_ + "into " + String(WS_INI_FILE) + " file.");
         return false;
     }
 
-    mainAppError = writeLogFile("Save new values: " + section_ + ", "
-                        + key_ + ", " + value_ + " into " + String(WS_INI_FILE) + " file.");
+    mainAppError = writeLogFile("Save new values: " + section_ + ", " + key_ + ", " + value_ + " into " + String(WS_INI_FILE) + " file.");
+    delete wsIni;
     return true;
+}
+
+void SDCard::getKeysValuesFromSection(String section_, String &keys_, String &values_)
+{
+    if (!openingWsIniFile())
+        return;
+
+    String key;
+    for (int i = 0; key = wsIni->getkey(section_, i), key.length() > 0; i++)
+    {
+        keys_ += key + ";";
+        values_ += wsIni->gets(section_, key) + "-";
+    }
+    keys_.remove(keys_.length() - 1);
+    values_.remove(values_.length() - 1);
+    delete wsIni;
 }
