@@ -125,79 +125,93 @@ void WiFi32s::startWebHtm()
     // https://stackoverflow.com/questions/59575326/passing-a-function-as-a-parameter-within-a-class
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request)
               {
-        logWebTraffic(request);
-        openHtm(INDEX_HTM_FILE);
-        handleRequest(request); });
+                logWebTraffic(request);
+                openHtm(INDEX_HTM_FILE);
+                handleRequest(request); });
+
+    server.on("/wifi.htm", HTTP_GET, [this](AsyncWebServerRequest *request)
+              {
+                logWebTraffic(request);
+                openHtm(WIFI_HTM_FILE);
+                handleRequest(request); });
+
+    server.on("/admin.htm", HTTP_GET, [this](AsyncWebServerRequest *request)
+              {
+                logWebTraffic(request);
+                openHtm(ADMIN_HTM_FILE);
+                handleRequest(request); });
 
     // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
     server.on("/update", HTTP_GET, [&](AsyncWebServerRequest *request)
               {
-        logWebTraffic(request);
-        /* GET values of weather, state of valves, state of wetness of soil, state of rain sensors on <ESP_IP>/update?update=1 */
-        if (request->hasParam("update"))
-        {
-            if (request->getParam("update")->value().compareTo("1") == 0)
-            {
-                cntrl->controllerGetAht20Bmp280Data();
-            }
-        }
-        openHtm(INDEX_HTM_FILE);
-        handleRequest(request); });
+                logWebTraffic(request);
+                 /* GET values of weather, state of valves, state of wetness of soil, state of rain sensors on <ESP_IP>/update?update=1 */
+                if (request->hasParam("update"))
+                {
+                    if (request->getParam("update")->value().compareTo("1") == 0)
+                    {
+                        cntrl->controllerGetAht20Bmp280Data();
+                    }
+                    else
+                    {
+                        sendResponseToClient(request, 202, NOTFOUND_HTM_FILE);
+                    }
+                }
+                else
+                {
+                    sendResponseToClient(request, 202, NOTFOUND_HTM_FILE);
+                }
+                openHtm(INDEX_HTM_FILE);
+                handleRequest(request); });
 
-    server.on("/restart", HTTP_POST, [&](AsyncWebServerRequest *request)
+    server.on("/restart", HTTP_POST, [this](AsyncWebServerRequest *request)
               {
-        logWebTraffic(request);
-        /* GET values of weather, state of valves, state of wetness of soil, state of rain sensors
-         on <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2> */
-        if (request->hasParam("restart"))
-        {
-            if (request->getParam("restart")->value().compareTo("1") == 0)
-            {
-                mainAppError = cntrl->getSdCard()->writeLogFile("The system restarts.");
-                ESP.restart();
-            }
-        }
-        else
-        {
-            mainAppError = cntrl->getSdCard()->writeLogFile("The system restart failed.");
-            openHtm(ERROR_HTM_FILE);
-            request->send(404, "text/html", htmFile);
-        }
-        /* openHtm(INDEX_HTM_FILE);
-        handleRequest(request); */ });
-
-    server.on("/wifi.htm", HTTP_GET, [this](AsyncWebServerRequest *request)
-              {
-        logWebTraffic(request);
-        openHtm(WIFI_HTM_FILE);
-        handleRequest(request); });
-
-    server.on("/admin.htm", HTTP_GET, [this](AsyncWebServerRequest *request)
-              {
-        logWebTraffic(request);
-        openHtm(ADMIN_HTM_FILE);
-        handleRequest(request); });
+                logWebTraffic(request);
+                /* POST value to restart ESP on <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2> */
+                if (request->hasParam("restart", true))
+                {
+                    if (request->getParam("restart", true)->value().compareTo("1") == 0)
+                    {
+                        mainAppError = cntrl->getSdCard()->writeLogFile("The system restarts.");
+                        ESP.restart();
+                    }
+                    else
+                    {
+                        sendResponseToClient(request, 404, NOTFOUND_HTM_FILE);
+                    }
+                }
+                else
+                {
+                    mainAppError = cntrl->getSdCard()->writeLogFile("The system restart failed.");
+                    sendResponseToClient(request, 404, NOTFOUND_HTM_FILE);
+                } });
 
     server.on("/", HTTP_POST, [this](AsyncWebServerRequest *request)
               {
                   logWebTraffic(request);
                   /* List all parameters (Compatibility) */
                   int args = request->args();
-                  printf("...args: %d\n", args);
+                  /* printf("...args: %d\n", args);
                   for (int i = 0; i < args; i++)
                   {
                       printf("ARG[%s]: %s\n", request->argName(i).c_str(), request->arg(i).c_str());
+                  } */
+
+                  if(ON_STA_FILTER(request))
+                  {
+                      String redirectUrl = "http://" + staIPString + NOTFOUND_HTM_FILE;
+                      printf("Invalid request from client. Redirect to: %s .\n", redirectUrl.c_str());
+                      mainAppError = cntrl->getSdCard()->writeLogFile("Invalid request from client. Redirect to:  " + redirectUrl);
+                      request->redirect(redirectUrl);
                   }
-                  
+
                   if (request->hasParam("adm_pwd", true))
                   {
-                      /* printf("Admin password: %s\n", ds3231RTC->getAdminPwd().c_str());
-                      printf("Admin adm_pwd: %s\n", request->getParam("adm_pwd", true)->value().c_str()); */
+                      /* Compare given admin password with pasword which is stored in 24C32 EEPROM of DS3231RTC */
                       if (request->getParam("adm_pwd", true)->value().compareTo(cntrl->getDs3231rtc()->getAdminPwd()) != 0)
                       {
                           mainAppError = cntrl->getSdCard()->writeLogFile("Invalid admin password: " + request->getParam("adm_pwd", true)->value());
-                          openHtm(ERROR_HTM_FILE);
-                          request->send(404, "text/html", htmFile);
+                          sendResponseToClient(request, 202, ERROR_HTM_FILE);
                       }
                       else
                       {
@@ -207,47 +221,56 @@ void WiFi32s::startWebHtm()
                               {
                                   if (!saveWifiSettings(request))
                                   {
-                                      openHtm(ERROR_HTM_FILE);
-                                      request->send(404, "text/html", htmFile);
+                                      sendResponseToClient(request, 202, ERROR_HTM_FILE);
                                   }
                                   else
                                   {
-                                      openHtm(CORRECT_HTM_FILE);
-                                      request->send(202, "text/html", htmFile);
+                                      sendResponseToClient(request, 202, CORRECT_HTM_FILE);
                                   }
                               }
                               else if (request->getParam("page", true)->value().compareTo(PAGE_ADMIN) == 0)
                               {
                                   if(request->hasParam("new_pwd_1"), true)
                                   {
+                                      /* Save admin password in to 24C32 EEPROM of DS3231RTC */
                                       if (!cntrl->getDs3231rtc()->setAdminPwd(request->getParam("new_pwd_1", true)->value()))
                                       {
                                         mainAppError = cntrl->getSdCard()->writeLogFile("New admin password: " + 
                                                 request->getParam("new_pwd_1", true)->value() + " has not been saved.");
-                                        openHtm(ERROR_HTM_FILE);
-                                        request->send(404, "text/html", htmFile);
+                                        sendResponseToClient(request, 202, ERROR_HTM_FILE);
                                       }
                                       else
                                       {
                                         mainAppError = cntrl->getSdCard()->writeLogFile("New admin password: " + 
                                                 request->getParam("new_pwd_1", true)->value() + " has been saved.");
-                                        openHtm(CORRECT_HTM_FILE);
-                                        request->send(202, "text/html", htmFile);
+                                        sendResponseToClient(request, 202, CORRECT_HTM_FILE);
                                       }   
+                                  }
+                                  else
+                                  {
+                                      sendResponseToClient(request, 202, ERROR_HTM_FILE);
                                   }
                               }
                               else
                               {
-
+                                  sendResponseToClient(request, 404, NOTFOUND_HTM_FILE);
                               }
                           }
+                          else
+                          {
+                              sendResponseToClient(request, 404, NOTFOUND_HTM_FILE);
+                          }
                       }
-                  }
-                  else
-                  {
-                      /* openHtm(INDEX_HTM_FILE);
-                      handleRequest(request); */
-                  } });
+                    }
+                    else
+                    {
+                        sendResponseToClient(request, 404, NOTFOUND_HTM_FILE);
+                    } });
+
+    server.onNotFound([this](AsyncWebServerRequest *request)
+                      { 
+                          /* request->send(404, "text/html", "The content you are looking for was not found."); */ 
+                          sendResponseToClient(request, 404, NOTFOUND_HTM_FILE); });
 
     server.serveStatic("/", SD, "/");
 
@@ -331,13 +354,13 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_)
             return false;
         }
 
-        if (!(request_->hasParam("ap_newpwd_1", true)) && !(request_->hasParam("ap_ssid", true)))
+        if (!(request_->hasParam("ap_newpwd_1", true)) || !(request_->hasParam("ap_ssid", true)))
         {
             return false;
         }
 
-        if (request_->getParam("ap_newpwd_1", true)->value().compareTo("") == 0 ||
-            request_->getParam("ap_ssid", true)->value().compareTo("") == 0)
+        if (request_->getParam("ap_newpwd_1", true)->value().length() < 8 ||
+            request_->getParam("ap_ssid", true)->value().length() < 4)
         {
             return false;
         }
@@ -356,7 +379,7 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_)
             return false;
         }
 
-        if (!(request_->hasParam("sta_newpwd_1", true)) && !(request_->hasParam("sta_ssid", true)))
+        if (!(request_->hasParam("sta_newpwd_1", true)) || !(request_->hasParam("sta_ssid", true)))
         {
             return false;
         }
@@ -370,6 +393,11 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_)
             {
                 return false;
             }
+        }
+        else if (request_->getParam("sta_newpwd_1", true)->value().length() < 8 ||
+                 request_->getParam("sta_ssid", true)->value().length() < 1)
+        {
+            return false;
         }
         else
         {
@@ -421,6 +449,7 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_)
             }
         }
     }
+
     return true;
 }
 
@@ -449,4 +478,10 @@ void WiFi32s::logWebTraffic(AsyncWebServerRequest *request)
     mainAppError = cntrl->getSdCard()->writeLogFile("Opened HOST: " + request->host() + " URL: " + request->url());
     mainAppError = cntrl->getSdCard()->writeLogFile("Client remote IP: " + client->remoteIP().toString() + " remote port: " + String(client->remotePort()));
     delete client;
+}
+
+void WiFi32s::sendResponseToClient(AsyncWebServerRequest *request_, int hhtpCode_, String htmFileName_)
+{
+    openHtm(htmFileName_);
+    request_->send(hhtpCode_, "text/html", htmFile);
 }

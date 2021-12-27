@@ -82,6 +82,7 @@
 #define ERROR_HTM_FILE "/resources/error.htm"
 #define CORRECT_HTM_FILE "/resources/correct.htm"
 #define ADMIN_HTM_FILE "/resources/admin.htm"
+#define NOTFOUND_HTM_FILE "/resources/notfound.htm"
 #define FTP_USER "ftp"
 #define FTP_PASSWORD "ftp"
 

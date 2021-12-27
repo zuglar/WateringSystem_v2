@@ -57,6 +57,8 @@ public:
     void logWebTraffic(AsyncWebServerRequest *request);
     /* Public property - get client data for logging and checking for saving server data */
     WiFiClient *client;
+    /* Public property - send response to client */
+    void sendResponseToClient(AsyncWebServerRequest *request_, int hhtpCode_, String htmFileName_);
 
 
     String apIPString;

@@ -197,7 +197,7 @@ function wifiSettingsSave() {
             return false;
         }
         /* Alert to confirm to save new values */
-        if (!window.confirm("Are you sure you want to save the new settings?")) {
+        if (!window.confirm("Are you sure you want to save new settings?")) {
             alert("The new settings has not been saved!");
             return false;
         }

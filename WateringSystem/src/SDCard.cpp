@@ -151,11 +151,11 @@ bool SDCard::storeValueToIni(String section_, String key_, String value_) {
     if(!wsIni->put(section_, key_, value_))
     {
         mainAppError = writeLogFile("Error occurred during saving new values: " + section_ + ", "
-                        + "key_" + ", " + value_ + "into " + String(WS_INI_FILE) + " file.");
+                        + key_ + ", " + value_ + "into " + String(WS_INI_FILE) + " file.");
         return false;
     }
 
     mainAppError = writeLogFile("Save new values: " + section_ + ", "
-                        + "key_" + ", " + value_ + "into " + String(WS_INI_FILE) + " file.");
+                        + key_ + ", " + value_ + " into " + String(WS_INI_FILE) + " file.");
     return true;
 }

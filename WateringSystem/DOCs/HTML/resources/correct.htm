@@ -28,8 +28,8 @@
 
     <script>
         window.onload = function () {
-            const answer = window.confirm("\t\tINFORMATION !!!\nNew data have been saved.\n" +
-                "You have to restart system for new data validation.\n" +
+            const answer = window.confirm("\t\tINFORMATION !!!\nNew values have been saved.\n" +
+                "You have to restart system for new values validation.\n" +
                 "Do you want to restart system now?");
 
             var count = 5;
@@ -39,7 +39,7 @@
                 document.getElementById("count").innerHTML = count;
                 document.getElementById("sec").innerHTML = "seconds.";
             } else {
-                document.getElementById("message").innerHTML = "You will be redirected in";
+                document.getElementById("message").innerHTML = "You will be redirected to previous page in";
                 document.getElementById("count").innerHTML = count;
                 document.getElementById("sec").innerHTML = "seconds.";
             }
@@ -55,13 +55,23 @@
 
                 if (count == 0) {
                     if (answer) {
-                        clearInterval(time);
                         document.getElementById("message").innerHTML = "You can close window now.";
                         document.getElementById("count").innerHTML = "";
                         document.getElementById("sec").innerHTML = "";
+                        /* https://www.codegrepper.com/code-examples/javascript/XMLHttpRequest+with+post+and+body */
                         var xhr = new XMLHttpRequest();
-                        xhr.open("POST", "/restart?restart=1", true);
-                        xhr.send();
+                        var params = "restart=1";
+                        xhr.open("POST", "/restart", true);
+                        /* Send the proper header information along with the request */
+                        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        /* Call a function when the state changes. */
+                        xhr.onload = function () {
+                            if (xhr.status == 200) {
+                                alert(this.responseText);
+                            }
+                        }
+                        xhr.send(params);
+                        clearInterval(time);
                     } else {
                         window.location.replace(window.document.referrer);
                     }
