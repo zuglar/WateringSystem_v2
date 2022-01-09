@@ -114,7 +114,7 @@ bool SDCard::openingWsIniFile()
     return true;
 }
 
-bool SDCard::saveThresholdValuesToArray(int *array_)
+/* bool SDCard::saveThresholdValuesToArray(int *array_)
 {
     if (!openingWsIniFile())
         return false;
@@ -127,22 +127,22 @@ bool SDCard::saveThresholdValuesToArray(int *array_)
     }
     delete wsIni;
 
-    /* writeLogFile("Analog Sensors threshold values from " + WS_INI_FILE + " saved to array.");
-    printf("...Analog Sensors threshold values from %s saved to array...\n", WS_INI_FILE.c_str()); */
+    // writeLogFile("Analog Sensors threshold values from " + WS_INI_FILE + " saved to array.");
+    // printf("...Analog Sensors threshold values from %s saved to array...\n", WS_INI_FILE.c_str());
 
     return true;
-}
+} */
 
-String SDCard::getValueFromIni(String section_, String key_)
+bool SDCard::getValueFromIni(const String &section_, const String &key_, String &value)
 {
     if (!openingWsIniFile())
-        return EMPTY_STRING;
+        return false;
 
-    String result;
-    result = wsIni->gets(section_, key_);
+    value = wsIni->gets(section_, key_);
     delete wsIni;
+    wsIni = NULL;
 
-    return result;
+    return true;
 }
 
 bool SDCard::storeValueToIni(String section_, String key_, String value_)

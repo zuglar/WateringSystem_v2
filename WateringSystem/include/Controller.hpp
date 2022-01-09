@@ -52,11 +52,11 @@ public:
     /* Public method - Configure Analog Inputs */
     bool controllerAnalogInputsInit();
     /* Public method - Save Analog Sensors threshold value to array */
-    bool analogSensorsThresholdToArray();
+    bool analogSensorsThresholdTValues();
     /* Public method - Read values of analog inputs and store in an array */
     void controllerReadAnalogInputPinValue(const gpio_num_t powerChannel_);
-    /* Public method - To store max dryness and wetness values of soil from ws.ini file */
-    bool getSoilMaxDrynessWetnessValues();
+    /* Public method - To store/get max dryness and wetness values of soil and refresh interval of system from ws.ini file */
+    bool getSystemGlobalValues();
     /* Public method - Set value of valvesNumber. Calculate which valves will be turn On or Off */
     void setActiveValves();
     /* Public method - Turn Off/On watering valves */
@@ -81,19 +81,16 @@ public:
     /* Getter - ds3231rtc object */
     DS3231RTC *getDs3231rtc() const;
 
-    /* Public property - To store Analog Sensors threshold values from ws.ini file to array */
-    String thresholdSensorsValueString;
+    /* Public property - To store Analog Sensors threshold values from ws.ini file to string */
+    String thresholdValues;
     /* Public property - To store measured values of Analog Sensors to String */
     String measuredSensorsValueString;
     /* Public property - To store binary value of active valves to String */
     String valvesBinaryString;
-    /* Public property - To store value of max dryness value of soil from ws.ini file */
-    int soilSensorMaxDrynessValue = 0;
-    /* Public property - To store value of max wetness value of soil from ws.ini file */
-    int soilSensorMaxWetnessValue = 0;
     /* Public property - Array to store measured values of rain and wetness sensors */
     int measuredValueAnalogSensorsArray[ANALOG_DATA_ARRAY_SIZE];
     /* Public property - Array to store threshold values of rain and wetness sensors */
+    /////////////////////////////////////////////////
     int thresholdAnalogSensorsArray[ANALOG_DATA_ARRAY_SIZE];
     /* Public property - To store value of temperature measured by Aht20Bmp280 sensor */
     float temperature;
@@ -101,10 +98,20 @@ public:
     float relativeHumidity;
     /* Public property - To store value of air pressure measured by Aht20Bmp280 sensor */
     float airPressure;
+    /* Public property - To store/get value of refresh interval of sensors from ini file */
+    int refreshSensorsInterval;
+    /* Public property - To store/get value of max dryness of soil from ini file */
+    int maxDryness;
+    /* Public property - To store/get value of max wetness of soil from ini file */
+    int maxWetness;
+
+
     /* Public property - To store keys of watering rules  from ini file */
     String keysOfWateringRules;
     /* Public property - To store values of keys of watering rules from ini file */
     String valuesOfKeysOfRules;
+    
+
 
     /* WiFi32s object */
     WiFi32s *wifi32s;

@@ -16,6 +16,7 @@ void ledFlashMessage(DigitalOutput *digitalOutput_, uint8_t flashTime_, uint16_t
 void setup()
 {
   // put your setup code here, to run once:
+
   delay(DELAY_2SEC);
   printf("APP SETUP Start.\n");
   mainAppError = false;
@@ -57,8 +58,9 @@ void loop()
     printf("LOOP: mainAppError: %d\n", mainAppError);
     delay(DELAY_03_SEC);
     controller->getRedLED()->setLevel(HIGH);
+    printf("********** !!! ERROR OCCURRED !!! **********\n");
+    printf("  !!! System will restart in 5 seconds. !!!\n");
     delay(5000);
-    printf("LOOP: ESP32 reboot\n");
     ESP.restart();
     return;
   }
@@ -113,13 +115,13 @@ bool startUp(void)
 
   /* START - Collecting data from ws.ini file and Analog Inputs */
   /* Create array of analog sensors threshold values */
-  if (!controller->analogSensorsThresholdToArray())
+  if (!controller->analogSensorsThresholdTValues())
     return false;
   /* If creation of array has been finished successfully the red led flashes one time. */
   ledFlashMessage(controller->getRedLED(), 1, DELAY_03_SEC);
   delay(DELAY_1SEC);
   /* Get max dryness and wetness values of soil from ws.ini file */
-  if (!controller->getSoilMaxDrynessWetnessValues())
+  if (!controller->getSystemGlobalValues())
     return false;
   /* If getting max dryness and wetness values of soil have been finished successfully the red led flashes two times. */
   ledFlashMessage(controller->getRedLED(), 2, DELAY_03_SEC);

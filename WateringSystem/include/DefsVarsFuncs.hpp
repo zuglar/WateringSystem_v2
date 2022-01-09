@@ -2,6 +2,7 @@
 #define __DEFSVARSFUNCS_HPP__
 
 #include <stdio.h>
+
 /* Main Defines */
 #define DELAY_03_SEC 300 /* Delay of LED flash 0.3ms */
 #define DELAY_1SEC 1000  /* Delay of LED flash 1s */
@@ -53,7 +54,8 @@
 /* ws.ini file SECTIONS and KEYS */
 #define READY_SECTION "Ready"
 #define READY_KEY "READY"
-#define ANALOGSENSORS_SECTION "AnalogSensors"
+#define THRESHOLDVALUES_SECTION "ThresholdValues"
+#define THRESHOLD_LIMIT_KEY "THRESHOLD_LIMIT"
 #define WIFI_AP_SECTION "WiFiAP"
 #define WIFI_STA_SECTION "WiFiSTA"
 #define WIFI_HIDDEN_KEY "HIDDEN"

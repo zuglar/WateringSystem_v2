@@ -42,7 +42,7 @@ public:
     /* Public method - create htm file and start web server */
     void startWebHtm();
     /* Public method - Start FTP server. Browse SDCard */
-    bool startFTPServer();
+    void startFTPServer();
     /* Public method - save new wifi settings */
     bool saveWifiSettings(AsyncWebServerRequest *request_);
     /* Public property - char array of html file */

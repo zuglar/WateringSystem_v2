@@ -126,6 +126,7 @@ void WiFi32s::startWebHtm()
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request)
               {
                 logWebTraffic(request);
+                cntrl->controllerGetAht20Bmp280Data();
                 openHtm(INDEX_HTM_FILE);
                 handleRequest(request); });
 
@@ -286,30 +287,13 @@ void WiFi32s::startWebHtm()
 
 String WiFi32s::processor(const String &var)
 {
-    String result;
-    if (var == "WEATHER")
-    {
-        result += "<tr>\n";
-        result += "\t\t\t<td>Temperature</td>\n";
-        result += "\t\t\t<td>" + String(cntrl->temperature, 2) + "</td>\n";
-        result += "\t\t\t<td><img src=\"./icns/temp.png\" alt=\"temp\"></td>\n";
-        result += "\t\t</tr>\n";
-
-        result += "\t\t<tr>\n";
-        result += "\t\t\t<td>Humidity</td>\n";
-        result += "\t\t\t<td>" + String(cntrl->relativeHumidity, 2) + "</td>\n";
-        result += "\t\t\t<td><img src=\"./icns/humidity.png\" alt=\"temp\"></td>\n";
-        result += "\t\t\t</tr>\n";
-
-        result += "\t\t<tr>\n";
-        result += "\t\t\t<td>Atm. Pressure</td>\n";
-        result += "\t\t\t<td>" + String((cntrl->airPressure / 1000), 2) + "</td>\n";
-        result += "\t\t\t<td><img src=\"./icns/atmospheric.png\" alt=\"temp\"></td>\n";
-        result += "\t\t</tr>\n";
-
-        return result;
-    }
-    else if (var == "VALVES")
+    if(var == "TEMPERATURE")
+        return String(cntrl->temperature, 2);
+    else if(var == "HUMIDITY")
+        return String(cntrl->relativeHumidity, 2);
+    else if (var == "ATM_PRESSURE")
+        return String((cntrl->airPressure / 1000), 2);
+    else if (var == "VALVES_STATE")
         return cntrl->valvesBinaryString;
     else if (var == "WETNESS_AND_RAINS")
         return cntrl->measuredSensorsValueString;
@@ -317,12 +301,17 @@ String WiFi32s::processor(const String &var)
         return WiFi.softAPSSID() + ";" + WiFi.softAPIP().toString() + ";" + WiFi.SSID() + ";" + WiFi.localIP().toString() + ";" +
                WiFi.subnetMask().toString() + ";" + WiFi.gatewayIP().toString() + ";" + WiFi.dnsIP().toString();
     else if (var == "THRESHOLD_VALUES")
-        return cntrl->thresholdSensorsValueString;
+        return cntrl->thresholdValues;
     else if (var == "RULES_NAME")
         return cntrl->keysOfWateringRules;
     else if (var == "RULES_VALUE")
         return cntrl->valuesOfKeysOfRules;
-
+    else if(var == "REFRESH_INTERVAL")
+        return String(cntrl->refreshSensorsInterval, 10);
+    else if(var == "MAX_WETNESS")
+        return String(cntrl->maxWetness, 10);
+    else if(var == "MAX_DRYNESS")
+        return String(cntrl->maxDryness, 10);
 
     return String();
 }
@@ -464,7 +453,7 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_)
     return true;
 }
 
-bool WiFi32s::startFTPServer()
+void WiFi32s::startFTPServer()
 {
     ftp = new FTPServer();
     ftp->addUser(FTP_USER, FTP_PASSWORD);
@@ -474,11 +463,9 @@ bool WiFi32s::startFTPServer()
     {
         printf("ESP32 FTP server starting error!\n");
         mainAppError = cntrl->getSdCard()->writeLogFile("ESP32 FTP server starting error!");
-        return false;
     }
     printf("FTP server has been started successfully\n");
     mainAppError = cntrl->getSdCard()->writeLogFile("FTP server has been started successfully");
-    return true;
 }
 
 void WiFi32s::logWebTraffic(AsyncWebServerRequest *request)

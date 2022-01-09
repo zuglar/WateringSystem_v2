@@ -40,9 +40,9 @@ public:
     /* Public method - remove log files older than four days */
     void removeOldLogFiles();
     /* Public method - Save analog sensors threshold values from ini file to array */
-    bool saveThresholdValuesToArray(int *array_);
-    /* Public method - Reads section and key from ini file and returns a string */
-    String getValueFromIni(String section_, String key_);
+    // bool saveThresholdValuesToArray(int *array_);
+    /* Public method - Reads section and key from ini file and stores result in value parameter */
+    bool getValueFromIni(const String &section_, const String &key_, String &value);
     /* Public method - Stores the text parameter that in the given section and at the given key. 1/true on success, 0/false on failure*/
     bool storeValueToIni(String section_, String key_, String value_);
     /* Public method - Reads rules keys with values from given section */

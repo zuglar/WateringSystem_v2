@@ -1,9 +1,5 @@
-/* Global Variables */
-var page;
-var hr;
-var tbl;
-var row;
-var cell;
+/* Variables */
+var page = "";
 
 $(function () {
     /* Variables for main widow size and element size */
@@ -46,188 +42,58 @@ $(document).ready(function () {
 });
 /* Function to show states of valves */
 function valvesState() {
-    // get the text of element by Id of valves
-    const valves = document.getElementById("valves").textContent;
-    
+    var valves = document.getElementById("valves").textContent;
+    console.log("valves: " + valves);
     if (valves.length != 8) {
         alert("\tERROR!!!\nUnable to get data of state of valves!");
-        return;
     }
-    // get the reference for the div
-    const tableDiv = document.getElementById("table-div");
-    // creates a <hr> element
-    hr = document.createElement("hr");
-    // sets class of <hr> element
-    hr.setAttribute("class", "hr");
-    // appends <hr> into <div>
-    tableDiv.appendChild(hr);
-    // creates a <table> element
-    tbl = document.createElement("table");
-    // sets class of <table> element
-    tbl.classList.add("content-table");
-    // creates a <tr> element
-    row = document.createElement("tr");
-    // sets class of <tr> element
-    row.classList.add("info-tr");
-    // creates a <td> element
-    cell = document.createElement("td");
-    // sets attribute of <td> element
-    cell.setAttribute("colspan", "8");
-    // create text node and appends into <td>
-    cell.appendChild(document.createTextNode("Valves State"));
-    // appends <td> into <tr>
-    row.appendChild(cell);
-    // appends <tr> into <table>
-    tbl.appendChild(row);
-    // appends <table> into <div>
-    tableDiv.appendChild(tbl);
-    
-    let numOfRows = 2;
-    for (var i = 0; i < numOfRows; i++) {
-        // creates a <tr> element
-        row = document.createElement("tr");
-        for (var j = valves.length -1; j >= 0; j--) {
-            // creates a <td> element
-            cell = document.createElement("td");
-            if (i == 0) {
-                // create text node and appends into <td>
-                cell.appendChild(document.createTextNode((8 - j) + "."));
-            } else if (i == 1) {
-                // creates a <img> element
-                var img = document.createElement("img");
-                if(valves[j] == "0") {
-                    img.src = "./icns/switch-off.png";
-                } else {
-                    img.src = "./icns/switch-on.png";
-                }
-                // appends <img> into <td>
-                cell.appendChild(img);
-            }
-            // appends <td> into <tr>
-            row.appendChild(cell);
+
+    var row = document.getElementById("valves-state");
+    for (var i = valves.length - 1; i >= 0; i--) {
+        var img = document.createElement('img');
+        var ttd = document.createElement("td");
+
+        if (valves[i] == "0") {
+            img.src = "./icns/switch-off.png";
+        } else {
+            img.src = "./icns/switch-on.png";
         }
-        // appends <tr> into <table>
-        tbl.appendChild(row);
+        ttd.appendChild(img);
+        row.appendChild(ttd);
     }
-    // appends <table> into <div>
-    tableDiv.appendChild(tbl);
 }
 /* Function to show state of wetness of soil and sensors of rain */
 function wetnessRainSensorsState() {
     var sensors = document.getElementById("wetness-rain").textContent;
-    /* console.log("sensors: " + sensors) */
+    console.log("sensors: " + sensors)
     const valueArray = sensors.split(';', 10);
     if (valueArray.length != 10) {
         alert("ERROR!!!\nUnable to read wetness and rain sensors values!!!");
         return;
     }
-    // get the reference for the div
-    const tableDiv = document.getElementById("table-div");
-    // creates a <hr> element
-    hr = document.createElement("hr");
-    // sets class of <hr> element
-    hr.setAttribute("class", "hr");
-    // appends <hr> into <div>
-    tableDiv.appendChild(hr);
-    // creates a <table> element
-    tbl = document.createElement("table");
-    // sets class of <table> element
-    tbl.classList.add("content-table");
-    // creates a <tr> element
-    row = document.createElement("tr");
-    // sets class of <tr> element
-    row.classList.add("info-tr");
-    // creates a <td> element
-    cell = document.createElement("td");
-    // sets attribute of <td> element
-    cell.setAttribute("colspan", "8");
-    // create text node and appends into <td>
-    cell.appendChild(document.createTextNode("Soil Wetness State"));
-    // appends <td> into <tr>
-    row.appendChild(cell);
-    // appends <tr> into <table>
-    tbl.appendChild(row);
-    // appends <table> into <div>
-    tableDiv.appendChild(tbl);
+
     var wetnessSensorNumber = 8;
 
-    let numOfRows = 2;
-    for (var i = 0; i < numOfRows; i++)  {
-        // creates a <tr> element
-        row = document.createElement("tr");
-        for (var j = 0; j < wetnessSensorNumber; j++) {
-            // creates a <td> element
-            cell = document.createElement("td");
-            if (i == 0) {
-                // create text node and appends into <td>
-                cell.appendChild(document.createTextNode((j + 1) + "."));
-            } else if (i == 1) {
-                cell.appendChild(document.createTextNode(valueArray[j] + "%"));
-            }
-            // appends <td> into <tr>
-            row.appendChild(cell);
-        }
-        // appends <td> into <tr>
-        tbl.appendChild(row);
-    }
-    // appends <table> into <div>
-    tableDiv.appendChild(tbl);
+    var wetness = document.getElementById("wetness-state");
+    var rain = document.getElementById("rain-state");
 
-    hr = document.createElement("hr");
-    // sets class of <hr> element
-    hr.setAttribute("class", "hr");
-    // appends <hr> into <div>
-    tableDiv.appendChild(hr);
-    
-    // creates a <table> element
-    tbl = document.createElement("table");
-    // sets class of <table> element
-    tbl.classList.add("content-table");
-    // creates a <tr> element
-    row = document.createElement("tr");
-    // sets class of <tr> element
-    row.classList.add("info-tr");
-    // creates a <td> element
-    cell = document.createElement("td");
-    // sets attribute of <td> element
-    cell.setAttribute("colspan", "4");
-    // create text node and appends into <td>
-    cell.appendChild(document.createTextNode("Rain Senors State"));
-    // appends <td> into <tr>
-    row.appendChild(cell);
-    // appends <tr> into <table>
-    tbl.appendChild(row);
-    // appends <table> into <div>
-    tableDiv.appendChild(tbl);
-    
-    for (var i = 0; i < numOfRows; i++)  {
-        // creates a <tr> element
-        row = document.createElement("tr");
-        for (var j = wetnessSensorNumber; j < valueArray.length; j++) {
-            // creates a <td> element
-            cell = document.createElement("td");
-            if (i == 0) {
-                // create text node and appends into <td>
-                cell.appendChild(document.createTextNode((j -7) + "."));
-            } else if (i == 1) {
-                // creates a <img> element
-                var img = document.createElement("img");
-                if(valueArray[j] == 0) {
-                    img.src = "./icns/switch-off.png";
-                } else {
-                    img.src = "./icns/rain.png";
-                }
-                // appends <img> into <td>
-                cell.appendChild(img)
+    for (let i = 0; i < valueArray.length; i++) {
+        var ttd = document.createElement("td");
+
+        if (i < wetnessSensorNumber) {
+            ttd.innerHTML = valueArray[i] + "%";
+            wetness.appendChild(ttd);
+        } else {
+            var img = document.createElement('img');
+            if (valueArray[i] == 0) {
+                img.src = "./icns/switch-off.png";
+            } else {
+                img.src = "./icns/rain.png";
             }
-            // appends <td> into <tr>
-            row.appendChild(cell);
+            ttd.appendChild(img);
+            rain.appendChild(ttd);
         }
-        // appends <td> into <tr>
-        tbl.appendChild(row);
     }
-    // appends <table> into <div>
-    tableDiv.appendChild(tbl);    
 }
 /* Refresh sensors data and valves status every 5 minutes  */
 setInterval(() => {

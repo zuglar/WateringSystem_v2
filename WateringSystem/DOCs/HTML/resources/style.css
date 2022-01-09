@@ -8,7 +8,7 @@ body {
 
 #container {
   /* position: absolute; */
-  max-width: 400px;
+  max-width: 410px;
   margin: auto;
   border: 2px solid #698d19;
   border-radius: 10px;
@@ -26,7 +26,7 @@ hr {
 
 .content-table {
   border-collapse: collapse;
-  width: 340px;
+  width: 330px;
   /* font-size: 15px; */
   margin: auto;
 }
