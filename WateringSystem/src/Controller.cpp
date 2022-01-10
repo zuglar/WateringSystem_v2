@@ -361,6 +361,20 @@ bool Controller::controllerWiFi32sInit() {
             return false;
         }
     }
+
+    delete apHidden;
+    delete apSSID;
+    delete apPwd;
+    delete apChannel;
+    delete apMaxConnection;
+    delete staEnabled;
+    delete staSSID;
+    delete staPwd;
+    delete staStaticIpEnabled;
+    delete staIP;
+    delete staSubnet;
+    delete staGateway;
+    delete staDns;
     /*
         if (!wifi32s->init(sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_HIDDEN_KEY).toInt(),
                            sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_SSID_KEY).c_str(),
