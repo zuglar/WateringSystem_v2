@@ -161,7 +161,7 @@ bool SDCard::storeValueToIni(String section_, String key_, String value_)
     return true;
 }
 
-void SDCard::getKeysValuesFromSection(String section_, String &keys_, String &values_)
+/* void SDCard::getKeysValuesFromSection(String section_, String &keys_, String &values_)
 {
     if (!openingWsIniFile())
         return;
@@ -176,3 +176,4 @@ void SDCard::getKeysValuesFromSection(String section_, String &keys_, String &va
     values_.remove(values_.length() - 1);
     delete wsIni;
 }
+ */

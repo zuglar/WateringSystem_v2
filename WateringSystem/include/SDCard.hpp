@@ -46,7 +46,7 @@ public:
     /* Public method - Stores the text parameter that in the given section and at the given key. 1/true on success, 0/false on failure*/
     bool storeValueToIni(String section_, String key_, String value_);
     /* Public method - Reads rules keys with values from given section */
-    void getKeysValuesFromSection(String section_, String &keys_, String &values_);
+    //void getKeysValuesFromSection(String section_, String &keys_, String &values_);
 };
 
 

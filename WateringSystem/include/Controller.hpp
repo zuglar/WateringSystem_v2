@@ -66,7 +66,7 @@ public:
     /* Public method - Configure and init WiFi32s */
     bool controllerWiFi32sInit();
     /* Public method - Get keys and values of watering rules */
-    void controllerGetKeysValuesRules();
+    //void controllerGetKeysValuesRules();
 
     /* Getter Green Led Digital Output */
     DigitalOutput *getGreenLED() const;
