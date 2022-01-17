@@ -4,7 +4,7 @@
 <head>
 
   <title> Watering System</title>
-  <meta charset="UTF-8">
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <meta name="description" content="Watering System">
   <link rel="stylesheet" href="./resources/style.css">
   <script src="./resources/jquery-3.6.0.min.js"></script>
@@ -41,21 +41,21 @@
           </tr>
           <tr>
             <td class="td-padding">SSID</td>
-            <td class="td-padding"><input type="text" id="ap-ssid" name="ap_ssid" maxlength="25" disabled></td>
+            <td class="td-padding"><input type="text" id="ap-ssid" name="ap_ssid" maxlength="25" style="text-align: center;" disabled></td>
           </tr>
           <tr>
             <td class="td-padding">IPAddress</td>
-            <td class="td-padding"><input type="text" id="ap-ip" name="ap_ip"
-                style="background-color: lightgray; border: none;" readonly></td>
+            <td class="td-padding"><input type="text" id="ap-ip" name="ap_ip" maxlength="15"
+                style="background-color: lightgray; border: none; text-align: center;" readonly></td>
           </tr>
           <tr>
             <td class="td-padding">New Password</td>
-            <td class="td-padding"><input type="password" id="ap-newpwd-1" name="ap_newpwd_1" maxlength="25" disabled>
+            <td class="td-padding"><input type="password" id="ap-newpwd-1" name="ap_newpwd_1" maxlength="25" style="text-align: center;" disabled>
             </td>
           </tr>
           <tr>
             <td class="td-padding">Password Again</td>
-            <td class="td-padding"><input type="password" id="ap-newpwd-2" maxlength="25" disabled></td>
+            <td class="td-padding"><input type="password" id="ap-newpwd-2" maxlength="25" style="text-align: center;" disabled></td>
           </tr>
           <tr>
             <td colspan="2" class="td-padding">
@@ -82,16 +82,16 @@
           </tr>
           <tr>
             <td class="td-padding">SSID</td>
-            <td class="td-padding"><input type="text" id="sta-ssid" name="sta_ssid" maxlength="25" disabled></td>
+            <td class="td-padding"><input type="text" id="sta-ssid" name="sta_ssid" maxlength="25" style="text-align: center;" disabled></td>
           </tr>
           <tr>
             <td class="td-padding">New Password</td>
-            <td class="td-padding"><input type="password" id="sta-newpwd-1" maxlength="25" name="sta_newpwd_1" disabled>
+            <td class="td-padding"><input type="password" id="sta-newpwd-1" maxlength="25" name="sta_newpwd_1" style="text-align: center;" disabled>
             </td>
           </tr>
           <tr>
             <td class="td-padding">Password Again</td>
-            <td class="td-padding"><input type="password" id="sta-newpwd-2" maxlength="25" disabled></td>
+            <td class="td-padding"><input type="password" id="sta-newpwd-2" maxlength="25" style="text-align: center;" disabled></td>
           </tr>
           <tr>
             <td class="td-padding" colspan="2">
@@ -111,21 +111,31 @@
           <tr>
             <td class="td-padding">IPAddress</td>
             <td class="td-padding"><input type="text" id="sta-ip" name="sta_ip" maxlength="15"
-                placeholder="Blank for Dynamic IPAddress" disabled></td>
+                placeholder="Blank for Dynamic IPAddress" style="text-align: center;" disabled></td>
           </tr>
           <tr>
             <td class="td-padding">Subnet</td>
-            <td class="td-padding"><input type="text" id="sta-subnet" name="sta_subnet" maxlength="15" disabled></td>
+            <td class="td-padding"><input type="text" id="sta-subnet" name="sta_subnet" maxlength="15" style="text-align: center;" disabled></td>
           </tr>
           <tr>
             <td class="td-padding">Gateway</td>
-            <td class="td-padding"><input type="text" id="sta-gateway" name="sta_gateway" maxlength="15" disabled>
+            <td class="td-padding"><input type="text" id="sta-gateway" name="sta_gateway" maxlength="15" style="text-align: center;" disabled>
             </td>
           </tr>
           <tr>
             <td class="td-padding">DNS</td>
             <td class="td-padding"><input type="text" id="sta-dns" name="sta_dns" maxlength="15"
-                placeholder="It's not necessary" disabled></td>
+                placeholder="It's not necessary" style="text-align: center;" disabled></td>
+          </tr>
+          <tr>
+            <td class="td-padding">Server URL</td>
+            <td class="td-padding"><input type="text" id="server-url" name="server_url" maxlength="15"
+                style="background-color: lightgray; border: none; text-align: center;" readonly></td>
+          </tr>
+          <tr>
+            <td class="td-padding">Server IP</td>
+            <td class="td-padding"><input type="text" id="server-ip" name="server_ip" maxlength="15"
+                style="background-color: lightgray; border: none; text-align: center;" readonly></td>
           </tr>
           <tr>
             <td colspan="2" class="td-padding">
@@ -135,7 +145,7 @@
           <!-- Administrator password -->
           <tr>
             <td class="td-padding">Admin password</td>
-            <td class="td-padding"><input type="password" id="adm-pwd" name="adm_pwd" maxlength="25" disabled></td>
+            <td class="td-padding"><input type="password" id="adm-pwd" name="adm_pwd" maxlength="25" style="text-align: center;" disabled></td>
           </tr>
           <!-- Save button -->
           <tr>
@@ -148,7 +158,6 @@
       </form>
     </div>
   </div>
-  <p hidden id="wifi-data"><!-- APname;192.168.4.1;STAname;192.168.1.10;255.255.255.0;192.168.1.1;8.8.8.8; -->%WIFI_SETTINGS%</p>
 </body>
 
 </html>

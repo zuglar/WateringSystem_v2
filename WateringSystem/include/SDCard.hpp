@@ -28,6 +28,7 @@ private:
     DS3231RTC *ds3231rtc;
     /* Private method - Opening the ws.ini file and check is file opened successfully */
     bool openingWsIniFile();
+    
 public:
     /* Default Constructor */
     SDCard();
@@ -45,8 +46,10 @@ public:
     bool getValueFromIni(const String &section_, const String &key_, String &value);
     /* Public method - Stores the text parameter that in the given section and at the given key. 1/true on success, 0/false on failure*/
     bool storeValueToIni(String section_, String key_, String value_);
-    /* Public method - Reads rules keys with values from given section */
-    //void getKeysValuesFromSection(String section_, String &keys_, String &values_);
+    /* Public method - Gets number of keys in a section */
+    uint8_t getNumKeysInSection(const String &section);
+    /* Public method - Stores keys into String array */
+    bool getKeysArray(String section_, String *arr);
 };
 
 

@@ -114,6 +114,8 @@ bool SDCard::openingWsIniFile()
     return true;
 }
 
+
+
 /* bool SDCard::saveThresholdValuesToArray(int *array_)
 {
     if (!openingWsIniFile())
@@ -147,9 +149,6 @@ bool SDCard::getValueFromIni(const String &section_, const String &key_, String 
 
 bool SDCard::storeValueToIni(String section_, String key_, String value_)
 {
-    if (!openingWsIniFile())
-        return false;
-
     if (!wsIni->put(section_, key_, value_))
     {
         mainAppError = writeLogFile("Error occurred during saving new values: " + section_ + ", " + key_ + ", " + value_ + "into " + String(WS_INI_FILE) + " file.");
@@ -161,19 +160,31 @@ bool SDCard::storeValueToIni(String section_, String key_, String value_)
     return true;
 }
 
-/* void SDCard::getKeysValuesFromSection(String section_, String &keys_, String &values_)
-{
-    if (!openingWsIniFile())
-        return;
+uint8_t SDCard::getNumKeysInSection(const String &section_) {
 
-    String key;
-    for (int i = 0; key = wsIni->getkey(section_, i), key.length() > 0; i++)
-    {
-        keys_ += key + ";";
-        values_ += wsIni->gets(section_, key) + "-";
+    if (!openingWsIniFile())
+        return 0;
+    uint8_t i;
+    String keyName;
+    for (i = 0; keyName = wsIni->getkey(section_, i), keyName.length() > 0; i++) {
     }
-    keys_.remove(keys_.length() - 1);
-    values_.remove(values_.length() - 1);
     delete wsIni;
+    return i;
 }
- */
+
+bool SDCard::getKeysArray(String section_, String *arr) {
+    if (!openingWsIniFile())
+        return false;
+    
+    uint8_t i;
+    String keyName;
+    for (i = 0; keyName = wsIni->getkey(section_, i), keyName.length() > 0; i++) {
+        arr[i] = keyName;
+    }
+    delete wsIni;
+
+    if(i == 0)
+        return false;
+        
+    return true;
+}

@@ -32,7 +32,7 @@
         <tr>
           <td class="td-padding">
             <div class="dropdown">
-              <select id="rules-select" onchange="selectedRule(this)">
+              <select id="rules-select" onchange="selectedRule()">
                 <!-- options will be set dynamically -->
               </select>
             </div>
@@ -53,7 +53,7 @@
           <!-- Table of name, start and end time -->
           <table class="content-table">
             <tr>
-              <td class="td-padding" colspan="2" style="color: white; background-color: #698d19; min-width: 370px;">
+              <td class="td-padding" colspan="2" style="color: white; background-color: #698d19; min-width: 395px;">
                 Define Settings of Watering Rule
               </td>
             </tr>
@@ -62,8 +62,8 @@
                 Rule Name (max. 10 characters)
               </td>
               <td class="td-padding">
-                <input type="text" id="rule-name-input" name="rule_name" maxlength="10" size="10"
-                  style="text-align: center;">
+                <input type="text" id="rule-name-input" name="rule_name" maxlength="10" size="8"
+                  style="text-align: center; font-weight: bold;">
               </td>
             </tr>
             <tr>
@@ -121,7 +121,7 @@
               <td class="td-padding" colspan="10" style="text-align: left;">
                 Check wetness of soil before watering
               </td>
-              <td class="td-padding" style="text-align: right;" colspan="2">
+              <td class="td-padding" style="text-align: right;">
                 <label class="switch">
                   <input type="checkbox" id="soil-sensors-enabled">
                   <span class="slider round"></span>
@@ -132,11 +132,32 @@
               <td class="td-padding" style="text-align: left;" colspan="10">
                 Check if rains during watering
               </td>
-              <td class="td-padding" style="text-align: right;" colspan="2">
+              <td class="td-padding" style="text-align: right;">
                 <label class="switch">
                   <input type="checkbox" id="rain-sensor-enabled">
                   <span class="slider round"></span>
                 </label>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" style="text-align: left;" colspan="10">
+                Stop watering if the temperature
+              </td>
+              <td class="td-padding" style="text-align: right;">
+                <label class="switch">
+                  <input type="checkbox" id="temp-sensor-enabled" onclick="tempCheckBox(this)">
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="3" style="text-align: right;">less than</td>
+              <td class="td-padding" colspan="2">
+                <input type="text" id="min-temp" maxlength="3" size="3" style="text-align: center;">
+              </td>
+              <td class="td-padding" colspan="3" style="text-align: left;">more than</td>
+              <td class="td-padding" colspan="2" style="text-align: left;">
+                <input type="text" id="max-temp" maxlength="3" size="3" style="text-align: center;">
               </td>
             </tr>
             <tr>
@@ -146,7 +167,7 @@
             </tr>
             <tr>
               <td class="td-padding" colspan="5" style="padding-left: 60px;">
-                <button type="submit" class="save-btn" id="save-adm-btn" onclick="return deleteRule()">Delete</button>
+                <button type="submit" class="save-btn" id="delete-adm-btn" onclick="return deleteRule()">Delete</button>
               </td>
               <td class="td-padding" colspan="5">
                 <button type="submit" class="save-btn" id="save-adm-btn"
@@ -174,7 +195,7 @@
               </td>
               <td class="td-padding" colspan="1">
                 <input type="text" id="refresh-interval" name="rule_name" maxlength="2" size="2"
-                  style="text-align: center;" value="%REFRESH_INTERVAL%">
+                  style="text-align: center;" value="10">
               </td>
             </tr>
             <tr>
@@ -224,11 +245,11 @@
             <tr>
               <td class="td-padding" colspan="4" style="font-size: 14px;">
                 <input type="text" id="wetness-sensitivity" name="wetness_sensitivity" maxlength="4" size="4"
-                  style="text-align: center;" value="%MAX_WETNESS%">
+                  style="text-align: center;" value="1200">
               </td>
               <td class="td-padding" colspan="4" style="font-size: 14px;">
                 <input type="text" id="dryness-sensitivity" name="dryness_sensitivity" maxlength="4" size="4"
-                  style="text-align: center;" value="%MAX_DRYNESS%">
+                  style="text-align: center;" value="3400">
               </td>
             </tr>
             <tr>
@@ -236,11 +257,10 @@
               <td class="td-padding" colspan="4"><input type="password" id="adm-pwd-2" name="adm_pwd" maxlength="25"
                   size="12" style="text-align: center;"></td>
             </tr>
-
             <!-- Save button -->
             <tr>
               <td class="td-padding" colspan="8">
-                <button type="submit" class="save-btn" id="save-adm-btn"
+                <button type="submit" class="save-btn" id="saveglobal-adm-btn"
                   onclick="return saveGlobalSettings()">Save</button>
               </td>
             </tr>
@@ -250,15 +270,6 @@
       <!-- END form - Global settings of Watering System -->
     </div>
   </div>
-  <!-- RULES_NAME -->
-  <p hidden id="rules-name">Rule1;RULE2;Rule_3</p>
-  <!-- RULES_VALUE -->
-  <!-- Values of: startDate;EndDate;StartTime;EndTame;Valves;WetnessSensor;RainSensor -->
-  <p hidden id="rules-value">1638313199;1646089199;29280;29880;193;0;0-1638313199;1646089199;0;600;129;1;0-1638313199;1646089199;82800;86400;194;0;0</p>
-  <!-- THRESHOLD_VALUES -->
-  <!--  Values of: WetnessSensor1;WetnessSensor2;WetnessSensor3;WetnessSensor4;
-      WetnessSensor5;WetnessSensor6;WetnessSensor7;WetnessSensor8;RainSensor -->
-  <p hidden id="threshold-values">%THRESHOLD_VALUES%</p>
 </body>
 
 </html>

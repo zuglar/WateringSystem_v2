@@ -7,6 +7,8 @@
 #include "ESPAsyncWebServer.h"
 #include "ESP-FTP-Server-Lib.h"
 #include "FTPFilesystem.h"
+#include <ArduinoJson.h>
+#include <AsyncJson.h>
 #include "Controller.hpp"
 
 class Controller;
@@ -55,6 +57,8 @@ public:
     bool htmlFileMemoryAllocated;
     /* Public method - Start FTP server. Browse SDCard */
     void logWebTraffic(AsyncWebServerRequest *request);
+    /* https://www.mischianti.org/2020/07/15/how-to-create-a-rest-server-on-esp8266-or-esp32-cors-request-option-and-get-part-4/ */
+    // void setCrossOrigin(AsyncResponseStream *response);
     /* Public property - get client data for logging and checking for saving server data */
     WiFiClient *client;
     /* Public property - send response to client */

@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./resources/style.css">
   <script src="./resources/jquery-3.6.0.min.js"></script>
   <script src="./resources/main.js"></script>
+  <script type="module" src="./resources/main.js" ></script>
   <link rel="icon" type="image/png" href="./icns/garden.png" sizes="24x24">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- refresh the page for every 5 minutes, 5 * 60 = 300 -->
@@ -29,17 +30,17 @@
         </tr>
         <tr>
           <td>Temperature</td>
-          <td>%TEMPERATURE%</td>
+          <td id="temp-td">0</td>
           <td><img src="./icns/temp.png" alt="temp"></td>
         </tr>
         <tr>
           <td>Humidity</td>
-          <td>%HUMIDITY%</td>
+          <td id="hum-td">0</td>
           <td><img src="./icns/humidity.png" alt="temp"></td>
         </tr>
         <tr>
           <td>Atm. Pressure</td>
-          <td>%ATM_PRESSURE%</td>
+          <td id="atm-td">0</td>
           <td><img src="./icns/atmospheric.png" alt="temp"></td>
         </tr>
       </table>
@@ -48,10 +49,6 @@
     <div id="table-div">
     </div>
   </div>
-  <!-- VALVES_STATE -->
-  <p hidden id="valves"><!-- 10000001 -->%VALVES_STATE%</p>
-  <!-- WETNESS_AND_RAIN_SENSORS -->
-  <p hidden id="wetness-rain"><!-- 100;50;20;10;30;60;70;80;0 -->%WETNESS_AND_RAIN_SENSORS%</p>
 </body>
 </html>
 

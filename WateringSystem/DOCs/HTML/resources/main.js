@@ -4,6 +4,8 @@ var hr;
 var tbl;
 var row;
 var cell;
+var serverIP;
+var serverURL;
 
 $(function () {
     /* Variables for main widow size and element size */
@@ -33,22 +35,113 @@ $(function () {
 $(document).ready(function () {
     $('.navbar').load("./resources/navbar.htm");
 
-    var path = window.location.pathname;
-    page = path.split("/").pop();
-    console.log("page: " + page);
+    fetch('https://api.ipify.org/?format=json')
+        .then(response => response.json())
+        .then((ipAddress) => {
+            serverIP = ipAddress.ip;
+            console.log("Server IP Address:" + serverIP);
 
-    if (page == "" || page == "index.htm") {
-        valvesState();
-        wetnessRainSensorsState();
-    } else if (page == "wifi.htm") {
-        wifiSettingsShow();
-    }
+            var path = window.location.pathname;
+            page = path.split("/").pop();
+            console.log("page: " + page);
+            
+            // console.log("json: host: " + $(location).attr('host'));
+    	    // console.log("json: hostname: " + $(location).attr('hostname'));
+            // console.log("json: protocol: " + $(location).attr('protocol'));
+
+            serverURL = $(location).attr('hostname');
+
+            console.log("1. serverURL: " + serverURL);
+            // loaclhost is just for testing
+            if (serverURL.indexOf("localhost") === 0 || serverURL.indexOf("127.0.0.1") === 0) {
+                // true - contains localhost or 127.0.0.1 add new serverURL
+                serverURL = 'localhost:3001';
+            }
+            // console.log("2. serverURL: " + serverURL);
+            if (serverURL.indexOf("https") === 0) {
+                // true - contains https and replace it to http
+                serverURL = serverURL.replace("https", "http");
+            }
+            // console.log("3. serverURL: " + serverURL);
+            if(serverURL.indexOf("http://") !== 0) {
+                // true - not contain http:// we add it
+                serverURL = "http://" + serverURL;
+            }
+            console.log("4. serverURL: " + serverURL);
+            if (page == "" || page == "index.htm") {
+                //serverURL +="/getWeather";
+                getWeatherData();
+
+            } else if (page == "wifi.htm") {
+                //serverURL +="/getWiFi";
+                wifiSettingsShow();
+            }
+        })
 });
-/* Function to show states of valves */
-function valvesState() {
-    // get the text of element by Id of valves
-    const valves = document.getElementById("valves").textContent;
+/* Refresh sensors data and valves status every 1 minutes  */
+setInterval(() => {
+    if (page == "" || page == "index.htm") {
+        getWeatherData();
+    }
+}, 60000);
+/* Function to send a request to get new values of state of sensors. */
+function getWeatherData() {
+    console.log("getWeatherData() - serverURL: " + serverURL);
+    serverURL +="/getWeather"
+    console.log("getWeatherData() - serverURL: " + serverURL);
+    $.getJSON(serverURL, function (data) {
+        console.log("json weather data loaded");
+        console.log("getWeatherData() - data: " + data + "\n" + data.temp + "\n" + data.hum + "\n" + data.atm);
+        // temperature value (JSON string)
+        document.getElementById("temp-td").textContent = data.temp;
+        // humidity value (JSON string)
+        document.getElementById("hum-td").textContent = data.hum;
+        // Atmospheric pressure value (JSON string)
+        document.getElementById("atm-td").textContent = data.atm;
+    }).done(function (data) {
+        // "table-div" is dynamic element
+        // checks if is exists we have to delete it first and then creates it
+        if (document.getElementById("table-div"))
+            $("#table-div").empty();
+        // Value which contains state of valve (JSON decimal number)
+        valvesState(data.valves);
+        // Value of percentage of wetness of soil per sensors (JSON string)
+        wetnessRainSensorsState(data.sensors);
+    }).fail(function() {
+        alert("Error occurred !!! ");
+        window.location.href = "./resources/notfound.htm";
+    })
+    /*         
+            fetch(server)
+                .then(res => res.json())
+                .then((out) => {
     
+                    console.log('Output: ', out);
+                    document.getElementById("temp-td").textContent = out.temp;
+                    document.getElementById("hum-td").textContent = out.hum;
+                    document.getElementById("atm-td").textContent = out.atm;
+                    // document.getElementById("valves").innerHTML= out.valves;
+                    // valves = document.getElementById("valves").textContent = out.valves;   
+                    // console.log("---valves: " + valves);
+                
+                }).catch(err => console.error(err));
+     */
+}
+/* Decimal to binary */
+function dec2bin(dec) {
+    let bin = (dec >>> 0).toString(2);
+    if (bin.length < 8) {
+        for (let i = bin.length; i < 8; i++) {
+            bin = "0" + bin;
+        }
+    }
+    return bin;
+}
+/* Function to show states of valves */
+function valvesState(valvesDecimal) {
+    console.log("valvesState - typeof(valvesDecimal): "  + typeof(valvesDecimal) + ", value: " + valvesDecimal);
+    const valves = dec2bin(valvesDecimal);
+
     if (valves.length != 8) {
         alert("\tERROR!!!\nUnable to get data of state of valves!");
         return;
@@ -63,6 +156,7 @@ function valvesState() {
     tableDiv.appendChild(hr);
     // creates a <table> element
     tbl = document.createElement("table");
+    tbl.id = "valves-table";
     // sets class of <table> element
     tbl.classList.add("content-table");
     // creates a <tr> element
@@ -81,12 +175,12 @@ function valvesState() {
     tbl.appendChild(row);
     // appends <table> into <div>
     tableDiv.appendChild(tbl);
-    
+
     let numOfRows = 2;
     for (var i = 0; i < numOfRows; i++) {
         // creates a <tr> element
         row = document.createElement("tr");
-        for (var j = valves.length -1; j >= 0; j--) {
+        for (var j = valves.length - 1; j >= 0; j--) {
             // creates a <td> element
             cell = document.createElement("td");
             if (i == 0) {
@@ -95,7 +189,7 @@ function valvesState() {
             } else if (i == 1) {
                 // creates a <img> element
                 var img = document.createElement("img");
-                if(valves[j] == "0") {
+                if (valves[j] == "0") {
                     img.src = "./icns/switch-off.png";
                 } else {
                     img.src = "./icns/switch-on.png";
@@ -113,11 +207,11 @@ function valvesState() {
     tableDiv.appendChild(tbl);
 }
 /* Function to show state of wetness of soil and sensors of rain */
-function wetnessRainSensorsState() {
-    var sensors = document.getElementById("wetness-rain").textContent;
-    /* console.log("sensors: " + sensors) */
-    const valueArray = sensors.split(';', 10);
-    if (valueArray.length != 10) {
+function wetnessRainSensorsState(sensors) {
+    // var sensors = document.getElementById("wetness-rain").textContent;
+    console.log("wetnessRainSensorsState - typeof(sensors): "  + typeof(sensors) + ", value: " + sensors);
+    const valueArray = sensors.split(';');
+    if (valueArray.length != 9) {
         alert("ERROR!!!\nUnable to read wetness and rain sensors values!!!");
         return;
     }
@@ -152,7 +246,7 @@ function wetnessRainSensorsState() {
     var wetnessSensorNumber = 8;
 
     let numOfRows = 2;
-    for (var i = 0; i < numOfRows; i++)  {
+    for (var i = 0; i < numOfRows; i++) {
         // creates a <tr> element
         row = document.createElement("tr");
         for (var j = 0; j < wetnessSensorNumber; j++) {
@@ -178,7 +272,7 @@ function wetnessRainSensorsState() {
     hr.setAttribute("class", "hr");
     // appends <hr> into <div>
     tableDiv.appendChild(hr);
-    
+
     // creates a <table> element
     tbl = document.createElement("table");
     // sets class of <table> element
@@ -192,15 +286,15 @@ function wetnessRainSensorsState() {
     // sets attribute of <td> element
     cell.setAttribute("colspan", "4");
     // create text node and appends into <td>
-    cell.appendChild(document.createTextNode("Rain Senors State"));
+    cell.appendChild(document.createTextNode("Rain Senor State"));
     // appends <td> into <tr>
     row.appendChild(cell);
     // appends <tr> into <table>
     tbl.appendChild(row);
     // appends <table> into <div>
     tableDiv.appendChild(tbl);
-    
-    for (var i = 0; i < numOfRows; i++)  {
+
+    /* for (var i = 0; i < numOfRows; i++)  {
         // creates a <tr> element
         row = document.createElement("tr");
         for (var j = wetnessSensorNumber; j < valueArray.length; j++) {
@@ -218,32 +312,34 @@ function wetnessRainSensorsState() {
                     img.src = "./icns/rain.png";
                 }
                 // appends <img> into <td>
-                cell.appendChild(img)
+                cell.appendChild(img);
             }
             // appends <td> into <tr>
             row.appendChild(cell);
         }
         // appends <td> into <tr>
         tbl.appendChild(row);
-    }
+    } */
+    // creates a <tr> element
+    row = document.createElement("tr");
+
     // appends <table> into <div>
-    tableDiv.appendChild(tbl);    
-}
-/* Refresh sensors data and valves status every 5 minutes  */
-setInterval(() => {
-    if (page == "" || page == "index.htm") {
-        getData();
+    tableDiv.appendChild(tbl);
+    // creates a <td> element
+    cell = document.createElement("td");
+    // creates a <img> element
+    var img = document.createElement("img");
+    if (valueArray[8] == 0) {
+        img.src = "./icns/sun.png";
+    } else {
+        img.src = "./icns/rain.png";
     }
-}, 300000);
-/* Function to send request to get new values of sensors. */
-function getData() {
-    var xhr = new XMLHttpRequest();
-    console.log("getData() - page: " + page);
-    if (page == "" || page == "index.htm") {
-        xhr.open("GET", "/update?update=1", true);
-        xhr.send();
-        setTimeout("location.reload(true);", 5000);
-    }
+    // appends <img> into <td>
+    cell.appendChild(img);
+    // appends <td> into <tr>
+    row.appendChild(cell);
+    // appends <td> into <tr>
+    tbl.appendChild(row);
 }
 /* Function for saving new wifi settings */
 function wifiSettingsSave() {
@@ -412,18 +508,42 @@ function checkIPaddress(ipaddress) {
 }
 /* Function to show WiFi setting values */
 function wifiSettingsShow() {
-    var data = document.getElementById("wifi-data").textContent;
-    console.log("wifi data: " + data)
-    const valueArray = data.split(';', 7);
-    if (valueArray.length != 7) {
-        alert("\tERROR!!!\nUnable to read WiFi settings data!!!");
-        return;
-    }
-    document.getElementById("ap-ssid").value = valueArray[0];
-    document.getElementById("ap-ip").value = valueArray[1];
-    document.getElementById("sta-ssid").value = valueArray[2];
-    document.getElementById("sta-ip").value = valueArray[3];
-    document.getElementById("sta-subnet").value = valueArray[4];
-    document.getElementById("sta-gateway").value = valueArray[5];
-    document.getElementById("sta-dns").value = valueArray[6];
+    document.getElementById("server-url").value = serverURL;
+    document.getElementById("server-ip").value = serverIP;
+    console.log("WIFI serverURL: " + serverURL);
+    serverURL +="/getWiFi";
+    console.log("WIFI serverURL: " + serverURL);
+    $.getJSON(serverURL, function (data) {
+
+        // Solution for error in browser:
+        // Uncaught SyntaxError: JSON.parse: unexpected character at line 1 column 2 of the JSON data
+        // START CODE
+        let parsedData;
+        try {
+            console.log(JSON.stringify(data));
+            parsedData = JSON.parse(JSON.stringify(data));
+          } catch (err) {
+            // Uncaught SyntaxError: JSON.parse: unexpected character at
+            // line 1 column 2 of the JSON data
+            console.log(err.message);
+          }
+        // END CODE  
+        if (!data.hasOwnProperty("wifi")) {
+            alert("\tERROR!!!\nUnable to read WiFi settings data!!!");
+            return;
+        }
+        console.log(parsedData.wifi);
+        console.log("json wifi data loaded");
+        document.getElementById("ap-ssid").value = parsedData.wifi[0];
+        document.getElementById("ap-ip").value = parsedData.wifi[1];
+        document.getElementById("sta-ssid").value = parsedData.wifi[2];
+        document.getElementById("sta-ip").value = parsedData.wifi[3];
+        document.getElementById("sta-subnet").value = parsedData.wifi[4];
+        document.getElementById("sta-gateway").value = parsedData.wifi[5];
+        document.getElementById("sta-dns").value = parsedData.wifi[6];
+        
+    }).fail(function() {
+        alert("Error occurred !!! ");
+        window.location.href = "./resources/notfound.htm";
+    })
 }

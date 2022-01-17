@@ -89,6 +89,7 @@
 #define RULES_HTM_FILE "/resources/rules.htm"
 #define FTP_USER "ftp"
 #define FTP_PASSWORD "ftp"
+#define MAX_WIFI_INPUTS_BUFFER 165
 
 /* Main Variables */
 extern volatile bool mainAppError;
