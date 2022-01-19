@@ -47,8 +47,8 @@
       <form action="/" method="post" id="rule-form">
         <input type="hidden" name="page" value="rules" />
         <input type="hidden" id="new-rule-values" name="new_rule_values" value="" />
-        <!-- if save value = 1, if modify value = 0, if delete value = -1 -->
-        <input type="hidden" id="save-modify-delete" name="save_modify_delete" value="" />
+        <!-- if save value = 1, if delete value = 0 -->
+        <input type="hidden" id="save-delete" name="save_modify_delete" value="" />
         <div>
           <!-- Table of name, start and end time -->
           <table class="content-table">
@@ -182,6 +182,7 @@
       <!-- START form- Global settings of Watering System -->
       <form action="/" method="post" id="global-form">
         <input type="hidden" name="page" value="global" />
+        <input type="hidden" id="new-thresholds" name="new_thresholds" value="" />
         <div id="global-div">
           <table class="content-table">
             <tr>
@@ -194,7 +195,7 @@
                 Set Refresh Interval of System (5-60 min)
               </td>
               <td class="td-padding" colspan="1">
-                <input type="text" id="refresh-interval" name="rule_name" maxlength="2" size="2"
+                <input type="text" id="refresh-interval" name="refresh_interval" maxlength="2" size="2"
                   style="text-align: center;" value="10">
               </td>
             </tr>

@@ -80,6 +80,7 @@
 #define PAGE_WIFI "wifi"
 #define PAGE_RULES "rules"
 #define PAGE_ADMIN "admin"
+#define PAGE_GLOBAL "global"
 #define INDEX_HTM_FILE "/resources/index.htm"
 #define WIFI_HTM_FILE "/resources/wifi.htm"
 #define ERROR_HTM_FILE "/resources/error.htm"

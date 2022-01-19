@@ -90,6 +90,8 @@ function getWeatherData() {
     let getWeatherDataURL = serverURL + '/getWeather';
     console.log("getWeatherData() - serverURL: " + serverURL);
     $.getJSON(getWeatherDataURL, function (data) {
+        
+    }).done(function (data) {
         console.log("json weather data loaded");
         console.log("getWeatherData() - data: " + data + "\n" + data.temp + "\n" + data.hum + "\n" + data.atm);
         // temperature value (JSON string)
@@ -106,9 +108,7 @@ function getWeatherData() {
         valvesState(data.valves);
         // Value of percentage of wetness of soil per sensors (JSON string)
         wetnessRainSensorsState(data.sensors);
-    })/* .done(function (data) {
-        
-    }) */.fail(function() {
+    }).fail(function() {
         alert("Error occurred !!! ");
         window.location.href = "./resources/notfound.htm";
     })
@@ -516,6 +516,7 @@ function wifiSettingsShow() {
     console.log("WIFI serverURL: " + serverURL);
     $.getJSON(serverURL, function (data) {
 
+    }).done(function (data){
         // Solution for error in browser:
         // Uncaught SyntaxError: JSON.parse: unexpected character at line 1 column 2 of the JSON data
         // START CODE
@@ -542,7 +543,6 @@ function wifiSettingsShow() {
         document.getElementById("sta-subnet").value = parsedData.wifi[4];
         document.getElementById("sta-gateway").value = parsedData.wifi[5];
         document.getElementById("sta-dns").value = parsedData.wifi[6];
-        
     }).fail(function() {
         alert("Error occurred !!! ");
         window.location.href = "./resources/notfound.htm";

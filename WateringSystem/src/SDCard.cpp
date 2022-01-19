@@ -106,8 +106,6 @@ void SDCard::removeOldLogFiles() {
 
 void SDCard::getValueFromIni(const String &section_, const String &key_, String &value) {
     value = wsIni->gets(section_, key_);
-    printf("****************KEYVAULE: %s\n", value.c_str());
-    mainAppError = writeLogFile("****************KEYVAULE: " + value);
 }
 
 bool SDCard::saveValueToIni(String section_, String key_, String value_) {

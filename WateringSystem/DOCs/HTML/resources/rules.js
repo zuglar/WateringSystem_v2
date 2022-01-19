@@ -18,6 +18,7 @@ var input;  // variable for input element
 
 var serverIP;
 var serverURL;
+var ruleArray;
 
 /* Load navbar from htm file */
 $(document).ready(function () {
@@ -103,7 +104,7 @@ function addRulesName() {
         }
         console.log("option: " + document.getElementById("select-option-0").textContent);
         selectedRule();
-    }).fail(function() {
+    }).fail(function () {
         alert("Error occurred !!! ");
         window.location.href = "./resources/notfound.htm";
     })
@@ -120,7 +121,7 @@ function selectedRule() {
     // // https://stackoverflow.com/questions/1085801/get-selected-value-in-dropdown-list-using-javascript?rq=1
     document.getElementById("rule-name-input").value = selectedRuleItemText;
 
-    console.log("*** serverURL: " + serverURL);
+    // console.log("*** serverURL: " + serverURL);
     // var ruleText = document.getElementById("rules-select").options[selectedItemIndex].text;
     // console.log("text: " + ruleText);
     // code for testing on localhost with mockoon
@@ -136,13 +137,13 @@ function selectedRule() {
             return;
         }
     }).done(function (data) {
-        console.log("data.rulevalue: " + data.rulevalue);
-        const ruleArray = data.rulevalue.split(";");
-        console.log("ruleArray.length: " + ruleArray.length);
-        console.log("elementCheckboxValveNumber: " + elementCheckboxValveNumber + " - length: " + elementCheckboxValveNumber.length);
+        // console.log("data.rulevalue: " + data.rulevalue);
+        ruleArray = data.rulevalue.split(";");
+        // console.log("ruleArray.length: " + ruleArray.length);
+        // console.log("elementCheckboxValveNumber: " + elementCheckboxValveNumber + " - length: " + elementCheckboxValveNumber.length);
 
         var trhresholdsElement = document.getElementsByClassName("input-threshold-value");
-        console.log("****trhresholdsElement: " + trhresholdsElement + " ****length: " + trhresholdsElement.length + "--- 0: " + trhresholdsElement[0].value);
+        // console.log("****trhresholdsElement: " + trhresholdsElement + " ****length: " + trhresholdsElement.length + "--- 0: " + trhresholdsElement[0].value);
 
         for (let i = 0; i < ruleArray.length; i++) {
             // Sets start date
@@ -203,12 +204,12 @@ function selectedRule() {
                 document.getElementById("max-temp").disabled = true;
             }
         }
-    }).fail(function() {
+    }).fail(function () {
         alert("Error occurred !!! ");
         window.location.href = "./resources/notfound.htm";
     })
 }
-/* Function to save or modify the watering rule */
+/* Function to save the watering rule */
 function saveRule() {
     // Create rule string for saving
     let rule = "";
@@ -255,7 +256,7 @@ function saveRule() {
     }
     // Checks if rain sensor enabled
     if (document.getElementById("rain-sensor-enabled").checked) {
-        rule += "1";
+        rule += "1;";
     } else {
         rule += "0;";
     }
@@ -284,6 +285,11 @@ function saveRule() {
 
     console.log("rule: " + rule);
 
+    if (ruleArray.length > 10) {
+        alert("You cannot save more than 10 watering rules !");
+        return false;
+    }
+
     if (document.getElementById("adm-pwd").value.length < 8) {
         alert("\tERROR !\nMinimum 8 charachters.");
         document.getElementById("adm-pwd").focus();
@@ -293,16 +299,8 @@ function saveRule() {
     document.getElementById("new-rule-values").value = rule;
     // console.log("rule: " + document.getElementById("new-rule-values").value);
     // console.log(document.getElementById("rule-name-input").value);
-    // condition to check if we have a saved rule with name like the new rule name
-    if (document.getElementById("rule-name-input").value.localeCompare(selectedRuleItemText) == 0) {
-        if (window.confirm("The rule name: \"" + selectedRuleItemText + "\" exists.\nDo you want to modify values of rule?")) {
-            document.getElementById("save-modify-delete").value = "1";
-            return true;
-        } else {
-            return false;
-        }
-    }
-    document.getElementById("save-modify-delete").value = "1";
+
+    document.getElementById("save-delete").value = "1";
 
     /* Alert to confirm to save new rule values */
     if (!window.confirm("Are you sure you want to save new settings?")) {
@@ -323,15 +321,21 @@ function deleteRule() {
     if (!window.confirm("\t\tWARNING!!!\nDo you want to delete rule: \"" + selectedRuleItemText + "\"?")) {
         return false;
     }
-    document.getElementById("save-modify-delete").value = "0";
+    document.getElementById("save-delete").value = "0";
     return true;
 }
 /* Function to save Global Settings of Watering System */
 function saveGlobalSettings() {
     // Get threshold values an check these is numeric
+    let thresholds = "";
     for (let i = 0; i < inputElementThresholdsArray.length; i++) {
         if (!isNumeric(inputElementThresholdsArray[i], 0, 100)) {
             return false;
+        }
+        if (i < (inputElementThresholdsArray.length - 1)) {
+            thresholds += inputElementThresholdsArray[i].value + ";";
+        } else {
+            thresholds += inputElementThresholdsArray[i].value;
         }
     }
 
@@ -339,21 +343,22 @@ function saveGlobalSettings() {
         return false;
     }
 
-    if (!isNumeric(document.getElementById("wetness-sensitivity"), 1, 4095)) {
+    if (!isNumeric(document.getElementById("wetness-sensitivity"), 1, 2000)) {
         return false;
     }
 
-    if (!isNumeric(document.getElementById("dryness-sensitivity"), 1, 4095)) {
+    if (!isNumeric(document.getElementById("dryness-sensitivity"), 2001, 4095)) {
         return false;
     }
-
+    document.getElementById("new-thresholds").value = thresholds;
+    // console.log("thresholds: " + document.getElementById("new-thresholds").value);
     if (document.getElementById("adm-pwd-2").value.length < 8) {
         alert("\tERROR !\nMinimum 8 charachters.");
         document.getElementById("adm-pwd-2").focus();
         return false;
     }
 
-    /* Alert to confirm to save new global setting values */
+    /* Alert to confirm to save new global settings */
     if (!window.confirm("Are you sure you want to save new settings?")) {
         alert("The new settings has not been saved!");
         return false;
@@ -411,7 +416,7 @@ function addValvesTable() {
 /* Function to create inputs of threshold values of sensors of wettness */
 function addGlobalSettings(globalData) {
     const thresholdValues = globalData.threshold.split(";");
-    console.log("thresholdValues: " + thresholdValues);
+    // console.log("thresholdValues: " + thresholdValues);
     var row = document.getElementById("wetness-sensor-threshold");
     var i = 0;
     for (i = 0; i < thresholdValues.length - 1; i++) {
@@ -433,7 +438,7 @@ function addGlobalSettings(globalData) {
         /* var x = document.getElementsByClassName("input-threshold-value");
         alert(x[i].value); */
     }
-    
+
     row = document.getElementById("rain-sensor-threshold");
     cell = document.createElement("td");
     cell.setAttribute("class", "td-padding");
@@ -450,9 +455,9 @@ function addGlobalSettings(globalData) {
     // Gets element by class name = "input-threshold-value"
     inputElementThresholdsArray = document.getElementsByClassName("input-threshold-value");
 
-    console.log("globalData.wetness: " + globalData.wetness);
-    console.log("globalData.dryness: " + globalData.dryness);
-    console.log("globalData.interval: " + globalData.interval);
+    // console.log("globalData.wetness: " + globalData.wetness);
+    // console.log("globalData.dryness: " + globalData.dryness);
+    // console.log("globalData.interval: " + globalData.interval);
 
     document.getElementById("wetness-sensitivity").value = globalData.wetness;
     document.getElementById("dryness-sensitivity").value = globalData.dryness;
@@ -474,34 +479,15 @@ function dec2bin(dec) {
 }
 /* Function to check if input value is numeric */
 function isNumeric(element, minValue, maxValue) {
-    var result = true;
-
-    if (element.value === "" || element.value === " " || element.value === "  " || element.value === "   ") {
-        result = false;
-    } else {
-        if (element.id == "min-temp") {
-            if (Math.sign(element.value) < 0) {
-                result = true;
-            }
-        }
-
-        if (Math.sign(element.value) >= 0) {
-            result = true;
-        } else {
-            result = false;
-        }
-    }
-
-    if (parseInt(element.value, 10) < parseInt(minValue, 10) || parseInt(element.value, 10) > parseInt(maxValue, 10)) {
-        result = false;
-    }
-
-    if (!result) {
+    
+    if (element.value === "" || element.value === " " || element.value === "  " || element.value === "   " ||
+        (parseInt(element.value, 10) < parseInt(minValue, 10)) || (parseInt(element.value, 10) > parseInt(maxValue, 10))) {
         alert("\t\tERROR!!!\nInvalid value.You have to check it.\nMin value: " + minValue + " - Max value: " + maxValue);
         element.focus();
+        return false;
     }
 
-    return result;
+    return true;
 }
 // Function to set input date to unix time
 function dateToUnixTime(element) {
@@ -520,7 +506,7 @@ function dateToUnixTime(element) {
 // Function to convert unit time to date format
 function unixtimeToDate(element, unix_timestamp) {
     var date = new Date(unix_timestamp * 1000);
-    // console.log(date.toISOString());
+    //console.log(date.toISOString());
     date = date.toISOString().split("T");
     element.value = date[0];
 }

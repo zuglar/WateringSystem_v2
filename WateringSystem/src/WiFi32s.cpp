@@ -9,7 +9,6 @@ WiFi32s::~WiFi32s() {}
 bool WiFi32s::init(int apHidden_, const char *apSSID_, const char *apPWD_, int apChannel_, int apMaxConnection_, int staSet_,
                    const char *staSSID_, const char *staPWD_, int staStaticIp_, const char *staIP_, const char *staSubnet_,
                    const char *staGateway_, const char *staDNS_) {
-
     bool result = false;
 
     staEnabled = staSet_;
@@ -158,7 +157,7 @@ void WiFi32s::startWebHtm() {
         root["atm"] = "\"" + String((cntrl->airPressure / 1000), 2) + "\"";
         root["valves"] = 79;
         root["sensors"] = "100;50;20;10;30;60;70;80;1";
-        
+
         jsonOutput = String();
         serializeJson(root, jsonOutput);
         logWebTraffic(request, jsonOutput);
@@ -237,9 +236,9 @@ void WiFi32s::startWebHtm() {
         }
 
         char **keysArray;
-        keysArray = (char **)malloc(numOfKeys * sizeof(char *)); // Allocate row pointers
+        keysArray = (char **)malloc(numOfKeys * sizeof(char *));  // Allocate row pointers
         for (int i = 0; i < numOfKeys; i++)
-            keysArray[i] = (char *)malloc(11 * sizeof(char)); // Allocateeach row separately
+            keysArray[i] = (char *)malloc(11 * sizeof(char));  // Allocateeach row separately
 
         cntrl->getSdCard()->getKeysArray(WATERING_RULES_SECTION, keysArray);
 
@@ -248,7 +247,7 @@ void WiFi32s::startWebHtm() {
             logWebTraffic(request, keysArray[i]);
             ruleArray.add(keysArray[i]);
         }
-        
+
         cntrl->getSdCard()->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_LIMIT_KEY, threshold);
         cntrl->getSdCard()->getValueFromIni(WETNESS_DRYNESS_SECTION, WETNESS_KEY, wetness);
         cntrl->getSdCard()->getValueFromIni(WETNESS_DRYNESS_SECTION, DRYNESS_KEY, dryness);
@@ -271,7 +270,7 @@ void WiFi32s::startWebHtm() {
 
         for (int i = 0; i < numOfKeys; i++)
             free(keysArray[i]);
-        
+
         free(keysArray);
 
         request->send(response);
@@ -359,41 +358,42 @@ void WiFi32s::startWebHtm() {
         //     printf("Invalid request from client. Redirect to: %s .\n", redirectUrl.c_str());
         //     mainAppError = cntrl->getSdCard()->writeLogFile("Invalid request from client. Redirect to:  " + redirectUrl);
         //     request->redirect(redirectUrl);
-        // Compare given admin password with pasword which is stored in 24C32 EEPROM of DS3231RTC
-        if (0 /* (request->hasParam("adm_pwd", true)) && (request->getParam("adm_pwd", true)->value().compareTo(cntrl->getDs3231rtc()->getAdminPwd()) != 0) */) {
-            // mainAppError = cntrl->getSdCard()->writeLogFile("Invalid admin password: " + request->getParam("adm_pwd", true)->value());
-            logWebTraffic(request, "Invalid admin password: " + request->getParam("adm_pwd", true)->value());
-            sendResponseToClient(request, 404, ERROR_HTM_FILE);
-        } else {
-            if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_WIFI) == 0)) {
-                if (!saveWifiSettings(request)) {
-                    logWebTraffic(request, "New WiFi setting has not been saved!");
-                    sendResponseToClient(request, 404, ERROR_HTM_FILE);
-                } else {
-                    logWebTraffic(request, "New WiFi setting has been saved!");
-                    sendResponseToClient(request, 202, CORRECT_HTM_FILE);
-                }
-            } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_ADMIN) == 0)) {
-                if (request->hasParam("new_pwd_1"), true) {
-                    // Save admin password in to 24C32 EEPROM of DS3231RTC
-                    if (!cntrl->getDs3231rtc()->setAdminPwd(request->getParam("new_pwd_1", true)->value())) {
-                        logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has not been saved.");
+            // Compare given admin password with pasword which is stored in 24C32 EEPROM of DS3231RTC
+            if (0/* (request->hasParam("adm_pwd", true)) && (request->getParam("adm_pwd", true)->value().compareTo(cntrl->getDs3231rtc()->getAdminPwd()) != 0) */) {
+                logWebTraffic(request, "Invalid admin password: " + request->getParam("adm_pwd", true)->value());
+                sendResponseToClient(request, 404, ERROR_HTM_FILE);
+            } else {
+                if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_WIFI) == 0)) {
+                    if (!saveWifiSettings(request)) {
+                        logWebTraffic(request, "New WiFi setting has not been saved!");
                         sendResponseToClient(request, 404, ERROR_HTM_FILE);
                     } else {
-                        logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has been saved.");
+                        logWebTraffic(request, "New WiFi setting has been saved!");
                         sendResponseToClient(request, 202, CORRECT_HTM_FILE);
                     }
-                } else {
-                    sendResponseToClient(request, 202, ERROR_HTM_FILE);
-                }
-            } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_RULES) == 0)) {
-                if (!saveRuleSettings(request)) {
-                    sendResponseToClient(request, 404, ERROR_HTM_FILE);
-                } else {
-                    sendResponseToClient(request, 202, CORRECT_HTM_FILE);
+                } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_ADMIN) == 0)) {
+                    if (request->hasParam("new_pwd_1"), true) {
+                        // Save admin password in to 24C32 EEPROM of DS3231RTC
+                        if (!cntrl->getDs3231rtc()->setAdminPwd(request->getParam("new_pwd_1", true)->value())) {
+                            logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has not been saved.");
+                            sendResponseToClient(request, 404, ERROR_HTM_FILE);
+                        } else {
+                            logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has been saved.");
+                            sendResponseToClient(request, 202, CORRECT_HTM_FILE);
+                        }
+                    } else {
+                        sendResponseToClient(request, 202, ERROR_HTM_FILE);
+                    }
+                } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_RULES) == 0)) {
+                    if (!saveDelRuleSettings(request)) {
+                        sendResponseToClient(request, 404, ERROR_HTM_FILE);
+                    } else {
+                        sendResponseToClient(request, 202, CORRECT_HTM_FILE);
+                    }
+                } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_GLOBAL) == 0)) {
+
                 }
             }
-        }
         // }
     });
     // request->send(404, "text/html", "The content you are looking for was not found.");
@@ -510,8 +510,8 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_) {
 
     return true;
 }
-// Save or delete rule
-bool WiFi32s::saveRuleSettings(AsyncWebServerRequest *request_) {
+// Save / Delete rule
+bool WiFi32s::saveDelRuleSettings(AsyncWebServerRequest *request_) {
     if ((request_->hasParam("rule_name", true)) && (request_->getParam("rule_name", true)->value() != EMPTY_STRING)) {
         if ((request_->hasParam("save_modify_delete", true)) && (request_->getParam("save_modify_delete", true)->value().toInt()) == 0) {
             // Delete rule
