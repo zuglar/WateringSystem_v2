@@ -19,21 +19,23 @@
 #include "DefsVarsFuncs.hpp"
 #include "DS3231RTC.hpp"
 #include "minIni.h"
+#include <new>
 
 class SDCard
 {
 private:
     /* data */
-    minIni *wsIni;                  /* Main wsIni object */
+    /* Main wsIni object */
+    minIni *wsIni;
     DS3231RTC *ds3231rtc;
     /* Private method - Opening the ws.ini file and check is file opened successfully */
-    bool openingWsIniFile();
+    //bool openingWsIniFile();
     
 public:
     /* Default Constructor */
     SDCard();
     /* Default Destructor */
-    ~SDCard();
+    ~SDCard();                  
     /* Public method - init SDCard - if initialization successful the return value is TRUE else FALSE */
     bool init();
     /* Public method - write log message into log file - If error occurs the return value is TRUE else FALSE */
@@ -43,13 +45,16 @@ public:
     /* Public method - Save analog sensors threshold values from ini file to array */
     // bool saveThresholdValuesToArray(int *array_);
     /* Public method - Reads section and key from ini file and stores result in value parameter */
-    bool getValueFromIni(const String &section_, const String &key_, String &value);
-    /* Public method - Stores the text parameter that in the given section and at the given key. 1/true on success, 0/false on failure*/
-    bool storeValueToIni(String section_, String key_, String value_);
+    void getValueFromIni(const String &section_, const String &key_, String &value);
+    /* Public method - Saves the text parameter that in the given section and at the given key. 1/true on success, 0/false on failure*/
+    bool saveValueToIni(String section_, String key_, String value_);
     /* Public method - Gets number of keys in a section */
     uint8_t getNumKeysInSection(const String &section);
-    /* Public method - Stores keys into String array */
-    bool getKeysArray(String section_, String *arr);
+    /* Public method - Stores key values into String array */
+    bool getKeysArray(String section_, char **arr);
+    /* Public method - Delete key and value in the given section */
+    bool deleteKey(const String &section_, const String &key_);
+
 };
 
 

@@ -87,9 +87,9 @@ setInterval(() => {
 /* Function to send a request to get new values of state of sensors. */
 function getWeatherData() {
     console.log("getWeatherData() - serverURL: " + serverURL);
-    serverURL +="/getWeather"
+    let getWeatherDataURL = serverURL + '/getWeather';
     console.log("getWeatherData() - serverURL: " + serverURL);
-    $.getJSON(serverURL, function (data) {
+    $.getJSON(getWeatherDataURL, function (data) {
         console.log("json weather data loaded");
         console.log("getWeatherData() - data: " + data + "\n" + data.temp + "\n" + data.hum + "\n" + data.atm);
         // temperature value (JSON string)
@@ -98,7 +98,6 @@ function getWeatherData() {
         document.getElementById("hum-td").textContent = data.hum;
         // Atmospheric pressure value (JSON string)
         document.getElementById("atm-td").textContent = data.atm;
-    }).done(function (data) {
         // "table-div" is dynamic element
         // checks if is exists we have to delete it first and then creates it
         if (document.getElementById("table-div"))
@@ -107,7 +106,9 @@ function getWeatherData() {
         valvesState(data.valves);
         // Value of percentage of wetness of soil per sensors (JSON string)
         wetnessRainSensorsState(data.sensors);
-    }).fail(function() {
+    })/* .done(function (data) {
+        
+    }) */.fail(function() {
         alert("Error occurred !!! ");
         window.location.href = "./resources/notfound.htm";
     })

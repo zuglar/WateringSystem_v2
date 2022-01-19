@@ -60,8 +60,6 @@ $(document).ready(function () {
             if (page == "rules.htm") {
                 addRulesName();
             }
-
-
         })
 });
 
@@ -143,6 +141,9 @@ function selectedRule() {
         console.log("ruleArray.length: " + ruleArray.length);
         console.log("elementCheckboxValveNumber: " + elementCheckboxValveNumber + " - length: " + elementCheckboxValveNumber.length);
 
+        var trhresholdsElement = document.getElementsByClassName("input-threshold-value");
+        console.log("****trhresholdsElement: " + trhresholdsElement + " ****length: " + trhresholdsElement.length + "--- 0: " + trhresholdsElement[0].value);
+
         for (let i = 0; i < ruleArray.length; i++) {
             // Sets start date
             unixtimeToDate(document.getElementById("start-date"), ruleArray[0]);
@@ -171,6 +172,10 @@ function selectedRule() {
                     elementCheckboxValveNumber[j].checked = true;
                 } else {
                     elementCheckboxValveNumber[j].checked = false;
+                }
+
+                if (trhresholdsElement[j].value != 0) {
+                    elementCheckboxValveNumber[j].disabled = false;
                 }
             }
 
@@ -291,7 +296,7 @@ function saveRule() {
     // condition to check if we have a saved rule with name like the new rule name
     if (document.getElementById("rule-name-input").value.localeCompare(selectedRuleItemText) == 0) {
         if (window.confirm("The rule name: \"" + selectedRuleItemText + "\" exists.\nDo you want to modify values of rule?")) {
-            document.getElementById("save-modify-delete").value = "0";
+            document.getElementById("save-modify-delete").value = "1";
             return true;
         } else {
             return false;
@@ -318,7 +323,7 @@ function deleteRule() {
     if (!window.confirm("\t\tWARNING!!!\nDo you want to delete rule: \"" + selectedRuleItemText + "\"?")) {
         return false;
     }
-    document.getElementById("save-modify-delete").value = "-1";
+    document.getElementById("save-modify-delete").value = "0";
     return true;
 }
 /* Function to save Global Settings of Watering System */
@@ -400,7 +405,7 @@ function addValvesTable() {
     }
     tbl.appendChild(row);
     tableDiv.appendChild(tbl);
-    // Gets element by class name = "input-threshold-value"
+    // Gets element by class name = "valve-number"
     elementCheckboxValveNumber = document.getElementsByClassName("valve-number");
 }
 /* Function to create inputs of threshold values of sensors of wettness */
@@ -428,7 +433,7 @@ function addGlobalSettings(globalData) {
         /* var x = document.getElementsByClassName("input-threshold-value");
         alert(x[i].value); */
     }
-
+    
     row = document.getElementById("rain-sensor-threshold");
     cell = document.createElement("td");
     cell.setAttribute("class", "td-padding");

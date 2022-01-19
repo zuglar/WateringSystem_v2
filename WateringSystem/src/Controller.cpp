@@ -101,22 +101,17 @@ bool Controller::controllerAnalogInputsInit() {
 }
 
 bool Controller::analogSensorsThresholdTValues() {
-    if (!sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_LIMIT_KEY, thresholdValues)) {
+    sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_LIMIT_KEY, thresholdValues);
+    if (thresholdValues == EMPTY_STRING) {
         printf("ERROR - Controller-Cannot store analog inputs threshold values!\n");
         mainAppError = sdCard->writeLogFile("ERROR - Controller-Cannot store analog inputs threshold values!");
         return false;
     }
 
-    /* thresholdSensorsValueString = "";
-    for (int i = 0; i < ANALOG_DATA_ARRAY_SIZE; i++)
-    {
-        thresholdSensorsValueString += String(thresholdAnalogSensorsArray[i]) + ";";
-    } */
+    sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_LIMIT_KEY, thresholdValues);
     printf("Analog Inputs threshold values: %s\n", thresholdValues.c_str());
     mainAppError = sdCard->writeLogFile("Analog Inputs threshold values: " + thresholdValues);
     return true;
-
-    /* return sdCard->saveThresholdValuesToArray(thresholdAnalogsensorsArray); */
 }
 
 int Controller::valueToPercentage(int analogInputValue_) {
@@ -130,42 +125,27 @@ int Controller::valueToPercentage(int analogInputValue_) {
 }
 
 bool Controller::getSystemGlobalValues() {
-    String *value = new String();
-    if (!sdCard->getValueFromIni(WETNESS_DRYNESS_SECTION, DRYNESS_KEY, *value)) {
-        printf("Cannot get max dryness value of soil from %s.\n", WS_INI_FILE);
-        mainAppError = sdCard->writeLogFile("Cannot get max dryness value of soil from " + String(WS_INI_FILE));
-        delete value;
-        return false;
-    }
-    maxDryness = value->toInt();
+    String value;
+    // Stores max dryness
+    sdCard->getValueFromIni(WETNESS_DRYNESS_SECTION, DRYNESS_KEY, value);
+    maxDryness = value.toInt();
     printf("Max dryness value of soil: %d.\n", maxDryness);
-    mainAppError = sdCard->writeLogFile("Max dryness value of soil: " + *value);
-    /* Remove stored data */
-    value->remove(0, value->length());
-
-    if (!sdCard->getValueFromIni(WETNESS_DRYNESS_SECTION, WETNESS_KEY, *value)) {
-        printf("Cannot get max wetness value of soil from %s.\n", WS_INI_FILE);
-        mainAppError = sdCard->writeLogFile("Cannot get max wetness value of soil from " + String(WS_INI_FILE));
-        delete value;
-        return false;
-    }
-    maxWetness = value->toInt();
+    mainAppError = sdCard->writeLogFile("Max dryness value of soil: " + value);
+    value = String();
+    // Stores max wetness
+    sdCard->getValueFromIni(WETNESS_DRYNESS_SECTION, WETNESS_KEY, value);
+    maxWetness = value.toInt();
     printf("Max wetness value of soil: %d.\n", maxWetness);
-    mainAppError = sdCard->writeLogFile("Max wetness value of soil: " + *value);
-    /* Remove stored data */
-    value->remove(0, value->length());
-
-    if (!sdCard->getValueFromIni(TIME_INTERVAL_CHECKING_SECTION, INTERVAL_KEY, *value)) {
-        printf("Cannot get value of interval of checking sensors from %s.\n", WS_INI_FILE);
-        mainAppError = sdCard->writeLogFile("Cannot get value of interval of checking sensors from " + String(WS_INI_FILE));
-        delete value;
-        return false;
-    }
-    refreshSensorsInterval = value->toInt();
+    mainAppError = sdCard->writeLogFile("Max wetness value of soil: " + value);
+    value = String();
+    // Stores interval time
+    sdCard->getValueFromIni(TIME_INTERVAL_CHECKING_SECTION, INTERVAL_KEY, value);
+    refreshSensorsInterval = value.toInt();
     printf("Refresh interval value of checking the sensors: %d.\n", refreshSensorsInterval);
-    mainAppError = sdCard->writeLogFile("Refresh interval value of checking the sensors: " + *value);
+    mainAppError = sdCard->writeLogFile("Refresh interval value of checking the sensors: " + value);
 
-    delete value;
+    if(maxDryness > 4095 || maxWetness < 1 || refreshSensorsInterval < 5)
+        return false;
 
     return true;
 }
@@ -277,6 +257,95 @@ bool Controller::controllerGetAht20Bmp280Data() {
 }
 
 bool Controller::controllerWiFi32sInit() {
+    String apHidden;
+    sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_HIDDEN_KEY, apHidden);
+    String apSSID;
+    sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_SSID_KEY, apSSID);
+    String apPwd;
+    sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_PWD_KEY, apPwd);
+    String apChannel;
+    sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_CHANNEL_KEY, apChannel);
+    String apMaxConnection;
+    sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_MAX_CONNECTION_KEY, apMaxConnection);
+
+    // if (!( &&  &&
+    //        &&  &&
+    //       )) {
+    //     printf("ERROR - Cannot import Access Point data from ws.ini file. Exits from WiFi configuration.\n");
+    //     mainAppError = sdCard->writeLogFile("ERROR - Cannot import Access Point data from ws.ini file. Exits from WiFi configuration.");
+
+    //     return false;
+    // }
+
+    // printf("Access Point values have been imported from ws.ini file..\n");
+    // mainAppError = sdCard->writeLogFile("Access Point values have been imported from ws.ini file.");
+
+    String staEnabled;
+    sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_STASET_KEY, staEnabled);
+    String staSSID;
+    sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_SSID_KEY, staSSID);
+    String staPwd;
+    sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_PWD_KEY, staPwd);
+    String staStaticIpEnabled;
+    sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_STATIC_IP_KEY, staStaticIpEnabled);
+    String staIP;
+    sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_IP_KEY, staIP);
+    String staSubnet;
+    sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_SUBNET_KEY, staSubnet);
+    String staGateway;
+    sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_GATEWAY_KEY, staGateway);
+    String staDns;
+    sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_DNS_KEY, staDns);
+    // bool staConfiguration = false;
+
+    // if (!( &&  &&
+    //        &&  &&
+    //        &&  &&
+    //        && )) {
+    //     printf("ERROR - Cannot import Station / Router values from ws.ini file.\n");
+    //     mainAppError = sdCard->writeLogFile("ERROR - Cannot import Station / Router values from ws.ini file.");
+
+    // } else {
+    //     printf("Station / Router values have been imported from ws.ini file..\n");
+    //     mainAppError = sdCard->writeLogFile("Station / Router values have been imported from ws.ini file.");
+    //     staConfiguration = true;
+    // }
+
+    wifi32s = new WiFi32s(this);
+
+    if (staEnabled.toInt()) {
+        if (!wifi32s->init(apHidden.toInt(), apSSID.c_str(), apPwd.c_str(), apChannel.toInt(), apMaxConnection.toInt(),
+                           staEnabled.toInt(), staSSID.c_str(), staPwd.c_str(), staStaticIpEnabled.toInt(), staIP.c_str(),
+                           staSubnet.c_str(), staGateway.c_str(), staDns.c_str())) {
+
+            return false;
+        }
+    } else {
+        if (!wifi32s->init(apHidden.toInt(), apSSID.c_str(), apPwd.c_str(), apChannel.toInt(), apMaxConnection.toInt(),
+                           0, NULL, NULL, NULL, NULL, NULL, NULL, NULL)) {
+
+            return false;
+        }
+    }
+
+    wifi32s->startWebHtm();
+    printf("Web Htm Started.\n");
+    mainAppError = sdCard->writeLogFile("Web Htm Started.");
+
+    wifi32s->startFTPServer();
+    return true;
+}
+
+/* void Controller::controllerGetKeysValuesRules() {
+    keysOfWateringRules = EMPTY_STRING;
+    valuesOfKeysOfRules = EMPTY_STRING;
+    sdCard->getKeysValuesFromSection(RULES_SECTION, keysOfWateringRules, valuesOfKeysOfRules);
+    printf("keysOfWatteringRules: %s\n", keysOfWateringRules.c_str());
+    printf("valuesOfKeysOfRules: %s\n", valuesOfKeysOfRules.c_str());
+}
+ */
+/* 
+bool Controller::controllerWiFi32sInit() {
     String *apHidden = new String();
     String *apSSID = new String();
     String *apPwd = new String();
@@ -382,13 +451,4 @@ bool Controller::controllerWiFi32sInit() {
 
     wifi32s->startFTPServer();
     return true;
-}
-
-/* void Controller::controllerGetKeysValuesRules() {
-    keysOfWateringRules = EMPTY_STRING;
-    valuesOfKeysOfRules = EMPTY_STRING;
-    sdCard->getKeysValuesFromSection(RULES_SECTION, keysOfWateringRules, valuesOfKeysOfRules);
-    printf("keysOfWatteringRules: %s\n", keysOfWateringRules.c_str());
-    printf("valuesOfKeysOfRules: %s\n", valuesOfKeysOfRules.c_str());
-}
- */
+} */
