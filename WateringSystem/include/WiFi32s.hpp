@@ -52,6 +52,8 @@ public:
     bool saveWifiSettings(AsyncWebServerRequest *request_);
     /* Public method - save / delete rule settings */
     bool saveDelRuleSettings(AsyncWebServerRequest *request_);
+    /* Public method - save global settings */
+    bool saveGlobalSettings(AsyncWebServerRequest *request_);
     /* Public property - char array of html file */
     char *htmFile;
     /* Fublic - FTP Object */

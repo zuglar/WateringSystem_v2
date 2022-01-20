@@ -513,14 +513,14 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_) {
 // Save / Delete rule
 bool WiFi32s::saveDelRuleSettings(AsyncWebServerRequest *request_) {
     if ((request_->hasParam("rule_name", true)) && (request_->getParam("rule_name", true)->value() != EMPTY_STRING)) {
-        if ((request_->hasParam("save_modify_delete", true)) && (request_->getParam("save_modify_delete", true)->value().toInt()) == 0) {
+        if ((request_->hasParam("save_delete", true)) && (request_->getParam("save_delete", true)->value().toInt()) == 0) {
             // Delete rule
             if (!cntrl->getSdCard()->deleteKey(WATERING_RULES_SECTION, request_->getParam("rule_name", true)->value())) {
                 logWebTraffic(request_, "Rule: " + request_->getParam("rule_name", true)->value() + " has not been deleted.");
                 return false;
             }
             logWebTraffic(request_, "Rule: " + request_->getParam("rule_name", true)->value() + " has been deleted.");
-        } else if ((request_->hasParam("save_modify_delete", true)) && (request_->getParam("save_modify_delete", true)->value().toInt()) == 1) {
+        } else if ((request_->hasParam("save_delete", true)) && (request_->getParam("save_delete", true)->value().toInt()) == 1) {
             // Save new value
             if (!cntrl->getSdCard()->saveValueToIni(WATERING_RULES_SECTION, request_->getParam("rule_name", true)->value(),
                                                     request_->getParam("new_rule_values", true)->value())) {
@@ -537,6 +537,27 @@ bool WiFi32s::saveDelRuleSettings(AsyncWebServerRequest *request_) {
         return false;
     }
     return true;
+}
+
+bool WiFi32s::saveGlobalSettings(AsyncWebServerRequest *request_) {
+    if ((request_->hasParam("new_thresholds", true)) && (request_->getParam("new_thresholds", true)->value() != EMPTY_STRING)) {
+
+    }
+
+    if ((request_->hasParam("refresh_interval", true)) && (request_->getParam("refresh_interval", true)->value() != EMPTY_STRING)) {
+
+    }
+
+    if ((request_->hasParam("wetness_sensitivity", true)) && (request_->getParam("wetness_sensitivity", true)->value() != EMPTY_STRING)) {
+
+    }
+
+    if ((request_->hasParam("dryness_sensitivity", true)) && (request_->getParam("dryness_sensitivity", true)->value() != EMPTY_STRING)) {
+
+    }
+
+    return true;
+
 }
 
 void WiFi32s::startFTPServer() {
