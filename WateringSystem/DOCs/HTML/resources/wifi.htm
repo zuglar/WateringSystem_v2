@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="./resources/style.css">
   <script src="./resources/jquery-3.6.0.min.js"></script>
   <script src="./resources/main.js"></script>
-  <link rel="icon" type="image/png" href="./icns/garden.png" sizes="24x24">
+  <link rel="icon" type="image/png" href="./icons/garden.png" sizes="24x24">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
@@ -17,11 +17,11 @@
   <div id="container">
     <div class="navbar" style="padding: 1px;"></div>
     <div>
-      <form action="/" method="post" id="wifi-form">
+      <form action="/upload" method="post" id="wifi-form">
         <input type="hidden" name="page" value="wifi" />
-        <table class="content-table">
+        <table class="content-table" style="width: 85%;">
           <tr>
-            <td colspan="2" class="td-padding"><img src="./icns/wifi.png" alt="home"></td>
+            <td colspan="2" class="td-padding"><img src="./icons/wifi.png" alt="home"></td>
           </tr>
           <tr class="info-tr">
             <td colspan="2" class="td-padding" style="font-size: 20px; text-decoration: underline">Wifi Settings</td>
@@ -31,7 +31,7 @@
             <td class="td-padding" colspan="2" style="font-size: 18px">Access Point</td>
           </tr>
           <tr>
-            <td colspan="2" class="td-padding">
+            <td colspan="2" class="td-padding ap-save">
               <label for="ap-save-chb"> Set new Access Point data</label><br>
               <label class="switch">
                 <input type="checkbox" id="ap-save-chb" name="ap_save_chb" onclick="apCheckBox(this)">
@@ -41,21 +41,25 @@
           </tr>
           <tr>
             <td class="td-padding">SSID</td>
-            <td class="td-padding"><input type="text" id="ap-ssid" name="ap_ssid" maxlength="25" style="text-align: center;" disabled></td>
+            <td class="td-padding ssid"><input type="text" id="ap-ssid" name="ap_ssid" maxlength="25"
+                style="text-align: center;" disabled></td>
           </tr>
           <tr>
             <td class="td-padding">IPAddress</td>
-            <td class="td-padding"><input type="text" id="ap-ip" name="ap_ip" maxlength="15"
+            <!-- name="ap_ip" -->
+            <td class="td-padding"><input type="text" id="ap-ip" maxlength="15"
                 style="background-color: lightgray; border: none; text-align: center;" readonly></td>
           </tr>
           <tr>
             <td class="td-padding">New Password</td>
-            <td class="td-padding"><input type="password" id="ap-newpwd-1" name="ap_newpwd_1" maxlength="25" style="text-align: center;" disabled>
+            <td class="td-padding password"><input type="password" id="ap-newpwd-1" name="ap_newpwd_1" maxlength="25"
+                style="text-align: center;" disabled>
             </td>
           </tr>
           <tr>
             <td class="td-padding">Password Again</td>
-            <td class="td-padding"><input type="password" id="ap-newpwd-2" maxlength="25" style="text-align: center;" disabled></td>
+            <td class="td-padding password2"><input type="password" id="ap-newpwd-2" maxlength="25"
+                style="text-align: center;" disabled></td>
           </tr>
           <tr>
             <td colspan="2" class="td-padding">
@@ -67,47 +71,20 @@
             <td class="td-padding" colspan="2" style="font-size: 18px">Network Credentials</td>
           </tr>
           <tr>
-            <td colspan="2" class="td-padding">
-              <label for="sta-save-chb"> Set or Delete Station/Router data</label><br>
+            <td class="td-padding sta-static" colspan="2">
+              <label for="sta-static-chb"> Dynamic or Static IP address of System</label><br>
               <label class="switch">
-                <input type="checkbox" id="sta-save-chb" name="sta_save_chb" onclick="staCheckBox(this)">
-                <span class=" slider round"></span>
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2" class="td-padding" style="font-size: 10px; color: lightgray; background-color: #698d19;">
-              If you don't want to use Station/Router don't fill in inputs below. Leave these inputs empty.
-            </td>
-          </tr>
-          <tr>
-            <td class="td-padding">SSID</td>
-            <td class="td-padding"><input type="text" id="sta-ssid" name="sta_ssid" maxlength="25" style="text-align: center;" disabled></td>
-          </tr>
-          <tr>
-            <td class="td-padding">New Password</td>
-            <td class="td-padding"><input type="password" id="sta-newpwd-1" maxlength="25" name="sta_newpwd_1" style="text-align: center;" disabled>
-            </td>
-          </tr>
-          <tr>
-            <td class="td-padding">Password Again</td>
-            <td class="td-padding"><input type="password" id="sta-newpwd-2" maxlength="25" style="text-align: center;" disabled></td>
-          </tr>
-          <tr>
-            <td class="td-padding" colspan="2">
-              <label for="sta-static-chb"> Set or Delete Static IP address data</label><br>
-              <label class="switch">
-                <input type="checkbox" id="sta-static-chb" name="sta_static_chb" disabled>
+                <input type="checkbox" id="sta-static-chb" name="sta_static_chb" onclick="staStaticCheckBox(this)">
                 <span class="slider round"></span>
               </label>
             </td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td colspan="2" class="td-padding" style="font-size: 10px; color: lightgray; background-color: #698d19;">
-              If you don't want to use Static IP Address of Station/Router don't fill in inputs below. Leave these
+              If you don't want to use Static IP Address of System don't fill in inputs below. Leave these
               inputs empty.
             </td>
-          </tr>
+          </tr> -->
           <tr>
             <td class="td-padding">IPAddress</td>
             <td class="td-padding"><input type="text" id="sta-ip" name="sta_ip" maxlength="15"
@@ -115,17 +92,59 @@
           </tr>
           <tr>
             <td class="td-padding">Subnet</td>
-            <td class="td-padding"><input type="text" id="sta-subnet" name="sta_subnet" maxlength="15" style="text-align: center;" disabled></td>
+            <td class="td-padding"><input type="text" id="sta-subnet" name="sta_subnet" maxlength="15"
+                style="text-align: center;" disabled></td>
           </tr>
           <tr>
             <td class="td-padding">Gateway</td>
-            <td class="td-padding"><input type="text" id="sta-gateway" name="sta_gateway" maxlength="15" style="text-align: center;" disabled>
+            <td class="td-padding"><input type="text" id="sta-gateway" name="sta_gateway" maxlength="15"
+                style="text-align: center;" disabled>
             </td>
           </tr>
           <tr>
             <td class="td-padding">DNS</td>
             <td class="td-padding"><input type="text" id="sta-dns" name="sta_dns" maxlength="15"
-                placeholder="It's not necessary" style="text-align: center;" disabled></td>
+                placeholder="It's not necessary." style="text-align: center;" disabled></td>
+          </tr>
+          <tr>
+            <td colspan="2" class="td-padding">
+              <hr class="hr">
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="td-padding sta-save">
+              <label for="sta-save-chb"> Set or Delete Station/Router</label><br>
+              <label class="switch">
+                <input type="checkbox" id="sta-chb" name="sta_chb" onclick="staCheckBox(this)">
+                <span class=" slider round"></span>
+              </label>
+            </td>
+          </tr>
+          <!-- <tr>
+            <td colspan="2" class="td-padding" style="font-size: 10px; color: lightgray; background-color: #698d19;">
+              If you don't want to use Station/Router don't fill in inputs below. Leave these inputs empty.
+            </td>
+          </tr> -->
+          <tr>
+            <td class="td-padding">SSID</td>
+            <td class="td-padding ssid"><input type="text" id="sta-ssid" name="sta_ssid" maxlength="25"
+                style="text-align: center;" disabled></td>
+          </tr>
+          <tr>
+            <td class="td-padding">New Password</td>
+            <td class="td-padding  password"><input type="password" id="sta-newpwd-1" maxlength="25" name="sta_newpwd_1"
+                style="text-align: center;" disabled>
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding">Password Again</td>
+            <td class="td-padding password2"><input type="password" id="sta-newpwd-2" maxlength="25"
+                style="text-align: center;" disabled></td>
+          </tr>
+          <tr>
+            <td colspan="2" class="td-padding">
+              <hr class="hr">
+            </td>
           </tr>
           <tr>
             <td class="td-padding">Server URL</td>
@@ -145,18 +164,24 @@
           <!-- Administrator password -->
           <tr>
             <td class="td-padding">Admin password</td>
-            <td class="td-padding"><input type="password" id="adm-pwd" name="adm_pwd" maxlength="25" style="text-align: center;" disabled></td>
+            <td class="td-padding password">
+              <input type="password" id="adm-pwd" name="adm_pwd" maxlength="25" style="text-align: center;" disabled>
+            </td>
           </tr>
           <!-- Save button -->
           <tr>
             <td class="td-padding" colspan="2">
-              <button type="submit" class="save-btn" id="save-wifi-btn" onclick="return wifiSettingsSave()"
-                disabled>Save Settings</button>
+              <!-- <button type="submit" class="save-btn" id="save-wifi-btn" onclick="return wifiSettingsSave()"
+                disabled>Save Settings</button> -->
+              <button type="submit" class="save-btn" id="save-wifi-btn" disabled>Save Settings</button>
             </td>
           </tr>
         </table>
       </form>
     </div>
+  </div>
+  <div id="save-result">
+    <!-- Returned message  -->
   </div>
 </body>
 

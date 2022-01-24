@@ -28,45 +28,49 @@ bool WiFi32s::init(int apHidden_, const char *apSSID_, const char *apPWD_, int a
         result = true;
     }
 
-    // Begin Station WiFi
-    if (staEnabled == 1) {
+    // Configures static IP address
+    if (staStaticIP == 1) {
         bool staticNetworkData = false;
-        // Configures static IP address
-        if (staStaticIP == 1) {
-            staIP = new IPAddress();
-            staSubnet = new IPAddress();
-            staGateway = new IPAddress();
-            staPrimaryDNS = new IPAddress();
+        staIP = new IPAddress();
+        staSubnet = new IPAddress();
+        staGateway = new IPAddress();
+        staPrimaryDNS = new IPAddress();
 
-            // Set local Static IP address
-            if (stringToIPAdress(staIP_, staIP)) {
-                // Set local subnet
-                if (stringToIPAdress(staSubnet_, staSubnet)) {
-                    // Set local gateway
-                    if (stringToIPAdress(staGateway_, staGateway)) {
-                        // Set primary DNS
-                        if (strlen(staDNS_) != 0) {
-                            staticNetworkData = stringToIPAdress(staDNS_, staPrimaryDNS);
-                        } else {
-                            staticNetworkData = stringToIPAdress(WIFI_NO_DNS_DATA, staPrimaryDNS);
-                        }
+        // Set local Static IP address
+        if (stringToIPAdress(staIP_, staIP)) {
+            // Set local subnet
+            if (stringToIPAdress(staSubnet_, staSubnet)) {
+                // Set local gateway
+                if (stringToIPAdress(staGateway_, staGateway)) {
+                    // Set primary DNS
+                    if (strlen(staDNS_) != 0) {
+                        staticNetworkData = stringToIPAdress(staDNS_, staPrimaryDNS);
+                    } else {
+                        staticNetworkData = stringToIPAdress(WIFI_NO_DNS_DATA, staPrimaryDNS);
                     }
-                }
-            }
-
-            if (staticNetworkData) {
-                // Configures static IP address
-                if (!WiFi.config(*staIP, *staGateway, *staSubnet, *staPrimaryDNS)) {
-                    printf("STA failed to configure static network data!\n");
-                    mainAppError = cntrl->getSdCard()->writeLogFile("STA failed to configure static network data");
-                    delete staIP;
-                    delete staGateway;
-                    delete staSubnet;
-                    delete staPrimaryDNS;
                 }
             }
         }
 
+        if (staticNetworkData) {
+            // Configures static IP address
+            if (!WiFi.config(*staIP, *staGateway, *staSubnet, *staPrimaryDNS)) {
+                printf("STA failed to configure static network data!\n");
+                mainAppError = cntrl->getSdCard()->writeLogFile("STA failed to configure static network data.");
+                delete staIP;
+                delete staGateway;
+                delete staSubnet;
+                delete staPrimaryDNS;
+            } else {
+                printf("STA static network data has been configured.\n");
+                mainAppError = cntrl->getSdCard()->writeLogFile("STA static network data has been configured.");
+                result = true;
+            }
+        }
+    }
+
+    // Begin Station WiFi
+    if (staEnabled == 1) {
         WiFi.begin(staSSID_, staPWD_);
         // Wait for connection
         uint8_t i = 0;
@@ -101,7 +105,7 @@ bool WiFi32s::stringToIPAdress(const char *data_, IPAddress *address_) {
 
 void WiFi32s::startWebHtm() {
     /*
-        // Code if we use PLACEHOLDER in html file
+        // Code if we use PLACEHOLDER in html file -- IN HTML FILE YOU CANNOT USE '%' character
         // https://stackoverflow.com/questions/59575326/passing-a-function-as-a-parameter-within-a-class
         server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
                     logWebTraffic(request);
@@ -152,9 +156,9 @@ void WiFi32s::startWebHtm() {
         // response->addHeader("Access-Control-Allow-Methods", "PUT,POST,GET,OPTIONS");
         // response->addHeader("Access-Control-Allow-Headers", "*");
         JsonObject root = response->getRoot();
-        root["temp"] = "\"" + String(cntrl->temperature, 2) + "\"";
-        root["hum"] = "\"" + String(cntrl->relativeHumidity, 2) + "\"";
-        root["atm"] = "\"" + String((cntrl->airPressure / 1000), 2) + "\"";
+        root["temp"] = String(cntrl->temperature, 2);
+        root["hum"] = String(cntrl->relativeHumidity, 2);
+        root["atm"] = String((cntrl->airPressure / 1000), 2);
         root["valves"] = 79;
         root["sensors"] = "100;50;20;10;30;60;70;80;1";
 
@@ -185,11 +189,13 @@ void WiFi32s::startWebHtm() {
         JsonArray wifiArray = wifiArrayDoc.to<JsonArray>();
         wifiArray.add(WiFi.softAPSSID());
         wifiArray.add(WiFi.softAPIP().toString());
-        wifiArray.add(WiFi.SSID());
+        // wifiArray.add(String(staStaticIP));
         wifiArray.add(WiFi.localIP().toString());
         wifiArray.add(WiFi.subnetMask().toString());
         wifiArray.add(WiFi.gatewayIP().toString());
         wifiArray.add(WiFi.dnsIP().toString());
+        // wifiArray.add(String(staEnabled));
+        wifiArray.add(WiFi.SSID());
 
         root["wifi"] = wifiArrayDoc;
         // char buffer[5000];
@@ -243,12 +249,12 @@ void WiFi32s::startWebHtm() {
         cntrl->getSdCard()->getKeysArray(WATERING_RULES_SECTION, keysArray);
 
         for (int i = 0; i < numOfKeys; i++) {
-            printf("*************keysArray[%d]: %s\n", i, keysArray[i]);
-            logWebTraffic(request, keysArray[i]);
+            // printf("*************keysArray[%d]: %s\n", i, keysArray[i]);
+            // logWebTraffic(request, keysArray[i]);
             ruleArray.add(keysArray[i]);
         }
 
-        cntrl->getSdCard()->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_LIMIT_KEY, threshold);
+        cntrl->getSdCard()->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, threshold);
         cntrl->getSdCard()->getValueFromIni(WETNESS_DRYNESS_SECTION, WETNESS_KEY, wetness);
         cntrl->getSdCard()->getValueFromIni(WETNESS_DRYNESS_SECTION, DRYNESS_KEY, dryness);
         cntrl->getSdCard()->getValueFromIni(TIME_INTERVAL_CHECKING_SECTION, INTERVAL_KEY, interval);
@@ -331,7 +337,7 @@ void WiFi32s::startWebHtm() {
 
     server.on("/restart", HTTP_POST, [this](AsyncWebServerRequest *request) {
         asyncTcpWdt = true;
-        // POST value to restart ESP on <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
+        // POST
         if (request->hasParam("restart", true)) {
             if (request->getParam("restart", true)->value().compareTo("1") == 0) {
                 logWebTraffic(request, "The system restarts.");
@@ -345,56 +351,78 @@ void WiFi32s::startWebHtm() {
         }
     });
 
-    server.on("/", HTTP_POST, [this](AsyncWebServerRequest *request) {
+    server.on("/upload", HTTP_POST, [this](AsyncWebServerRequest *request) {
         asyncTcpWdt = true;
+        int result = 0;
         /* List all parameters (Compatibility) */
         int args = request->args();
         printf("...args: %d\n", args);
         for (int i = 0; i < args; i++) {
             printf("ARG[%s]: %s\n", request->argName(i).c_str(), request->arg(i).c_str());
         }
-        // if (ON_STA_FILTER(request)) {
-        //     String redirectUrl = "http://" + staIPString + NOTFOUND_HTM_FILE;
-        //     printf("Invalid request from client. Redirect to: %s .\n", redirectUrl.c_str());
-        //     mainAppError = cntrl->getSdCard()->writeLogFile("Invalid request from client. Redirect to:  " + redirectUrl);
-        //     request->redirect(redirectUrl);
+        if (ON_AP_FILTER(request)) {
+            printf("ON_AP_FILTER\n");
             // Compare given admin password with pasword which is stored in 24C32 EEPROM of DS3231RTC
-            if (0/* (request->hasParam("adm_pwd", true)) && (request->getParam("adm_pwd", true)->value().compareTo(cntrl->getDs3231rtc()->getAdminPwd()) != 0) */) {
+            if ((request->hasParam("adm_pwd", true)) && !(request->getParam("adm_pwd", true)->value().compareTo(cntrl->getDs3231rtc()->getAdminPwd()) != 0)) {
                 logWebTraffic(request, "Invalid admin password: " + request->getParam("adm_pwd", true)->value());
-                sendResponseToClient(request, 404, ERROR_HTM_FILE);
+                result = 2;
+                // sendResponseToClient(request, 404, ERROR_HTM_FILE);
             } else {
                 if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_WIFI) == 0)) {
                     if (!saveWifiSettings(request)) {
                         logWebTraffic(request, "New WiFi setting has not been saved!");
-                        sendResponseToClient(request, 404, ERROR_HTM_FILE);
+                        // sendResponseToClient(request, 404, ERROR_HTM_FILE);
                     } else {
                         logWebTraffic(request, "New WiFi setting has been saved!");
-                        sendResponseToClient(request, 202, CORRECT_HTM_FILE);
+                        // sendResponseToClient(request, 202, CORRECT_HTM_FILE);
+                        result = 1;
                     }
                 } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_ADMIN) == 0)) {
                     if (request->hasParam("new_pwd_1"), true) {
                         // Save admin password in to 24C32 EEPROM of DS3231RTC
                         if (!cntrl->getDs3231rtc()->setAdminPwd(request->getParam("new_pwd_1", true)->value())) {
                             logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has not been saved.");
-                            sendResponseToClient(request, 404, ERROR_HTM_FILE);
+                            // sendResponseToClient(request, 404, ERROR_HTM_FILE);
                         } else {
                             logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has been saved.");
-                            sendResponseToClient(request, 202, CORRECT_HTM_FILE);
+                            // sendResponseToClient(request, 202, CORRECT_HTM_FILE);
+                            result = 1;
                         }
-                    } else {
-                        sendResponseToClient(request, 202, ERROR_HTM_FILE);
                     }
                 } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_RULES) == 0)) {
                     if (!saveDelRuleSettings(request)) {
-                        sendResponseToClient(request, 404, ERROR_HTM_FILE);
+                        logWebTraffic(request, "New Rule setting has not been saved!");
+                        // sendResponseToClient(request, 404, ERROR_HTM_FILE);
                     } else {
-                        sendResponseToClient(request, 202, CORRECT_HTM_FILE);
+                        // sendResponseToClient(request, 202, CORRECT_HTM_FILE +String("?asd=1"));
+                        logWebTraffic(request, "New Rule setting has been saved!");
+                        result = 1;
                     }
                 } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_GLOBAL) == 0)) {
-
+                    if (!saveGlobalSettings(request)) {
+                        logWebTraffic(request, "New Global setting has not been saved!");
+                    } else {
+                        logWebTraffic(request, "New Global setting has been saved!");
+                        result = 1;
+                    }
                 }
             }
-        // }
+        } else {
+            result = 2;
+        }
+
+        AsyncJsonResponse *response = new AsyncJsonResponse();
+        // response->addHeader("Access-Control-Allow-Origin", "*");
+        // response->addHeader("Access-Control-Max-Age", "600");
+        // response->addHeader("Access-Control-Allow-Methods", "PUT,POST,GET,OPTIONS");
+        // response->addHeader("Access-Control-Allow-Headers", "*");
+        JsonObject root = response->getRoot();
+        root["result"] = result;
+        jsonOutput = String();
+        serializeJson(root, jsonOutput);
+        logWebTraffic(request, jsonOutput);
+        response->setLength();
+        request->send(response);
     });
     // request->send(404, "text/html", "The content you are looking for was not found.");
     server.onNotFound([this](AsyncWebServerRequest *request) {
@@ -428,68 +456,23 @@ void WiFi32s::openHtm(String htmFileName_) {
 
 bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_) {
     // Save new Access Point Data
-    if (request_->hasParam("ap_save_chb", true)) {
-        if (request_->getParam("ap_save_chb", true)->value().compareTo("on") != 0) {
-            return false;
-        }
-
-        if (!(request_->hasParam("ap_newpwd_1", true)) || !(request_->hasParam("ap_ssid", true))) {
-            return false;
-        }
-
-        if (request_->getParam("ap_newpwd_1", true)->value().length() < 8 ||
-            request_->getParam("ap_ssid", true)->value().length() < 4) {
-            return false;
-        }
-
-        if (!cntrl->getSdCard()->saveValueToIni(WIFI_AP_SECTION, WIFI_SSID_KEY, request_->getParam("ap_ssid", true)->value()) ||
-            !cntrl->getSdCard()->saveValueToIni(WIFI_AP_SECTION, WIFI_PWD_KEY, request_->getParam("ap_newpwd_1", true)->value())) {
-            return false;
-        }
-    }
-    // Save new Station data
-    if (request_->hasParam("sta_chb", true)) {
-        if (request_->getParam("sta_chb", true)->value().compareTo("on") != 0) {
-            return false;
-        }
-
-        if (!(request_->hasParam("sta_newpwd_1", true)) || !(request_->hasParam("sta_ssid", true))) {
-            return false;
-        }
-
-        if (request_->getParam("sta_newpwd_1", true)->value().compareTo("") == 0 ||
-            request_->getParam("sta_ssid", true)->value().compareTo("") == 0) {
-            if (!cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_SSID_KEY, "") ||
-                !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_PWD_KEY, "") ||
-                !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_STASET_KEY, "0")) {
-                return false;
-            }
-        } else if (request_->getParam("sta_newpwd_1", true)->value().length() < 8 ||
-                   request_->getParam("sta_ssid", true)->value().length() < 1) {
-            return false;
-        } else {
-            if (!cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_SSID_KEY, request_->getParam("sta_ssid", true)->value()) ||
-                !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_PWD_KEY, request_->getParam("sta_newpwd_1", true)->value()) ||
-                !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_STASET_KEY, "1")) {
+    if (request_->hasParam("ap_save_chb", true) && request_->getParam("ap_save_chb", true)->value().compareTo("on") == 0) {
+        if ((request_->hasParam("ap_ssid", true) && request_->getParam("ap_ssid", true)->value().length() >= 4) &&
+            (request_->hasParam("ap_newpwd_1", true) && request_->getParam("ap_newpwd_1", true)->value().length() >= 8)) {
+            if (!cntrl->getSdCard()->saveValueToIni(WIFI_AP_SECTION, WIFI_SSID_KEY, request_->getParam("ap_ssid", true)->value()) ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_AP_SECTION, WIFI_PWD_KEY, request_->getParam("ap_newpwd_1", true)->value())) {
                 return false;
             }
         }
     }
-    // Save new Station Static IP data
-    if (request_->hasParam("sta_static_chb", true)) {
-        if (request_->getParam("sta_static_chb", true)->value().compareTo("on") != 0) {
-            return false;
-        }
-
+    // Save new System Static/Dinamic IP data
+    if (request_->hasParam("sta_static_chb", true) && request_->getParam("sta_static_chb", true)->value().compareTo("on") == 0) {
         if (!(request_->hasParam("sta_ip", true)) && !(request_->hasParam("sta_subnet", true)) &&
             !(request_->hasParam("sta_gateway", true)) && !(request_->hasParam("sta_dns", true))) {
             return false;
         }
 
-        if (request_->getParam("sta_ip", true)->value().compareTo("") == 0 ||
-            request_->getParam("sta_subnet", true)->value().compareTo("") == 0 ||
-            request_->getParam("sta_gateway", true)->value().compareTo("") == 0 ||
-            request_->getParam("sta_dns", true)->value().compareTo("") == 0) {
+        if (request_->getParam("sta_ip", true)->value().compareTo("") == 0) {
             if (!cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_IP_KEY, "") ||
                 !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_SUBNET_KEY, "") ||
                 !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_GATEWAY_KEY, "") ||
@@ -503,6 +486,29 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_) {
                 !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_GATEWAY_KEY, request_->getParam("sta_gateway", true)->value()) ||
                 !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_DNS_KEY, request_->getParam("sta_dns", true)->value()) ||
                 !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_STATIC_IP_KEY, "1")) {
+                return false;
+            }
+        }
+    }
+    // Save new Station data
+    if (request_->hasParam("sta_chb", true) && request_->getParam("sta_chb", true)->value().compareTo("on") == 0) {
+        if (!(request_->hasParam("sta_ssid", true)) || !(request_->hasParam("sta_newpwd_1", true))) {
+            return false;
+        }
+
+        if (request_->getParam("sta_ssid", true)->value().compareTo("") == 0) {
+            if (!cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_SSID_KEY, "") ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_PWD_KEY, "") ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_STASET_KEY, "0")) {
+                return false;
+            }            
+        } else if (request_->getParam("sta_newpwd_1", true)->value().length() < 8 ||
+                   request_->getParam("sta_ssid", true)->value().length() < 4) {
+            return false;
+        } else {
+            if (!cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_SSID_KEY, request_->getParam("sta_ssid", true)->value()) ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_PWD_KEY, request_->getParam("sta_newpwd_1", true)->value()) ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_STASET_KEY, "1")) {
                 return false;
             }
         }
@@ -527,9 +533,9 @@ bool WiFi32s::saveDelRuleSettings(AsyncWebServerRequest *request_) {
                 logWebTraffic(request_, "Rule: " + request_->getParam("rule_name", true)->value() + " - value:" +
                                             request_->getParam("new_rule_values", true)->value() + " has not been saved.");
                 return false;
-                logWebTraffic(request_, "Rule: " + request_->getParam("rule_name", true)->value() + " - value:" +
-                                            request_->getParam("new_rule_values", true)->value() + " has been saved.");
             }
+            logWebTraffic(request_, "Rule: " + request_->getParam("rule_name", true)->value() + " - value:" +
+                                        request_->getParam("new_rule_values", true)->value() + " has been saved.");
         } else {
             return false;
         }
@@ -540,24 +546,40 @@ bool WiFi32s::saveDelRuleSettings(AsyncWebServerRequest *request_) {
 }
 
 bool WiFi32s::saveGlobalSettings(AsyncWebServerRequest *request_) {
+    // Save new thresholds
     if ((request_->hasParam("new_thresholds", true)) && (request_->getParam("new_thresholds", true)->value() != EMPTY_STRING)) {
-
+        if (!cntrl->getSdCard()->saveValueToIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, request_->getParam("new_thresholds", true)->value())) {
+            logWebTraffic(request_, "New thresholds: " + request_->getParam("new_thresholds", true)->value() + " has not been saved.");
+            return false;
+        }
+        logWebTraffic(request_, "New thresholds: " + request_->getParam("new_thresholds", true)->value() + " has been saved.");
     }
-
+    // Save new thresholds
     if ((request_->hasParam("refresh_interval", true)) && (request_->getParam("refresh_interval", true)->value() != EMPTY_STRING)) {
-
+        if (!cntrl->getSdCard()->saveValueToIni(TIME_INTERVAL_CHECKING_SECTION, INTERVAL_KEY, request_->getParam("refresh_interval", true)->value())) {
+            logWebTraffic(request_, "New refresh time: " + request_->getParam("refresh_interval", true)->value() + " has not been saved.");
+            return false;
+        }
+        logWebTraffic(request_, "New  refresh time: " + request_->getParam("refresh_interval", true)->value() + " has been saved.");
     }
 
     if ((request_->hasParam("wetness_sensitivity", true)) && (request_->getParam("wetness_sensitivity", true)->value() != EMPTY_STRING)) {
-
+        if (!cntrl->getSdCard()->saveValueToIni(WETNESS_DRYNESS_SECTION, WETNESS_KEY, request_->getParam("wetness_sensitivity", true)->value())) {
+            logWebTraffic(request_, "New wetness sensytivity: " + request_->getParam("wetness_sensitivity", true)->value() + " has not been saved.");
+            return false;
+        }
+        logWebTraffic(request_, "New wetness sensytivity: " + request_->getParam("wetness_sensitivity", true)->value() + " has been saved.");
     }
 
     if ((request_->hasParam("dryness_sensitivity", true)) && (request_->getParam("dryness_sensitivity", true)->value() != EMPTY_STRING)) {
-
+        if (!cntrl->getSdCard()->saveValueToIni(WETNESS_DRYNESS_SECTION, WETNESS_KEY, request_->getParam("dryness_sensitivity", true)->value())) {
+            logWebTraffic(request_, "New dryness sensytivity: " + request_->getParam("dryness_sensitivity", true)->value() + " has not been saved.");
+            return false;
+        }
+        logWebTraffic(request_, "New dryness sensytivity: " + request_->getParam("dryness_sensitivity", true)->value() + " has been saved.");
     }
 
     return true;
-
 }
 
 void WiFi32s::startFTPServer() {

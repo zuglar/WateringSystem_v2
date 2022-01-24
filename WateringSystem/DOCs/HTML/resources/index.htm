@@ -1,54 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-
-  <title> Watering System</title>
-  <meta charset="UTF-8">
-  <meta name="description" content="Watering System">
-  <link rel="stylesheet" href="./resources/style.css">
-  <script src="./resources/jquery-3.6.0.min.js"></script>
-  <script src="./resources/main.js"></script>
-  <script type="module" src="./resources/main.js" ></script>
-  <link rel="icon" type="image/png" href="./icns/garden.png" sizes="24x24">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- refresh the page for every 5 minutes, 5 * 60 = 300 -->
-  <!-- <meta http-equiv="refresh" content="300"> -->
+    <meta charset="UTF-8">
+    <meta name="description" content="Watering System">
+    <link rel="stylesheet" href="resources/style.css">
+    <script src="resources/jquery-3.6.0.min.js"></script>
+    <script src="./resources/main.js"></script>
+    <link rel="icon" type="image/png" href="./icons/garden.png" sizes="24x24">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watering System</title>
 </head>
-
 <body>
-  <div id="container">
-    <div class="navbar" style="padding: 1px;"></div>
-    <!-- Weather -->
-    <div>
-      <table class="content-table">
-        <tr>
-          <td colspan="3"><img src="./icns/home.png" alt="home"></td>
-        </tr>
-        <tr class="info-tr" >
-          <td colspan="3">Weather</td>
-        </tr>
-        <tr>
-          <td>Temperature</td>
-          <td id="temp-td">0</td>
-          <td><img src="./icns/temp.png" alt="temp"></td>
-        </tr>
-        <tr>
-          <td>Humidity</td>
-          <td id="hum-td">0</td>
-          <td><img src="./icns/humidity.png" alt="temp"></td>
-        </tr>
-        <tr>
-          <td>Atm. Pressure</td>
-          <td id="atm-td">0</td>
-          <td><img src="./icns/atmospheric.png" alt="temp"></td>
-        </tr>
-      </table>
+    <div id="container">
+        <div class="navbar" style="padding: 1px;"></div>
+        <!-- Weather -->
+        <div>
+            <table class="content-table" style="width: 80%;">
+                <tr>
+                    <td colspan="3"><img src="./icons/home.png" alt="home"></td>
+                </tr>
+                <tr class="info-tr">
+                    <td colspan="3">Weather</td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Temperature</td>
+                    <td style="width: 25%;" id="temp-td">0</td>
+                    <td style="width: 25%; text-align: left;"><img src="./icons/temp.png" alt="temp"></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Humidity</td>
+                    <td style="width: 25%;" id="hum-td">0</td>
+                    <td style="width: 25%; text-align: left;"><img src="./icons/humidity.png" alt="temp"></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Atm. Pressure</td>
+                    <td style="width: 25%;"id="atm-td">0</td>
+                    <td style="width: 25%; text-align: left;"><img src="./icons/atmospheric.png" alt="temp"></td>
+                </tr>
+            </table>
+        </div>
+        <div id="sensors-table-div">
+        </div>
+        <!-- <p id="ip"></p>
+        <p id="url"></p> -->
     </div>
-    
-    <div id="table-div">
-    </div>
-  </div>
-</body>
-</html>
 
+</body>
+
+</html>

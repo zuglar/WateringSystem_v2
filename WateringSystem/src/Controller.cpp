@@ -101,14 +101,14 @@ bool Controller::controllerAnalogInputsInit() {
 }
 
 bool Controller::analogSensorsThresholdTValues() {
-    sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_LIMIT_KEY, thresholdValues);
+    sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, thresholdValues);
     if (thresholdValues == EMPTY_STRING) {
         printf("ERROR - Controller-Cannot store analog inputs threshold values!\n");
         mainAppError = sdCard->writeLogFile("ERROR - Controller-Cannot store analog inputs threshold values!");
         return false;
     }
 
-    sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_LIMIT_KEY, thresholdValues);
+    sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, thresholdValues);
     printf("Analog Inputs threshold values: %s\n", thresholdValues.c_str());
     mainAppError = sdCard->writeLogFile("Analog Inputs threshold values: " + thresholdValues);
     return true;

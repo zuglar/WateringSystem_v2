@@ -36,7 +36,7 @@ bool SDCard::init() {
     try {
         wsIni = new minIni(String(WS_INI_FILE));
         mainAppError = writeLogFile("The object wsIni has been created");
-        printf("The object wsIni has been created...\n");
+        printf("The object wsIni has been created.\n");
     } catch (std::bad_alloc &error) {
         mainAppError = writeLogFile("The object wsIni has not been created.");
         printf("The object wsIni has not been created");

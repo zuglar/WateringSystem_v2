@@ -30,8 +30,6 @@ private:
     // Private method - web page send request
     //void handleRequest(AsyncWebServerRequest *request);
  */
-    int staEnabled;
-    int staStaticIP;
     /* Private method - convert htm file from SD card to web html file which will be send to client */
     void openHtm(String htmFileName_);
 
@@ -80,6 +78,8 @@ public:
 
     String apIPString;
     String staIPString;
+    int staEnabled;
+    int staStaticIP;
 /* 
     // https://www.mischianti.org/2020/07/15/how-to-create-a-rest-server-on-esp8266-or-esp32-cors-request-option-and-get-part-4/
     // void setCrossOrigin(AsyncResponseStream *response);
