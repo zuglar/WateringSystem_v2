@@ -1,6 +1,6 @@
 #include "WiFi32s.hpp"
 
-// chunk code
+// part of chunk code
 // size_t onStaticDownLoad(uint8_t *buffer, size_t maxLen, size_t index) {
 //     asyncTcpWdt = true;
 //     static char *filename = WIFI_HTM_FILE;
