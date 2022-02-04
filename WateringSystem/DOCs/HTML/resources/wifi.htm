@@ -8,7 +8,9 @@
   <meta name="description" content="Watering System">
   <link rel="stylesheet" href="./resources/style.css">
   <script src="./resources/jquery-3.6.0.min.js"></script>
-  <script src="./resources/main.js"></script>
+
+  <script type="module" src="./resources/wifi.js"></script>
+
   <link rel="icon" type="image/png" href="./icons/garden.png" sizes="24x24">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -34,7 +36,8 @@
             <td colspan="2" class="td-padding ap-save">
               <label for="ap-save-chb"> Set new Access Point data</label><br>
               <label class="switch">
-                <input type="checkbox" id="ap-save-chb" name="ap_save_chb" onclick="apCheckBox(this)">
+                <!-- onclick="apCheckBox(this)" -->
+                <input type="checkbox" id="ap-save-chb" name="ap_save_chb" >
                 <span class="slider round"></span>
               </label>
             </td>
@@ -74,7 +77,8 @@
             <td class="td-padding sta-static" colspan="2">
               <label for="sta-static-chb"> Dynamic or Static IP address of System</label><br>
               <label class="switch">
-                <input type="checkbox" id="sta-static-chb" name="sta_static_chb" onclick="staStaticCheckBox(this)">
+                <!-- onclick="staStaticCheckBox(this)" -->
+                <input type="checkbox" id="sta-static-chb" name="sta_static_chb" >
                 <span class="slider round"></span>
               </label>
             </td>
@@ -113,9 +117,10 @@
           </tr>
           <tr>
             <td colspan="2" class="td-padding sta-save">
-              <label for="sta-save-chb"> Set or Delete Station/Router</label><br>
+              <label for="sta-chb"> Set or Delete Station/Router</label><br>
               <label class="switch">
-                <input type="checkbox" id="sta-chb" name="sta_chb" onclick="staCheckBox(this)">
+                <!-- onclick="staCheckBox(this)" -->
+                <input type="checkbox" id="sta-chb" name="sta_chb" >
                 <span class=" slider round"></span>
               </label>
             </td>
@@ -179,9 +184,15 @@
         </table>
       </form>
     </div>
-  </div>
-  <div id="save-result">
-    <!-- Returned message  -->
+    <!-- Dialog-Alert div -->
+    <div id="dialogoverlay"></div>
+    <div id="dialogbox">
+      <div>
+        <div id="dialogboxhead"></div>
+        <div id="dialogboxbody"></div>
+        <div id="dialogboxfoot"></div>
+      </div>
+    </div>
   </div>
 </body>
 

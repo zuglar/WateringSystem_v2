@@ -45,6 +45,7 @@ hr {
 .content-table .td-padding {
     padding: 5px;
     font-size: 15px;
+    font-weight: normal;
     /* border: 2px solid #698d19; */
 }
 
@@ -97,6 +98,7 @@ input:checked+.slider:before {
     -webkit-transform: translateX(14px);
     -ms-transform: translateX(14px);
     transform: translateX(14px);
+    transform-origin: 0 0;
 }
 
 /* Rounded sliders */
@@ -159,4 +161,62 @@ select::-ms-expand {
     visibility: hidden;
     color: black;
 }
+/* Dialog, Alerts css */
+#dialogoverlay{
+	display: none;
+	opacity: .8;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background: #FFF;
+	width: 100%;
+	z-index: 10;
+}
+#dialogbox{
+	display: none;
+	position: fixed;
+	background: #000;
+	border-radius:7px; 
+	width:410px;
+	z-index: 10;
+}
+#dialogbox > div{ background:#FFF; margin:5px; }
+#dialogbox > div > #dialogboxhead{ background: #666; font-size:19px; padding:10px; color:#FFF; text-align:center;}
+#dialogbox > div > #dialogboxbody{ background:#333; padding:20px; color:#FFF; text-align:center;}
+#dialogbox > div > #dialogboxfoot{ background: #666; padding:10px; text-align:center; }
 
+#alert {
+    width: 70px;
+    font-weight: bold;
+    color: white;
+    border: none;
+}
+
+#yes {
+    width: 70px;
+    font-weight: bold;
+    color: white;
+    border: none;
+}
+
+#no {
+    width: 70px;
+    font-weight: bold;
+    color: white;
+    border: none;
+}
+
+#cancel {
+    width: 70px;
+    font-weight: bold;
+    color: white;
+    border: none;
+}
+/* .swal-vertical-buttons {
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+.align-left {
+    text-align: center;
+} */

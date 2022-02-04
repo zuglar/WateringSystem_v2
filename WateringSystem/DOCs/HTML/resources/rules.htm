@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title> Watering System</title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <meta name="description" content="Watering System">
+  <link rel="stylesheet" href="./resources/style.css">
+  <script src="./resources/jquery-3.6.0.min.js"></script>
+
+  <script type="module" src="./resources/rules.js"></script>
+
+  <link rel="icon" type="image/png" href="./icons/garden.png" sizes="24x24">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <div id="container">
+    <div class="navbar" style="padding: 1px;"></div>
+    <!-- Select Rule -->
+    <div>
+      <table class="content-table">
+        <tr>
+          <td class="td-padding"><img src="./icons/rules-book.png" alt="home"></td>
+        </tr>
+        <tr class="info-tr">
+          <td class="td-padding" style="font-size: 20px; text-decoration: underline; font-weight: bold;">Watering Rules
+            Settings
+          </td>
+        </tr>
+        <tr>
+          <td class="td-padding">
+            <div class="dropdown">
+              <select id="rules-select">
+                <!-- options will be set dynamically -->
+              </select>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!-- -->
+    <br>
+    <div>
+      <!-- START Form - Define settings of Watering Rule -->
+      <form action="/update" method="post" id="rule-form">
+        <input type="hidden" name="page" value="rules" />
+        <input type="hidden" id="new-rule-values" name="new_rule_values" value="" />
+        <!-- if save value = 1, if delete value = 0 -->
+        <input type="hidden" id="save-delete" name="save_delete" value="" />
+        <table class="content-table" style="width: 95%;">
+          <tr>
+            <td class="td-padding" colspan="2" style="color: white; background-color: #698d19;">
+              Define Settings of Watering Rule
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" style="text-align: center;">
+              Rule Name (max. 10 characters)
+            </td>
+            <td class="td-padding">
+              <input type="text" id="rule-name-input" name="rule_name" maxlength="10" size="8"
+                style="text-align: center; font-weight: bold;">
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" colspan="2">
+              Set Watering Date Interval
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" style="text-align: center;">
+              Start date:
+            </td>
+            <td class="td-padding">
+              <input type="date" id="start-date">
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" style="text-align: center;">
+              End date:
+            </td>
+            <td class="td-padding">
+              <input type="date" id="end-date">
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" colspan="2">
+              Set Watering Time Interval
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" style="text-align: center;">
+              Start time (HH:MM AM/PM):
+            </td>
+            <td class="td-padding">
+              <input type="time" id="start-time">
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding" style="text-align: center;">
+              Duration Time (minute, max. 360):
+            </td>
+            <td class="td-padding">
+              <input type="text" id="duration-time" maxlength="3" size="3" style="text-align: center;">
+            </td>
+          </tr>
+        </table>
+        <div id="valves-div">
+          <!-- Adds table of valve -->
+        </div>
+        <div>
+          <table class="content-table">
+            <tr>
+              <td class="td-padding" style="text-align: center;" colspan="10">
+                Check wetness of soil before watering
+              </td>
+              <td class="td-padding" style="text-align: left;" colspan="2">
+                <label class="switch">
+                  <input type="checkbox" id="soil-sensors-enabled">
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" style="text-align: center;" colspan="10">
+                Check if rains during watering
+              </td>
+              <td class="td-padding" style="text-align: left;" colspan="2">
+                <label class="switch">
+                  <input type="checkbox" id="rain-sensor-enabled">
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" style="text-align: center;" colspan="10">
+                Stop watering if the temperature
+              </td>
+              <td class="td-padding" style="text-align: left;" colspan="2">
+                <label class="switch">
+                  <input type="checkbox" id="temp-sensor-enabled">
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" style="text-align: right;" colspan="3">less than</td>
+              <td class="td-padding" style="text-align: left;" colspan="3">
+                <input type="text" id="min-temp" maxlength="3" size="3" style="text-align: center;">
+              </td>
+              <td class="td-padding" style="text-align: right;" colspan="3">more than</td>
+              <td class="td-padding" style="text-align: left;" colspan="3">
+                <input type="text" id="max-temp" maxlength="3" size="3" style="text-align: center;">
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" style="text-align: right;" colspan="6">Admin password</td>
+              <td class="td-padding" style="text-align: left;" colspan="6">
+                <input type="password" id="adm-pwd" name="adm_pwd" maxlength="25" size="12" style="text-align: center;">
+              </td>
+            </tr>
+            <tr>
+              <!-- <td class="td-padding" style="text-align: right;" colspan="6">
+                <button type="submit" class="save-btn" id="delete-adm-btn" onclick="return deleteRule()">Delete</button>
+              </td> -->
+              <td class="td-padding" style="text-align: center;" colspan="12">
+                <!-- onclick="return saveRule()" -->
+                <button type="submit" class="save-btn" id="save-adm-btn">Save/Delete</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </form>
+      <!-- END form - Define settings of Watering Rule -->
+      <hr style="width: 80%;">
+      <!-- START form- Global settings of Watering System -->
+      <form action="/upload" method="post" id="global-form">
+        <input type="hidden" name="page" value="global" />
+        <input type="hidden" id="new-thresholds" name="new_thresholds" value="" />
+        <div id="global-div">
+          <table class="content-table" style="width: 95%;">
+            <tr>
+              <td class="td-padding" colspan="8" style="color: white; background-color: #698d19;">
+                Define Global Settings of Watering System
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="7">
+                Set Refresh Interval of System (5-60 min)
+              </td>
+              <td class="td-padding" colspan="1">
+                <input type="text" id="refresh-interval" name="refresh_interval" maxlength="2" size="2"
+                  style="text-align: center;" value="10">
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="8">
+                <hr style="border-top: 2px dotted #698d19; min-width: 330px;">
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="8" style="text-align: center; word-wrap: break-word;">
+                Set Threshold Value of Wetness Soil Sensors when the Valve switches off (0-100). If you set '0' the
+                sensor is not in use.
+              </td>
+            </tr>
+            <tr id="wetness-sensor-threshold">
+              <!-- Adds cells of threshold of wetness of sensor with input -->
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="8">
+                <hr style="border-top: 2px dotted #698d19; min-width: 330px;">
+              </td>
+            </tr>
+            <tr id="rain-sensor-threshold">
+              <td class="td-padding" colspan="7" style="text-align: left; word-wrap: break-word;">
+                Set Rain Sensor Threshold Value when the Valve switches off (0-100). If you set '0' the sensor is
+                not in use.
+              </td>
+              <!-- Adds cells of wetness thresholds with input -->
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="8">
+                <hr style="border-top: 2px dotted #698d19; min-width: 330px;">
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="8">
+                Set Maximum Sensitivity Value of Wetness of Soil of Sensor (1-4095).
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="4" style="font-size: 14px;">
+                Set Maximum<br>Wetness Value.<br>(recommended: 1200)
+              </td>
+              <td class="td-padding" colspan="4" style="font-size: 14px;">
+                Set Maximum<br>Dryness Value.<br>(recommended: 3400)
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="4" style="font-size: 14px;">
+                <input type="text" id="wetness-sensitivity" name="wetness_sensitivity" maxlength="4" size="4"
+                  style="text-align: center;" value="1200">
+              </td>
+              <td class="td-padding" colspan="4" style="font-size: 14px;">
+                <input type="text" id="dryness-sensitivity" name="dryness_sensitivity" maxlength="4" size="4"
+                  style="text-align: center;" value="3400">
+              </td>
+            </tr>
+            <tr>
+              <td class="td-padding" colspan="4" style="text-align: right;">Admin password</td>
+              <td class="td-padding" colspan="4" style="text-align: left;"><input type="password" id="adm-pwd-2"
+                  name="adm_pwd" maxlength="25" size="12" style="text-align: center;"></td>
+            </tr>
+            <!-- Save button -->
+            <tr>
+              <td class="td-padding" colspan="8">
+                <!-- onclick="return saveGlobalSettings()" -->
+                <button type="submit" class="save-btn" id="saveglobal-adm-btn">Save</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </form>
+      <!-- END form - Global settings of Watering System -->
+    </div>
+    <!-- Dialog-Alert div -->
+    <div id="dialogoverlay"></div>
+    <div id="dialogbox">
+      <div>
+        <div id="dialogboxhead"></div>
+        <div id="dialogboxbody"></div>
+        <div id="dialogboxfoot"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
