@@ -1,5 +1,31 @@
 #include "WiFi32s.hpp"
 
+// chunk code
+// size_t onStaticDownLoad(uint8_t *buffer, size_t maxLen, size_t index) {
+//     asyncTcpWdt = true;
+//     static char *filename = WIFI_HTM_FILE;
+//     static File chunkfile;
+//     static size_t dnlLen = 2048;     // limit to buffer size
+//     uint32_t countbytes = 0;  // bytes to be returned
+//     if (index == 0) {
+//         printf("onStaticDownLoad: START filename: %s index: %6i maxLen: %5i\n", filename, index, maxLen);
+//         chunkfile = SD.open(filename);
+//     }
+//     if(chunkfile) {
+//         printf("chunkfile opened\n");
+//     }
+//     chunkfile.seek(index);
+//     countbytes = chunkfile.read(buffer, min(dnlLen, maxLen));
+
+//     if (countbytes == 0) {
+//         chunkfile.close();
+//         printf("chunkfile closed\n");
+//     }
+//     printf("onStaticDownLoad: f: %s index: %6u maxLen: %5u countb: %5u \n", filename, index, maxLen, countbytes);
+
+//     return countbytes;
+// }
+
 WiFi32s::WiFi32s(/* args */ Controller *cntrl_) {
     cntrl = cntrl_;
 }
@@ -175,6 +201,22 @@ void WiFi32s::startWebHtm() {
         logWebTraffic(request, EMPTY_STRING);
         sendResponseToClient(request, 200, WIFI_HTM_FILE);
     });
+
+    // CHUNKED
+    // AsyncWebServerResponse *response = request->beginChunkedResponse("text/plain", [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
+    //     // Write up to "maxLen" bytes into "buffer" and return the amount written.
+    //     // index equals the amount of bytes that have been already sent
+    //     // You will be asked for more data until 0 is returned
+    //     // Keep in mind that you can not delay or yield waiting for more data!
+    //     return mySource.read(buffer, maxLen);
+    // });
+    // response->addHeader("Server", "ESP Async Web Server");
+    // request->send(response);
+    // server.on("/wifi.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
+    //     asyncTcpWdt = true;
+    //     logWebTraffic(request, EMPTY_STRING);
+    //     request->sendChunked("text/html", onStaticDownLoad);
+    // });
     // Sends data to show values of wifi settings
     server.on("/getWiFi", HTTP_GET, [this](AsyncWebServerRequest *request) {
         logWebTraffic(request, EMPTY_STRING);
@@ -501,7 +543,7 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_) {
                 !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_PWD_KEY, "") ||
                 !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_STASET_KEY, "0")) {
                 return false;
-            }            
+            }
         } else if (request_->getParam("sta_newpwd_1", true)->value().length() < 8 ||
                    request_->getParam("sta_ssid", true)->value().length() < 4) {
             return false;
