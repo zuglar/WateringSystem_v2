@@ -73,7 +73,8 @@ public:
     String jsonOutput;
 
     const char firstRule[10] = "FirstRule";
-    const char firstRuleValue[45] = "315615599;347151599;0;21600;133;1;1;1;-40;50";
+    //const char firstRuleValue[50] = "";// "315615599;347151599;0;21600;133;1;1;1;-40;50";   1641046   1640995200
+    const char firstRuleValue[55] = "1641046000;1641046000;0;0;0;0;0;0;-40;50";   
 
 
     String apIPString;

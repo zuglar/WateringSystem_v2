@@ -279,7 +279,7 @@ void WiFi32s::startWebHtm() {
         if (numOfKeys == 0) {
             logWebTraffic(request, "Couldn't find rule name. Base rule with name FirstRule created.");
             cntrl->getSdCard()->saveValueToIni(WATERING_RULES_SECTION, firstRule, firstRuleValue);
-            logWebTraffic(request, "Base rule value: 315615599;347151599;0;21600;133;1;1;1;-40;50  added to FirstRule.");
+            logWebTraffic(request, "Base rule value: 1641046000;1641046000;0;0;0;0;0;0;-40;50 added to FirstRule.");
             numOfKeys = 1;
         }
 
