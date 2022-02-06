@@ -433,9 +433,9 @@ function unixtimeToDate(element, unix_timestamp) {
     // date = date.toISOString().split("T");
     // element.value = date[0];
     let month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
-    let day = date.getDay() < 10 ? '0' + date.getDay() : date.getDay();
-    console.log(date.getFullYear() + "-" + month + "-" + day);
-    element.value = date.getFullYear() + "-" + month + "-" + day;
+    let dayDate = date.getDay() < 10 ? '0' + date.getDate() : date.getDate();
+    console.log(date.getFullYear() + "-" + month + "-" + dayDate);
+    element.value = date.getFullYear() + "-" + month + "-" + dayDate;
     console.log(element.value);
 }
 /* Function for temperature checkbox */
