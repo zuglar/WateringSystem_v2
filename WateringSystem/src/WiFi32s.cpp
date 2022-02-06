@@ -393,7 +393,7 @@ void WiFi32s::startWebHtm() {
         }
     });
 
-    server.on("/upload", HTTP_POST, [this](AsyncWebServerRequest *request) {
+    server.on("/update", HTTP_POST, [this](AsyncWebServerRequest *request) {
         asyncTcpWdt = true;
         int result = 0;
         /* List all parameters (Compatibility) */

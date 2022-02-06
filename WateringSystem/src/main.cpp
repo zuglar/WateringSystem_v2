@@ -2,11 +2,14 @@
 
 #include "Controller.hpp"
 #include "DefsVarsFuncs.hpp"
+#include "InterruptTimer1.hpp"
 
 volatile bool mainAppError;
 volatile bool asyncTcpWdt;
 /* Create Controller object */
 Controller *controller = new Controller();
+/* Create InterruptTimer1 object */
+InterruptTimer1 *interruptTimer1 = new InterruptTimer1();
 
 /* Function for initializing the configuration of system */
 bool startUp(void);
@@ -37,6 +40,7 @@ void setup() {
     }
 
     mainAppError = false;
+    milliSecTimer1 = 0;
     // printf("3. mainInitErmainAppErrorror: %d\n", mainAppError);
     printf("APP SETUP End.\n");
     /* When the setup has been finished successfully the green LED turns ON */
@@ -44,7 +48,7 @@ void setup() {
     mainAppError = controller->getSdCard()->writeLogFile("Watering System MCU Started.");
     controller->getGreenLED()->setLevel(HIGH);
     delay(DELAY_03_SEC);
-    //ESP.getFreePsram();
+    // ESP.getFreePsram();
 }
 
 void loop() {
@@ -69,6 +73,24 @@ void loop() {
     }
     delay(1);
     controller->wifi32s->ftp->handle();
+
+    if (milliSecTimer1 == 20000) {
+        milliSecTimer1 = 0;
+        printf("milliSecTimer1 == 20000\n");
+        /* Read Analog sensors value / power channel */
+        controller->getPowerSensorsCH1()->setLevel(HIGH);
+        delay(DELAY_1SEC);
+        controller->controllerReadAnalogInputPinValue(POWER_SENORS_1_5_CH1);
+        controller->getPowerSensorsCH1()->setLevel(LOW);
+        controller->getPowerSensorsCH2()->setLevel(HIGH);
+        delay(DELAY_1SEC);
+        controller->controllerReadAnalogInputPinValue(POWER_SENORS_6_10_CH2);
+        controller->getPowerSensorsCH2()->setLevel(LOW);
+        delay(DELAY_03_SEC);
+        controller->setActiveValves();
+        controller->valvesTurnOffOn();
+        /* END - Collecting data from ws.ini file and Analog Inputs */
+    }
 }
 
 bool startUp(void) {
@@ -108,7 +130,7 @@ bool startUp(void) {
 
     /* START - Collecting data from ws.ini file and Analog Inputs */
     /* Create array of analog sensors threshold values */
-    if (!controller->analogSensorsThresholdTValues())
+    if (!controller->analogSensorsThresholdValues())
         return false;
     /* If creation of array has been finished successfully the red led flashes one time. */
     ledFlashMessage(controller->getRedLED(), 1, DELAY_03_SEC);
@@ -145,9 +167,14 @@ bool startUp(void) {
     /* If initialization of WiFi32s has been finished successfully the red LED flashes four times.
     WEB and FTP servers have been started */
     ledFlashMessage(controller->getRedLED(), 4, DELAY_03_SEC);
+    /* Initialization InterruptTimer1 object */
+    if (!interruptTimer1->initInterruptTimer1())
+        return false;
+    /* If initialization of InterruptTimer1 has been finished successfully the red LED flashes five times. */
+    ledFlashMessage(controller->getRedLED(), 5, DELAY_03_SEC);
     /* Start Web Htm */
     /* controller->controllerStartWebHtm(); */
-    //printf("Date NOW: %s\n", controller-);
+    // printf("Date NOW: %s\n", controller-);
     return true;
 }
 

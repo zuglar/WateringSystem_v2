@@ -45,7 +45,7 @@
 #define RS_2_VALUE_ARRAY_INDEX 9        /* Array index for value of rain sensor 2 */
 #define RAIN_SENSORS_QUANTITY 2         /* Number of rain sensors can be used in the system */
 /* Controller Defines */
-#define ANALOG_DATA_ARRAY_SIZE 10
+#define ANALOG_DATA_ARRAY_SIZE 9
 #define SN74HC595_STEPS 2
 #define VALVES_BINARY_STRING_LENGHT 8
 #define SENSOR_NOT_IN_USE "0"
@@ -76,6 +76,7 @@
 #define WETNESS_KEY "WETNESS"
 #define DRYNESS_KEY "DRYNESS"
 #define WATERING_RULES_SECTION "WateringRules"
+#define DELIMITER ";"
 /* WiFi32s Defines */
 #define PAGE_WIFI "wifi"
 #define PAGE_RULES "rules"

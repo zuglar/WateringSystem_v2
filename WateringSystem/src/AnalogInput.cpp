@@ -59,7 +59,8 @@ void AnalogInput::storeAnalogInputPinValue(const gpio_num_t powerChannel_, int *
     
     if (powerChannel_ == POWER_SENORS_6_10_CH2)
     {
-        array_[RS_2_VALUE_ARRAY_INDEX] = rainSensors_1_2->readAnalogInputPinValue(rainSensors_1_2->analogPin);
+        // We use only one rain sensor
+        // array_[RS_2_VALUE_ARRAY_INDEX] = rainSensors_1_2->readAnalogInputPinValue(rainSensors_1_2->analogPin);
         array_[WS_5_VALUE_ARRAY_INDEX] = wetnessSensor_1_5->readAnalogInputPinValue(wetnessSensor_1_5->analogPin);
         array_[WS_6_VALUE_ARRAY_INDEX] = wetnessSensor_2_6->readAnalogInputPinValue(wetnessSensor_2_6->analogPin);
         array_[WS_7_VALUE_ARRAY_INDEX] = wetnessSensor_3_7->readAnalogInputPinValue(wetnessSensor_3_7->analogPin);

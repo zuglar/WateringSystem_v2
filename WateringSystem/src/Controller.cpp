@@ -100,7 +100,7 @@ bool Controller::controllerAnalogInputsInit() {
     return true;
 }
 
-bool Controller::analogSensorsThresholdTValues() {
+bool Controller::analogSensorsThresholdValues() {
     sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, thresholdValues);
     if (thresholdValues == EMPTY_STRING) {
         printf("ERROR - Controller-Cannot store analog inputs threshold values!\n");
@@ -111,6 +111,16 @@ bool Controller::analogSensorsThresholdTValues() {
     sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, thresholdValues);
     printf("Analog Inputs threshold values: %s\n", thresholdValues.c_str());
     mainAppError = sdCard->writeLogFile("Analog Inputs threshold values: " + thresholdValues);
+
+    // Store threshold values to int array
+    char *copy = strdup(thresholdValues.c_str());
+    char *found;
+    int i = 0;
+    while ((found = strsep(&copy, DELIMITER)) != NULL) {
+        // Serial.println(found);
+        thresholdAnalogSensorsArray[i] = strtoul(found, NULL, 10);
+        i++;
+    }
     return true;
 }
 
@@ -161,7 +171,7 @@ void Controller::setActiveValves() {
     measuredSensorsValueString = "";
 
     for (int i = 0; i < ANALOG_DATA_ARRAY_SIZE; i++) {
-        // printf("...Sensor: %d - threshold: %d - measured: %d - ", i + 1, thresholdAnalogSensorsArray[i], measuredValueAnalogSensorsArray[i]);
+        printf("...Sensor: %d - threshold: %d - measured: %d\n", i + 1, thresholdAnalogSensorsArray[i], measuredValueAnalogSensorsArray[i]);
         /* If threshold value is 0 then the measured value of sensor will not be used, percentage is 0% */
 
         if (thresholdAnalogSensorsArray[i] == 0) {

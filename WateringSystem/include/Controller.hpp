@@ -52,7 +52,7 @@ public:
     /* Public method - Configure Analog Inputs */
     bool controllerAnalogInputsInit();
     /* Public method - Save Analog Sensors threshold value to array */
-    bool analogSensorsThresholdTValues();
+    bool analogSensorsThresholdValues();
     /* Public method - Read values of analog inputs and store in an array */
     void controllerReadAnalogInputPinValue(const gpio_num_t powerChannel_);
     /* Public method - To store/get max dryness and wetness values of soil and refresh interval of system from ws.ini file */
@@ -90,7 +90,6 @@ public:
     /* Public property - Array to store measured values of rain and wetness sensors */
     int measuredValueAnalogSensorsArray[ANALOG_DATA_ARRAY_SIZE];
     /* Public property - Array to store threshold values of rain and wetness sensors */
-    /////////////////////////////////////////////////
     int thresholdAnalogSensorsArray[ANALOG_DATA_ARRAY_SIZE];
     /* Public property - To store value of temperature measured by Aht20Bmp280 sensor */
     float temperature;

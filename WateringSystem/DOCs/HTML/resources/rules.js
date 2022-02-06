@@ -99,7 +99,7 @@ function getSetGlobalData() {
                     // Just for testing on Mockoon - START //
                     if (serverURL.includes("localhost") || serverURL.includes("127.0.0.1")) {
                         // true - contains localhost or 127.0.0.1 add new serverURL;
-                        document.forms['global-form'].action = "http://127.0.0.1:3001/upload";
+                        document.forms['global-form'].action = "http://127.0.0.1:3001/update";
                     }
                     // Just for testing on Mockoon - END //
                     console.log(document.forms['global-form'].action);
