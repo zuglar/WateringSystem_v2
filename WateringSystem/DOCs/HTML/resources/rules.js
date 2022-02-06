@@ -427,11 +427,15 @@ function isNumeric(element, minValue, maxValue) {
 /* https://www.delftstack.com/howto/javascript/javascript-convert-timestamp-to-date/ */
 // Function to convert unit time to date format
 function unixtimeToDate(element, unix_timestamp) {
+    console.log("unix_timestamp: " + unix_timestamp);
     var date = new Date(unix_timestamp * 1000);
     //console.log(date.toISOString());
     // date = date.toISOString().split("T");
     // element.value = date[0];
-    element.value = date.getFullYea() + "-" + (date.getMonth() + 1) + "-" + date.getDay();
+    let month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+    let day = date.getDay() < 10 ? '0' + date.getDay() : date.getDay();
+    console.log(date.getFullYear() + "-" + month + "-" + day);
+    element.value = date.getFullYear() + "-" + month + "-" + day;
     console.log(element.value);
 }
 /* Function for temperature checkbox */
