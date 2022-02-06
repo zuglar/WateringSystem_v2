@@ -6,6 +6,7 @@
 
 volatile bool mainAppError;
 volatile bool asyncTcpWdt;
+volatile bool updateData;
 /* Create Controller object */
 Controller *controller = new Controller();
 /* Create InterruptTimer1 object */
@@ -23,6 +24,7 @@ void setup() {
     printf("APP SETUP Start.\n");
     mainAppError = false;
     asyncTcpWdt = false;
+    updateData = false;
     // printf("1. mainAppError: %d\n", mainAppError);
     /* If startUp function return result is false than the program stops */
     bool startUpFinished = false;
@@ -74,7 +76,7 @@ void loop() {
     delay(1);
     controller->wifi32s->ftp->handle();
 
-    if (milliSecTimer1 == 20000) {
+    if (milliSecTimer1 == 20000 && updateData == false) {
         milliSecTimer1 = 0;
         printf("milliSecTimer1 == 20000\n");
         /* Read Analog sensors value / power channel */
@@ -90,6 +92,9 @@ void loop() {
         controller->setActiveValves();
         controller->valvesTurnOffOn();
         /* END - Collecting data from ws.ini file and Analog Inputs */
+    } else if (milliSecTimer1 == 20000 && updateData == true) {
+        printf("Under update data!\n");
+        milliSecTimer1 = 0;
     }
 }
 

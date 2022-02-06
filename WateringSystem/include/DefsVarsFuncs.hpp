@@ -43,7 +43,7 @@
 #define WS_8_VALUE_ARRAY_INDEX 7        /* Array index for value of Wetness sensor 8 */
 #define RS_1_VALUE_ARRAY_INDEX 8        /* Array index for value of rain sensor 1 */
 #define RS_2_VALUE_ARRAY_INDEX 9        /* Array index for value of rain sensor 2 */
-#define RAIN_SENSORS_QUANTITY 2         /* Number of rain sensors can be used in the system */
+#define RAIN_SENSORS_QUANTITY 1         /* Number of rain sensors can be used in the system */
 /* Controller Defines */
 #define ANALOG_DATA_ARRAY_SIZE 9
 #define SN74HC595_STEPS 2
@@ -96,6 +96,7 @@
 /* Main Variables */
 extern volatile bool mainAppError;
 extern volatile bool asyncTcpWdt;
+extern volatile bool updateData;
 /* Main Functions */
 
 #endif /* __DEFSVARSFUNCS_HPP__ */

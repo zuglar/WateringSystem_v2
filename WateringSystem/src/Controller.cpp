@@ -181,7 +181,7 @@ void Controller::setActiveValves() {
             /* Convert measured values to percentage */
             int value = valueToPercentage(measuredValueAnalogSensorsArray[i]);
             if (i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY)) {
-                measuredSensorsValueString += String(value) + ";";
+                measuredSensorsValueString += String(value);// + ";";
                 // printf("soil wetness: %d%% - ", value);
                 /* Store number which valves will be turned off or on */
                 if (thresholdAnalogSensorsArray[i] > value && i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY)) {
@@ -192,12 +192,17 @@ void Controller::setActiveValves() {
                 // printf("rain sensor: %d%% - ", value);
                 if (thresholdAnalogSensorsArray[i] > value && i >= (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY) && i < ANALOG_DATA_ARRAY_SIZE) {
                     measuredSensorsValueString += RAIN_SENSOR_NOT_RAINS;
-                    measuredSensorsValueString += ";";
+                    // measuredSensorsValueString += ";";
                 } else {
                     measuredSensorsValueString += RAIN_SENSOR_RAINS;
-                    measuredSensorsValueString += ";";
+                    // measuredSensorsValueString += ";";
                 }
             }
+
+            if (i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY)) {
+                measuredSensorsValueString += ";";
+            }
+
         }
         // printf("\n");
     }

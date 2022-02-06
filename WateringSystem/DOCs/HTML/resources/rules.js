@@ -383,6 +383,7 @@ function setRuleData(data) {
         document.getElementById("max-temp").disabled = true;
     }
 }
+/* https://stackoverflow.com/questions/9873197/how-to-convert-date-to-timestamp */
 // Function to set input date to unix time
 function dateToUnixTime(element) {
     let date = document.getElementById(element).value;
@@ -394,7 +395,8 @@ function dateToUnixTime(element) {
     }
 
     const dateArray = date.split("-");
-    var ut = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], '23', '59', '59');
+    // var ut = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], '23', '59', '59');
+    var ut = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
     return ut.getTime() / 1000;
 }
 /* Lambda function - checks if string alphanumeric , return true if is alphanumeric else false */
@@ -422,12 +424,15 @@ function isNumeric(element, minValue, maxValue) {
 
     return true;
 }
+/* https://www.delftstack.com/howto/javascript/javascript-convert-timestamp-to-date/ */
 // Function to convert unit time to date format
 function unixtimeToDate(element, unix_timestamp) {
     var date = new Date(unix_timestamp * 1000);
     //console.log(date.toISOString());
-    date = date.toISOString().split("T");
-    element.value = date[0];
+    // date = date.toISOString().split("T");
+    // element.value = date[0];
+    element.value = date.getFullYea() + "-" + (date.getMonth() + 1) + "-" + date.getDay();
+    console.log(element.value);
 }
 /* Function for temperature checkbox */
 function tempCheckBox(checkbox) {

@@ -279,7 +279,7 @@ void WiFi32s::startWebHtm() {
         if (numOfKeys == 0) {
             logWebTraffic(request, "Couldn't find rule name. Base rule with name FirstRule created.");
             cntrl->getSdCard()->saveValueToIni(WATERING_RULES_SECTION, firstRule, firstRuleValue);
-            logWebTraffic(request, "Base rule value: 1641046000;1641046000;0;0;0;0;0;0;-40;50 added to FirstRule.");
+            logWebTraffic(request, "Base rule value: 1640995200;1640995200;0;0;0;0;0;0;-40;50 added to FirstRule.");
             numOfKeys = 1;
         }
 
@@ -395,6 +395,7 @@ void WiFi32s::startWebHtm() {
 
     server.on("/update", HTTP_POST, [this](AsyncWebServerRequest *request) {
         asyncTcpWdt = true;
+        updateData = true;
         int result = 0;
         /* List all parameters (Compatibility) */
         int args = request->args();
@@ -453,6 +454,8 @@ void WiFi32s::startWebHtm() {
             result = 2;
         }
 
+        updateData = false;
+        
         AsyncJsonResponse *response = new AsyncJsonResponse();
         // response->addHeader("Access-Control-Allow-Origin", "*");
         // response->addHeader("Access-Control-Max-Age", "600");
@@ -614,7 +617,7 @@ bool WiFi32s::saveGlobalSettings(AsyncWebServerRequest *request_) {
     }
 
     if ((request_->hasParam("dryness_sensitivity", true)) && (request_->getParam("dryness_sensitivity", true)->value() != EMPTY_STRING)) {
-        if (!cntrl->getSdCard()->saveValueToIni(WETNESS_DRYNESS_SECTION, WETNESS_KEY, request_->getParam("dryness_sensitivity", true)->value())) {
+        if (!cntrl->getSdCard()->saveValueToIni(WETNESS_DRYNESS_SECTION, DRYNESS_KEY, request_->getParam("dryness_sensitivity", true)->value())) {
             logWebTraffic(request_, "New dryness sensytivity: " + request_->getParam("dryness_sensitivity", true)->value() + " has not been saved.");
             return false;
         }
