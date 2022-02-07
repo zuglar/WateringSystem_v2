@@ -82,7 +82,7 @@ public:
     DS3231RTC *getDs3231rtc() const;
 
     /* Public property - To store Analog Sensors threshold values from ws.ini file to string */
-    String thresholdValues;
+    // String thresholdValues;
     /* Public property - To store measured values of Analog Sensors to String */
     String measuredSensorsValueString;
     /* Public property - To store binary value of active valves to String */

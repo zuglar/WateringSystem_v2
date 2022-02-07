@@ -80,17 +80,17 @@ void loop() {
         milliSecTimer1 = 0;
         printf("milliSecTimer1 == 20000\n");
         /* Read Analog sensors value / power channel */
-        controller->getPowerSensorsCH1()->setLevel(HIGH);
-        delay(DELAY_1SEC);
-        controller->controllerReadAnalogInputPinValue(POWER_SENORS_1_5_CH1);
-        controller->getPowerSensorsCH1()->setLevel(LOW);
-        controller->getPowerSensorsCH2()->setLevel(HIGH);
-        delay(DELAY_1SEC);
-        controller->controllerReadAnalogInputPinValue(POWER_SENORS_6_10_CH2);
-        controller->getPowerSensorsCH2()->setLevel(LOW);
-        delay(DELAY_03_SEC);
-        controller->setActiveValves();
-        controller->valvesTurnOffOn();
+        // controller->getPowerSensorsCH1()->setLevel(HIGH);
+        // delay(DELAY_1SEC);
+        // controller->controllerReadAnalogInputPinValue(POWER_SENORS_1_5_CH1);
+        // controller->getPowerSensorsCH1()->setLevel(LOW);
+        // controller->getPowerSensorsCH2()->setLevel(HIGH);
+        // delay(DELAY_1SEC);
+        // controller->controllerReadAnalogInputPinValue(POWER_SENORS_6_10_CH2);
+        // controller->getPowerSensorsCH2()->setLevel(LOW);
+        // delay(DELAY_03_SEC);
+        // controller->setActiveValves();
+        // controller->valvesTurnOffOn();
         /* END - Collecting data from ws.ini file and Analog Inputs */
     } else if (milliSecTimer1 == 20000 && updateData == true) {
         printf("Under update data!\n");
@@ -140,7 +140,7 @@ bool startUp(void) {
     /* If creation of array has been finished successfully the red led flashes one time. */
     ledFlashMessage(controller->getRedLED(), 1, DELAY_03_SEC);
     delay(DELAY_1SEC);
-    /* Get max dryness and wetness values of soil from ws.ini file */
+    /* Get max dryness and wetness values of soil and refresh time interval from ws.ini file */
     if (!controller->getSystemGlobalValues())
         return false;
     /* If getting max dryness and wetness values of soil have been finished successfully the red led flashes two times. */
@@ -153,19 +153,19 @@ bool startUp(void) {
     ledFlashMessage(controller->getRedLED(), 3, DELAY_03_SEC);
     delay(DELAY_1SEC);
     /* Read Analog sensors value / power channel */
-    controller->getPowerSensorsCH1()->setLevel(HIGH);
-    delay(DELAY_1SEC);
-    controller->controllerReadAnalogInputPinValue(POWER_SENORS_1_5_CH1);
-    controller->getPowerSensorsCH1()->setLevel(LOW);
-    controller->getPowerSensorsCH2()->setLevel(HIGH);
-    delay(DELAY_1SEC);
-    controller->controllerReadAnalogInputPinValue(POWER_SENORS_6_10_CH2);
-    controller->getPowerSensorsCH2()->setLevel(LOW);
-    delay(DELAY_03_SEC);
-    controller->setActiveValves();
-    controller->valvesTurnOffOn();
-    /* END - Collecting data from ws.ini file and Analog Inputs */
-    delay(DELAY_1SEC);
+    // controller->getPowerSensorsCH1()->setLevel(HIGH);
+    // delay(DELAY_1SEC);
+    // controller->controllerReadAnalogInputPinValue(POWER_SENORS_1_5_CH1);
+    // controller->getPowerSensorsCH1()->setLevel(LOW);
+    // controller->getPowerSensorsCH2()->setLevel(HIGH);
+    // delay(DELAY_1SEC);
+    // controller->controllerReadAnalogInputPinValue(POWER_SENORS_6_10_CH2);
+    // controller->getPowerSensorsCH2()->setLevel(LOW);
+    // delay(DELAY_03_SEC);
+    // controller->setActiveValves();
+    // controller->valvesTurnOffOn();
+    // /* END - Collecting data from ws.ini file and Analog Inputs */
+    // delay(DELAY_1SEC);
     /* Initialization WiFi32s object */
     if (!controller->controllerWiFi32sInit())
         return false;

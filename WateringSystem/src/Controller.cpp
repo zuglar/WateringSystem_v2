@@ -101,19 +101,21 @@ bool Controller::controllerAnalogInputsInit() {
 }
 
 bool Controller::analogSensorsThresholdValues() {
-    sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, thresholdValues);
-    if (thresholdValues == EMPTY_STRING) {
-        printf("ERROR - Controller-Cannot store analog inputs threshold values!\n");
-        mainAppError = sdCard->writeLogFile("ERROR - Controller-Cannot store analog inputs threshold values!");
+    String *thresholdValues = new String();
+    sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, *thresholdValues);
+    if (*thresholdValues == EMPTY_STRING) {
+        printf("ERROR - Threshold values are empty!\n");
+        mainAppError = sdCard->writeLogFile("ERROR - Threshold values are empty!");
+        delete thresholdValues;
         return false;
     }
 
-    sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, thresholdValues);
-    printf("Analog Inputs threshold values: %s\n", thresholdValues.c_str());
-    mainAppError = sdCard->writeLogFile("Analog Inputs threshold values: " + thresholdValues);
+    // sdCard->getValueFromIni(THRESHOLDVALUES_SECTION, THRESHOLD_KEY, thresholdValues);
+    printf("Analog Inputs threshold values: %s\n", thresholdValues->c_str());
+    mainAppError = sdCard->writeLogFile("Analog Inputs threshold values: " + *thresholdValues);
 
     // Store threshold values to int array
-    char *copy = strdup(thresholdValues.c_str());
+    char *copy = strdup(thresholdValues->c_str());
     char *found;
     int i = 0;
     while ((found = strsep(&copy, DELIMITER)) != NULL) {
@@ -121,6 +123,7 @@ bool Controller::analogSensorsThresholdValues() {
         thresholdAnalogSensorsArray[i] = strtoul(found, NULL, 10);
         i++;
     }
+    delete thresholdValues;
     return true;
 }
 
@@ -283,18 +286,6 @@ bool Controller::controllerWiFi32sInit() {
     String apMaxConnection;
     sdCard->getValueFromIni(WIFI_AP_SECTION, WIFI_MAX_CONNECTION_KEY, apMaxConnection);
 
-    // if (!( &&  &&
-    //        &&  &&
-    //       )) {
-    //     printf("ERROR - Cannot import Access Point data from ws.ini file. Exits from WiFi configuration.\n");
-    //     mainAppError = sdCard->writeLogFile("ERROR - Cannot import Access Point data from ws.ini file. Exits from WiFi configuration.");
-
-    //     return false;
-    // }
-
-    // printf("Access Point values have been imported from ws.ini file..\n");
-    // mainAppError = sdCard->writeLogFile("Access Point values have been imported from ws.ini file.");
-
     String staEnabled;
     sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_STASET_KEY, staEnabled);
     String staSSID;
@@ -311,20 +302,6 @@ bool Controller::controllerWiFi32sInit() {
     sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_GATEWAY_KEY, staGateway);
     String staDns;
     sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_DNS_KEY, staDns);
-    // bool staConfiguration = false;
-
-    // if (!( &&  &&
-    //        &&  &&
-    //        &&  &&
-    //        && )) {
-    //     printf("ERROR - Cannot import Station / Router values from ws.ini file.\n");
-    //     mainAppError = sdCard->writeLogFile("ERROR - Cannot import Station / Router values from ws.ini file.");
-
-    // } else {
-    //     printf("Station / Router values have been imported from ws.ini file..\n");
-    //     mainAppError = sdCard->writeLogFile("Station / Router values have been imported from ws.ini file.");
-    //     staConfiguration = true;
-    // }
 
     wifi32s = new WiFi32s(this);
 
