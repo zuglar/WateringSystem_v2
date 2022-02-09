@@ -5,7 +5,9 @@
 #include "driver/timer.h"
 #include "esp_err.h"
 
-extern volatile uint32_t milliSecTimer1;
+// extern volatile uint32_t secondTimer1Interrupt;
+extern volatile uint32_t wateringTimer1Interrupt;
+extern volatile uint32_t systemTimer1Interrupt;
 
 class InterruptTimer1
 {

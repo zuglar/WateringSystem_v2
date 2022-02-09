@@ -32,9 +32,11 @@ private:
     AnalogInput *analogInputs;
     
     /* Private property - To store activ valves to integer*/
-    int valvesNumber;
+    // int valvesNumber;
     /* Private method - Convert analog input value to percentage */
     int valueToPercentage(int analogInputValue_);
+    /* Private method - starts watering if prepared rule exists */
+    // void startWatering();
 
     char **ruleNames;
     uint8_t keysNum;
@@ -63,7 +65,7 @@ public:
     // /* Public method - Set value of valvesNumber. Calculate which valves will be turn On or Off */
     // void setActiveValves();
     /* Public method - Turn Off/On watering valves */
-    void valvesTurnOffOn();
+    void valvesTurnOffOn(uint8_t valves);
     /* Public method - gets data from Aht20Bmp280 sensors*/
     bool controllerGetAht20Bmp280Data();
     /* Public method - Configure and init WiFi32s */
@@ -73,6 +75,8 @@ public:
 
     /* Public method - search and prepare rules to start watering */
     bool controllerPrepareWatering();
+    /* Public method - search and prepare rules to start watering */
+    void controllerCheckTemperature();
 
     /* Getter Green Led Digital Output */
     DigitalOutput *getGreenLED() const;
@@ -104,7 +108,7 @@ public:
     /* Public property - To store value of air pressure measured by Aht20Bmp280 sensor */
     float airPressure;
     /* Public property - To store/get value of refresh interval of system from ini file */
-    int systemRefreshInterval;
+    uint32_t systemRefreshInterval;
     /* Public property - To store/get value of max dryness of soil from ini file */
     int maxDryness;
     /* Public property - To store/get value of max wetness of soil from ini file */
@@ -120,7 +124,7 @@ public:
     /* Public property - Store high temperature value - if temperature is above than the given value stops watering */
     int8_t highTemperature;
     /* Public property - Variable to store if we have an active watering rule */
-    bool activeRule;
+    bool activeRuleExists;
     /* Public property - Variable to store duration of time of watering or to store duration of time to the next watering time */
     uint32_t wateringDurationTime;
 

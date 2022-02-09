@@ -1,6 +1,7 @@
 #include "InterruptTimer1.hpp"
 
-volatile uint32_t milliSecTimer1;
+volatile uint32_t wateringTimer1Interrupt;
+volatile uint32_t systemTimer1Interrupt;
 
 void IRAM_ATTR timer1ISR(void *arg)
 {
@@ -10,7 +11,8 @@ void IRAM_ATTR timer1ISR(void *arg)
         TIMERG1.hw_timer[timerIdx].update = 1;
         TIMERG1.int_clr_timers.t1 = 1;
         TIMERG1.hw_timer[timerIdx].config.alarm_en = true;
-        milliSecTimer1++;
+        wateringTimer1Interrupt++;
+        systemTimer1Interrupt++;
     }
 }
 
@@ -67,7 +69,7 @@ bool InterruptTimer1::initInterruptTimer1()
     ESP_ERROR_CHECK(errorCode = timer_pause(TIMER_GROUP_1, timerIdx));
     // Set alarm value
     // timer_set_alarm_value(TIMER_GROUP_1, timerIdx, 500000); // 0.5 s
-    ESP_ERROR_CHECK(errorCode = timer_set_alarm_value(TIMER_GROUP_1, timerIdx, 1000));
+    ESP_ERROR_CHECK(errorCode = timer_set_alarm_value(TIMER_GROUP_1, timerIdx, 1000000));
     // Load counter value
     // timer_set_counter_value(TIMER_GROUP_1, timerIdx, 0);
     ESP_ERROR_CHECK(errorCode = timer_set_counter_value(TIMER_GROUP_1, timerIdx, 0));
@@ -83,10 +85,10 @@ bool InterruptTimer1::initInterruptTimer1()
     
     if (errorCode != ESP_OK)
     {
-        printf("...ERROR InterruptTimer1: %s\n", errorMessage(errorCode).c_str());
+        printf("ERROR InterruptTimer1: %s...!!!\n", errorMessage(errorCode).c_str());
         return false;
     }
-    printf("...InterruptTimer1: %s...!!!\n", errorMessage(errorCode).c_str());
+    printf("InterruptTimer1: %s...!!!\n", errorMessage(errorCode).c_str());
     return true;
 }
 

@@ -51,6 +51,7 @@
 #define SENSOR_NOT_IN_USE "0"
 #define RAIN_SENSOR_RAINS "1"
 #define RAIN_SENSOR_NOT_RAINS "0"
+#define ALL_VALVES_OFF 0
 /* ws.ini file SECTIONS and KEYS */
 #define READY_SECTION "Ready"
 #define READY_KEY "READY"
@@ -98,7 +99,7 @@
 /* Main Variables */
 extern volatile bool mainAppError;
 extern volatile bool asyncTcpWdt;
-extern volatile bool updateData;
+extern volatile bool updateNewSettingsProccess;
 /* Main Functions */
 
 #endif /* __DEFSVARSFUNCS_HPP__ */

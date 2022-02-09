@@ -42,7 +42,8 @@ void setup() {
     }
 
     mainAppError = false;
-    milliSecTimer1 = 0;
+    systemTimer1Interrupt = 0;
+    wateringTimer1Interrupt = 0;
     // printf("3. mainInitErmainAppErrorror: %d\n", mainAppError);
     printf("APP SETUP End.\n");
     /* When the setup has been finished successfully the green LED turns ON */
@@ -78,26 +79,40 @@ void loop() {
     delay(1);
     controller->wifi32s->ftp->handle();
 
-    if (milliSecTimer1 == 30000 && updateData == false) {
-        milliSecTimer1 = 0;
-        printf("milliSecTimer1 == 30000\n");
-        /* Read Analog sensors value / power channel */
-        // controller->getPowerSensorsCH1()->setLevel(HIGH);
-        // delay(DELAY_1SEC);
-        // controller->controllerReadAnalogInputPinValue(POWER_SENORS_1_5_CH1);
-        // controller->getPowerSensorsCH1()->setLevel(LOW);
-        // controller->getPowerSensorsCH2()->setLevel(HIGH);
-        // delay(DELAY_1SEC);
-        // controller->controllerReadAnalogInputPinValue(POWER_SENORS_6_10_CH2);
-        // controller->getPowerSensorsCH2()->setLevel(LOW);
-        // delay(DELAY_03_SEC);
-        // controller->setActiveValves();
-        // controller->valvesTurnOffOn();
-        /* END - Collecting data from ws.ini file and Analog Inputs */
+    if ((controller->systemRefreshInterval * 60) == systemTimer1Interrupt) {
+        printf("System Duration Time reached!\n");
+        // if the new settings of rule and system under upload process we have to wait to be finished
+        while (updateNewSettingsProccess) {
+        }
+
+        if (controller->activeRuleExists) {
+            if (controller->checkTemperature) {
+                printf("System Checks Temperature!\n");
+                controller->controllerCheckTemperature();
+            }
+
+            if (controller->checkRainSensor) {
+                printf("System Checks Rain Sensor!\n");
+                controller->controllerCheckTemperature();
+            }
+
+            if (controller->checkSoilWetness) {
+                printf("System Checks Soil Wetness!\n");
+                controller->controllerCheckTemperature();
+            }
+        }
+
+        systemTimer1Interrupt = 0;
+    }
+
+    if (controller->wateringDurationTime == wateringTimer1Interrupt) {
+        printf("Watering Duration Time reached!\n");
+        // if the new settings of rule and system under upload process we have to wait to be finished
+        while (updateNewSettingsProccess) {
+        }
+
         controller->controllerPrepareWatering();
-    } else if (milliSecTimer1 == 30000 && updateData == true) {
-        printf("Under update data!\n");
-        milliSecTimer1 = 0;
+        wateringTimer1Interrupt = 0;
     }
 }
 
@@ -109,6 +124,8 @@ bool startUp(void) {
       turns on-off first green LED after red LED */
     ledFlashMessage(controller->getGreenLED(), 1, DELAY_03_SEC);
     ledFlashMessage(controller->getRedLED(), 1, DELAY_03_SEC);
+    /* Turns off valves */
+    controller->valvesTurnOffOn(ALL_VALVES_OFF);
     delay(DELAY_1SEC);
 
     /* Initialization DS3231RTC object */

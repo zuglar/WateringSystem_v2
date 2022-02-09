@@ -511,7 +511,7 @@ function checkRuleData() {
     startTime = (startTime[0] * 3600) + (startTime[1] * 60);
     rule = startDate + ";" + endDate + ";" + startTime + ";";
     // Checks duration time value - is numeric - and compares it with refresh time interval of system
-    if (!isNumeric(document.getElementById("duration-time"), document.getElementById("refresh-interval").value, 360)) {
+    if (!isNumeric(document.getElementById("duration-time"), /* document.getElementById("refresh-interval").value */ 1, 360)) {
         return false;
     }
     rule += (startTime + (document.getElementById("duration-time").value * 60)) + ";";
