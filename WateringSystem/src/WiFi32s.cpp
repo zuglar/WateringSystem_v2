@@ -26,6 +26,8 @@
 //     return countbytes;
 // }
 
+volatile bool updateNewSettingsProccess;
+
 WiFi32s::WiFi32s(/* args */ Controller *cntrl_) {
     cntrl = cntrl_;
 }
@@ -407,7 +409,7 @@ void WiFi32s::startWebHtm() {
 
     server.on("/update", HTTP_POST, [this](AsyncWebServerRequest *request) {
         asyncTcpWdt = true;
-        updateData = true;
+        updateNewSettingsProccess = true;
         int result = 0;
         /* List all parameters (Compatibility) */
         int args = request->args();
@@ -466,7 +468,7 @@ void WiFi32s::startWebHtm() {
             result = 2;
         }
 
-        updateData = false;
+        updateNewSettingsProccess = false;
         
         AsyncJsonResponse *response = new AsyncJsonResponse();
         // response->addHeader("Access-Control-Allow-Origin", "*");

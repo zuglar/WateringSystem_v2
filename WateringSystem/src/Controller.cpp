@@ -420,7 +420,7 @@ bool Controller::controllerPrepareWatering() {
 
 void Controller::controllerCheckTemperature() {
     this->controllerGetAht20Bmp280Data();
-    if(this->temperature <= this->lowTemperature || this->temperature >= this->highTemperature) {
+    if((int8_t)this->temperature <= this->lowTemperature || (int8_t)this->temperature >= this->highTemperature) {
         this->valvesTurnOffOn(ALL_VALVES_OFF);
     } else {
         this->valvesTurnOffOn(valvesDecValue);
