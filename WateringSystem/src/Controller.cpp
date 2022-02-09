@@ -163,7 +163,7 @@ bool Controller::getSystemGlobalValues() {
     return true;
 }
 
-void Controller::controllerReadAnalogInputPinValue(const gpio_num_t powerChannel_) {
+void Controller::controllerReadAnalogInputValue(const gpio_num_t powerChannel_) {
     printf("Controler Power Channel: %d switched on.\n", powerChannel_);
     mainAppError = sdCard->writeLogFile("Controler Power Channel: " + String(powerChannel_) + " switched on.");
     analogInputs->storeAnalogInputPinValue(powerChannel_, measuredValueAnalogSensorsArray);
@@ -425,6 +425,10 @@ void Controller::controllerCheckTemperature() {
     } else {
         this->valvesTurnOffOn(valvesDecValue);
     }   
+}
+
+void Controller::controllerGetSensorsValue() {
+    
 }
 
 // void Controller::setActiveValves() {

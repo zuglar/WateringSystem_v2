@@ -30,13 +30,9 @@ private:
     Aht20Bmp280 *aht20Bmp280;
     /* Analog Input object */
     AnalogInput *analogInputs;
-    
-    /* Private property - To store activ valves to integer*/
-    // int valvesNumber;
     /* Private method - Convert analog input value to percentage */
     int valueToPercentage(int analogInputValue_);
-    /* Private method - starts watering if prepared rule exists */
-    // void startWatering();
+ 
 
     char **ruleNames;
     uint8_t keysNum;
@@ -59,24 +55,28 @@ public:
     /* Public method - Save Analog Sensors threshold value to array */
     bool analogSensorsThresholdValues();
     /* Public method - Read values of analog inputs and store in an array */
-    void controllerReadAnalogInputPinValue(const gpio_num_t powerChannel_);
+    void controllerReadAnalogInputValue(const gpio_num_t powerChannel_);
     /* Public method - To store/get max dryness and wetness values of soil and refresh interval of system from ws.ini file */
     bool getSystemGlobalValues();
-    // /* Public method - Set value of valvesNumber. Calculate which valves will be turn On or Off */
-    // void setActiveValves();
     /* Public method - Turn Off/On watering valves */
     void valvesTurnOffOn(uint8_t valves);
     /* Public method - gets data from Aht20Bmp280 sensors*/
     bool controllerGetAht20Bmp280Data();
     /* Public method - Configure and init WiFi32s */
     bool controllerWiFi32sInit();
-    /* Public method - Get keys and values of watering rules */
-    //void controllerGetKeysValuesRules();
-
     /* Public method - search and prepare rules to start watering */
     bool controllerPrepareWatering();
     /* Public method - search and prepare rules to start watering */
     void controllerCheckTemperature();
+    /* Public method - gets analog wetness and rain sensors meassured values */
+    void controllerGetSensorsValue();
+
+    // /* Public method - Set value of valvesNumber. Calculate which valves will be turn On or Off */
+    // void setActiveValves();
+    /* Public method - Get keys and values of watering rules */
+    //void controllerGetKeysValuesRules();
+
+    
 
     /* Getter Green Led Digital Output */
     DigitalOutput *getGreenLED() const;
@@ -91,8 +91,6 @@ public:
     /* Getter - ds3231rtc object */
     DS3231RTC *getDs3231rtc() const;
 
-    /* Public property - To store Analog Sensors threshold values from ws.ini file to string */
-    // String thresholdValues;
     /* Public property - To store measured values of Analog Sensors to String */
     String measuredSensorsValueString;
     /* Public property - To store decimal value of active valves of rule from ini file */
