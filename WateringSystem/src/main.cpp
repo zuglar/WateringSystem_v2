@@ -49,7 +49,9 @@ void setup() {
     delay(DELAY_03_SEC);
     mainAppError = controller->getSdCard()->writeLogFile("Watering System MCU Started.");
     controller->getGreenLED()->setLevel(HIGH);
-    delay(DELAY_03_SEC);
+    delay(DELAY_2SEC);
+    /* Start Watering */
+    controller->controllerPrepareWatering();
     // ESP.getFreePsram();
 }
 
@@ -76,9 +78,9 @@ void loop() {
     delay(1);
     controller->wifi32s->ftp->handle();
 
-    if (milliSecTimer1 == 20000 && updateData == false) {
+    if (milliSecTimer1 == 30000 && updateData == false) {
         milliSecTimer1 = 0;
-        printf("milliSecTimer1 == 20000\n");
+        printf("milliSecTimer1 == 30000\n");
         /* Read Analog sensors value / power channel */
         // controller->getPowerSensorsCH1()->setLevel(HIGH);
         // delay(DELAY_1SEC);
@@ -92,7 +94,8 @@ void loop() {
         // controller->setActiveValves();
         // controller->valvesTurnOffOn();
         /* END - Collecting data from ws.ini file and Analog Inputs */
-    } else if (milliSecTimer1 == 20000 && updateData == true) {
+        controller->controllerPrepareWatering();
+    } else if (milliSecTimer1 == 30000 && updateData == true) {
         printf("Under update data!\n");
         milliSecTimer1 = 0;
     }
@@ -152,6 +155,9 @@ bool startUp(void) {
     /* If reading data from sensor has been finished successfully the red led flashes three times */
     ledFlashMessage(controller->getRedLED(), 3, DELAY_03_SEC);
     delay(DELAY_1SEC);
+    /* If reading data from sensor has been finished successfully the red led flashes four times */
+    ledFlashMessage(controller->getRedLED(), 4, DELAY_03_SEC);
+    delay(DELAY_1SEC);
     /* Read Analog sensors value / power channel */
     // controller->getPowerSensorsCH1()->setLevel(HIGH);
     // delay(DELAY_1SEC);
@@ -169,14 +175,17 @@ bool startUp(void) {
     /* Initialization WiFi32s object */
     if (!controller->controllerWiFi32sInit())
         return false;
-    /* If initialization of WiFi32s has been finished successfully the red LED flashes four times.
+    /* If initialization of WiFi32s has been finished successfully the green LED flashes one time.
     WEB and FTP servers have been started */
-    ledFlashMessage(controller->getRedLED(), 4, DELAY_03_SEC);
+    ledFlashMessage(controller->getGreenLED(), 1, DELAY_03_SEC);
+    delay(DELAY_1SEC);
     /* Initialization InterruptTimer1 object */
     if (!interruptTimer1->initInterruptTimer1())
         return false;
-    /* If initialization of InterruptTimer1 has been finished successfully the red LED flashes five times. */
-    ledFlashMessage(controller->getRedLED(), 5, DELAY_03_SEC);
+    /* If initialization of InterruptTimer1 has been finished successfully the green LED flashes two times. */
+    ledFlashMessage(controller->getRedLED(), 2, DELAY_03_SEC);
+    delay(DELAY_1SEC);
+
     /* Start Web Htm */
     /* controller->controllerStartWebHtm(); */
     // printf("Date NOW: %s\n", controller-);

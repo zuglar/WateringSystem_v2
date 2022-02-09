@@ -36,6 +36,9 @@ private:
     /* Private method - Convert analog input value to percentage */
     int valueToPercentage(int analogInputValue_);
 
+    char **ruleNames;
+    uint8_t keysNum;
+
 public:
     /* Constructor */
     Controller(/* args */);
@@ -57,16 +60,19 @@ public:
     void controllerReadAnalogInputPinValue(const gpio_num_t powerChannel_);
     /* Public method - To store/get max dryness and wetness values of soil and refresh interval of system from ws.ini file */
     bool getSystemGlobalValues();
-    /* Public method - Set value of valvesNumber. Calculate which valves will be turn On or Off */
-    void setActiveValves();
+    // /* Public method - Set value of valvesNumber. Calculate which valves will be turn On or Off */
+    // void setActiveValves();
     /* Public method - Turn Off/On watering valves */
     void valvesTurnOffOn();
-    /* Public method - get data from Aht20Bmp280 sensors*/
+    /* Public method - gets data from Aht20Bmp280 sensors*/
     bool controllerGetAht20Bmp280Data();
     /* Public method - Configure and init WiFi32s */
     bool controllerWiFi32sInit();
     /* Public method - Get keys and values of watering rules */
     //void controllerGetKeysValuesRules();
+
+    /* Public method - search and prepare rules to start watering */
+    bool controllerPrepareWatering();
 
     /* Getter Green Led Digital Output */
     DigitalOutput *getGreenLED() const;
@@ -85,8 +91,8 @@ public:
     // String thresholdValues;
     /* Public property - To store measured values of Analog Sensors to String */
     String measuredSensorsValueString;
-    /* Public property - To store binary value of active valves to String */
-    String valvesBinaryString;
+    /* Public property - To store decimal value of active valves of rule from ini file */
+    uint8_t valvesDecValue;
     /* Public property - Array to store measured values of rain and wetness sensors */
     int measuredValueAnalogSensorsArray[ANALOG_DATA_ARRAY_SIZE];
     /* Public property - Array to store threshold values of rain and wetness sensors */
@@ -97,20 +103,26 @@ public:
     float relativeHumidity;
     /* Public property - To store value of air pressure measured by Aht20Bmp280 sensor */
     float airPressure;
-    /* Public property - To store/get value of refresh interval of sensors from ini file */
-    int refreshSensorsInterval;
+    /* Public property - To store/get value of refresh interval of system from ini file */
+    int systemRefreshInterval;
     /* Public property - To store/get value of max dryness of soil from ini file */
     int maxDryness;
     /* Public property - To store/get value of max wetness of soil from ini file */
     int maxWetness;
-
-
-    /* Public property - To store keys of watering rules  from ini file */
-    String keysOfWateringRules;
-    /* Public property - To store values of keys of watering rules from ini file */
-    String valuesOfKeysOfRules;
-    
-
+    /* Public property - Variable to store to check soil wetnes before watering - if soil is dry then starts watering */
+    bool checkSoilWetness;
+    /* Public property - Variable to store to check rain sensor during watering - if rains then stops watering */
+    bool checkRainSensor;
+    /* Public property - Variable to store to check temperature during watering - if temperature is above or below than the given values stops watering */
+    bool checkTemperature;
+    /* Public property - Store less temperature value - if temperature is below than the given value stops watering */
+    int8_t lowTemperature;
+    /* Public property - Store high temperature value - if temperature is above than the given value stops watering */
+    int8_t highTemperature;
+    /* Public property - Variable to store if we have an active watering rule */
+    bool activeRule;
+    /* Public property - Variable to store duration of time of watering or to store duration of time to the next watering time */
+    uint32_t wateringDurationTime;
 
     /* WiFi32s object */
     WiFi32s *wifi32s;

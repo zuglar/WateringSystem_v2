@@ -55,6 +55,12 @@ String DS3231RTC::getDateTimeNow()
     return (date);
 }
 
+uint32_t DS3231RTC::getUnixTimeNow() {
+    DateTime dateTimeNow = rtc.now();
+    printf("dateTimeNow.unixtime(): %d\n", dateTimeNow.unixtime());
+    return dateTimeNow.unixtime();
+}
+
 String DS3231RTC::oldLogFileDate()
 {
     DateTime dateTimePast = rtc.now() - TimeSpan(3, 0, 0, 0);

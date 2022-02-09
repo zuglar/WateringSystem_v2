@@ -77,6 +77,8 @@
 #define DRYNESS_KEY "DRYNESS"
 #define WATERING_RULES_SECTION "WateringRules"
 #define DELIMITER ";"
+#define RULE_VALUE_BUFFER 56
+#define RULE_NAME_BUFFER 11
 /* WiFi32s Defines */
 #define PAGE_WIFI "wifi"
 #define PAGE_RULES "rules"
@@ -91,7 +93,7 @@
 #define RULES_HTM_FILE "/resources/rules.htm"
 #define FTP_USER "ftp"
 #define FTP_PASSWORD "ftp"
-#define MAX_WIFI_INPUTS_BUFFER 165
+// #define MAX_WIFI_INPUTS_BUFFER 165
 
 /* Main Variables */
 extern volatile bool mainAppError;

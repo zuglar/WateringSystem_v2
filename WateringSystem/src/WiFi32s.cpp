@@ -278,8 +278,18 @@ void WiFi32s::startWebHtm() {
 
         if (numOfKeys == 0) {
             logWebTraffic(request, "Couldn't find rule name. Base rule with name FirstRule created.");
-            cntrl->getSdCard()->saveValueToIni(WATERING_RULES_SECTION, firstRule, firstRuleValue);
-            logWebTraffic(request, "Base rule value: 1640995200;1640995200;0;0;0;0;0;0;-40;50 added to FirstRule.");
+            uint32_t unixDateNow = cntrl->getDs3231rtc()->getUnixTimeNow();
+
+            // printf("1. unixDateNow: %d\n", unixDateNow);
+            // printf("2. unixDateNows rest: %d\n", unixDateNow % 86400);
+            unixDateNow = unixDateNow - (unixDateNow % 86400);
+            // printf("3. unixDateNow: %d\n", unixDateNow);
+
+            char firstRuleValue[RULE_VALUE_BUFFER] = "";
+            String firstvalue = String(unixDateNow) + ";" + String(unixDateNow) + ";0;0;0;0;0;0;-40;50";
+            strncpy(firstRuleValue, firstvalue.c_str(), RULE_VALUE_BUFFER);
+            cntrl->getSdCard()->saveValueToIni(WATERING_RULES_SECTION, "FirstRule", firstRuleValue);
+            logWebTraffic(request, "Base rule value: " + firstvalue + " added to FirstRule.");
             numOfKeys = 1;
         }
 
@@ -338,11 +348,13 @@ void WiFi32s::startWebHtm() {
             JsonObject root = response->getRoot();
 
             cntrl->getSdCard()->getValueFromIni(WATERING_RULES_SECTION, rulename, rulevalue);
-            if (rulevalue == EMPTY_STRING) {
-                root["rulevalue"] = firstRuleValue;
-            } else {
-                root["rulevalue"] = rulevalue;
-            }
+            // if (rulevalue == EMPTY_STRING) {
+            //     root["rulevalue"] = firstRuleValue;
+            // } else {
+            //     root["rulevalue"] = rulevalue;
+            // }
+
+            root["rulevalue"] = rulevalue;
 
             jsonOutput = String();
             serializeJson(root, jsonOutput);

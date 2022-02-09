@@ -140,8 +140,7 @@ bool SDCard::getKeysArray(String section_, char **arr) {
 }
 
 bool SDCard::deleteKey(const String &section_, const String &key_) {
-    
-    bool result =  wsIni->del(section_, key_);
+    bool result = wsIni->del(section_, key_);
 
     printf("Delete key result %d - section: %s - key: %s\n", result, section_.c_str(), key_.c_str());
     return result;

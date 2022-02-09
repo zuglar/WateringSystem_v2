@@ -43,6 +43,8 @@ public:
     String getAdminPwd();
     /* Public method - set master admin password to EEPROM 24C32 which is integrated on DS3231 module */
     bool setAdminPwd(String str_);
+    /* Public method - get unix time */
+    uint32_t getUnixTimeNow();
 };
 
 #endif /* __DS3231RTC_HPP__ */

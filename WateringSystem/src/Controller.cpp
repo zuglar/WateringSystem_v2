@@ -153,11 +153,11 @@ bool Controller::getSystemGlobalValues() {
     value = String();
     // Stores interval time
     sdCard->getValueFromIni(TIME_INTERVAL_CHECKING_SECTION, INTERVAL_KEY, value);
-    refreshSensorsInterval = value.toInt();
-    printf("Refresh interval value of checking the sensors: %d.\n", refreshSensorsInterval);
+    systemRefreshInterval = value.toInt();
+    printf("Refresh interval value of checking the sensors: %d.\n", systemRefreshInterval);
     mainAppError = sdCard->writeLogFile("Refresh interval value of checking the sensors: " + value);
 
-    if(maxDryness > 4095 || maxWetness < 1 || refreshSensorsInterval < 5)
+    if (maxDryness > 4095 || maxWetness < 1 || systemRefreshInterval < 5)
         return false;
 
     return true;
@@ -169,58 +169,58 @@ void Controller::controllerReadAnalogInputPinValue(const gpio_num_t powerChannel
     analogInputs->storeAnalogInputPinValue(powerChannel_, measuredValueAnalogSensorsArray);
 }
 
-void Controller::setActiveValves() {
-    valvesNumber = 0;
-    measuredSensorsValueString = "";
+// void Controller::setActiveValves() {
+//     valvesNumber = 0;
+//     measuredSensorsValueString = "";
 
-    for (int i = 0; i < ANALOG_DATA_ARRAY_SIZE; i++) {
-        printf("...Sensor: %d - threshold: %d - measured: %d\n", i + 1, thresholdAnalogSensorsArray[i], measuredValueAnalogSensorsArray[i]);
-        /* If threshold value is 0 then the measured value of sensor will not be used, percentage is 0% */
+//     for (int i = 0; i < ANALOG_DATA_ARRAY_SIZE; i++) {
+//         printf("...Sensor: %d - threshold: %d - measured: %d\n", i + 1, thresholdAnalogSensorsArray[i], measuredValueAnalogSensorsArray[i]);
+//         /* If threshold value is 0 then the measured value of sensor will not be used, percentage is 0% */
 
-        if (thresholdAnalogSensorsArray[i] == 0) {
-            measuredSensorsValueString += String(SENSOR_NOT_IN_USE) + ";";
-            // printf("soil wetness: %s%% - ", SENSOR_NOT_IN_USE);
-        } else {
-            /* Convert measured values to percentage */
-            int value = valueToPercentage(measuredValueAnalogSensorsArray[i]);
-            if (i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY)) {
-                measuredSensorsValueString += String(value);// + ";";
-                // printf("soil wetness: %d%% - ", value);
-                /* Store number which valves will be turned off or on */
-                if (thresholdAnalogSensorsArray[i] > value && i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY)) {
-                    valvesNumber += pow(2, i);
-                    // printf("valveOnOff: %d", valvesNumber);
-                }
-            } else {
-                // printf("rain sensor: %d%% - ", value);
-                if (thresholdAnalogSensorsArray[i] > value && i >= (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY) && i < ANALOG_DATA_ARRAY_SIZE) {
-                    measuredSensorsValueString += RAIN_SENSOR_NOT_RAINS;
-                    // measuredSensorsValueString += ";";
-                } else {
-                    measuredSensorsValueString += RAIN_SENSOR_RAINS;
-                    // measuredSensorsValueString += ";";
-                }
-            }
+//         if (thresholdAnalogSensorsArray[i] == 0) {
+//             measuredSensorsValueString += String(SENSOR_NOT_IN_USE) + ";";
+//             // printf("soil wetness: %s%% - ", SENSOR_NOT_IN_USE);
+//         } else {
+//             /* Convert measured values to percentage */
+//             int value = valueToPercentage(measuredValueAnalogSensorsArray[i]);
+//             if (i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY)) {
+//                 measuredSensorsValueString += String(value);// + ";";
+//                 // printf("soil wetness: %d%% - ", value);
+//                 /* Store number which valves will be turned off or on */
+//                 if (thresholdAnalogSensorsArray[i] > value && i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY)) {
+//                     valvesNumber += pow(2, i);
+//                     // printf("valveOnOff: %d", valvesNumber);
+//                 }
+//             } else {
+//                 // printf("rain sensor: %d%% - ", value);
+//                 if (thresholdAnalogSensorsArray[i] > value && i >= (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY) && i < ANALOG_DATA_ARRAY_SIZE) {
+//                     measuredSensorsValueString += RAIN_SENSOR_NOT_RAINS;
+//                     // measuredSensorsValueString += ";";
+//                 } else {
+//                     measuredSensorsValueString += RAIN_SENSOR_RAINS;
+//                     // measuredSensorsValueString += ";";
+//                 }
+//             }
 
-            if (i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY)) {
-                measuredSensorsValueString += ";";
-            }
+//             if (i < (ANALOG_DATA_ARRAY_SIZE - RAIN_SENSORS_QUANTITY)) {
+//                 measuredSensorsValueString += ";";
+//             }
 
-        }
-        // printf("\n");
-    }
-    printf("Analog Inputs measured values: %s\n", measuredSensorsValueString.c_str());
-    mainAppError = sdCard->writeLogFile("Analog Inputs measured values: " + measuredSensorsValueString);
+//         }
+//         // printf("\n");
+//     }
+//     printf("Analog Inputs measured values: %s\n", measuredSensorsValueString.c_str());
+//     mainAppError = sdCard->writeLogFile("Analog Inputs measured values: " + measuredSensorsValueString);
 
-    valvesBinaryString = String(valvesNumber, BIN);
+//     valvesBinaryString = String(valvesNumber, BIN);
 
-    while (valvesBinaryString.length() != VALVES_BINARY_STRING_LENGHT) {
-        valvesBinaryString = "0" + valvesBinaryString;
-    }
+//     while (valvesBinaryString.length() != VALVES_BINARY_STRING_LENGHT) {
+//         valvesBinaryString = "0" + valvesBinaryString;
+//     }
 
-    printf("Active valves binary mode: %s\n", valvesBinaryString.c_str());
-    mainAppError = sdCard->writeLogFile("Active valves binary mode: " + valvesBinaryString);
-}
+//     printf("Active valves binary mode: %s\n", valvesBinaryString.c_str());
+//     mainAppError = sdCard->writeLogFile("Active valves binary mode: " + valvesBinaryString);
+// }
 
 void Controller::valvesTurnOffOn() {
     /* valvesBinaryString = String(valvesNumber, BIN);
@@ -309,13 +309,11 @@ bool Controller::controllerWiFi32sInit() {
         if (!wifi32s->init(apHidden.toInt(), apSSID.c_str(), apPwd.c_str(), apChannel.toInt(), apMaxConnection.toInt(),
                            staEnabled.toInt(), staSSID.c_str(), staPwd.c_str(), staStaticIpEnabled.toInt(), staIP.c_str(),
                            staSubnet.c_str(), staGateway.c_str(), staDns.c_str())) {
-
             return false;
         }
     } else {
         if (!wifi32s->init(apHidden.toInt(), apSSID.c_str(), apPwd.c_str(), apChannel.toInt(), apMaxConnection.toInt(),
                            0, NULL, NULL, NULL, NULL, NULL, NULL, NULL)) {
-
             return false;
         }
     }
@@ -328,15 +326,134 @@ bool Controller::controllerWiFi32sInit() {
     return true;
 }
 
-/* void Controller::controllerGetKeysValuesRules() {
-    keysOfWateringRules = EMPTY_STRING;
-    valuesOfKeysOfRules = EMPTY_STRING;
-    sdCard->getKeysValuesFromSection(RULES_SECTION, keysOfWateringRules, valuesOfKeysOfRules);
-    printf("keysOfWatteringRules: %s\n", keysOfWateringRules.c_str());
-    printf("valuesOfKeysOfRules: %s\n", valuesOfKeysOfRules.c_str());
+bool Controller::controllerPrepareWatering() {
+    // Gets number of keys
+    keysNum = sdCard->getNumKeysInSection(WATERING_RULES_SECTION);
+
+    // Allocate memory for ruleNames
+    ruleNames = (char **)malloc(keysNum * sizeof(char *));
+    for (uint8_t i = 0; i < keysNum; i++) {
+        ruleNames[i] = (char *)malloc(RULE_NAME_BUFFER * sizeof(char));
+    }
+
+    if (!sdCard->getKeysArray(WATERING_RULES_SECTION, ruleNames)) {
+        return false;
+    }
+
+    // Variable to store rule value
+    String ruleValue;
+    // Gets unixDateTime now  from DS3231
+    uint32_t unixDateTimeNow = getDs3231rtc()->getUnixTimeNow();
+    // Gets unixDate from DS3231-unixtime
+    uint32_t unixDateNow = unixDateTimeNow - (unixDateTimeNow % 86400);
+    // Variable to store active rule name
+    char *activeRuleName = NULL;
+
+    // Variable to store start time
+    uint32_t startTime = 0;
+    // Variable to store end time
+    uint32_t endTime = 0;
+    // Variable to store next start time
+    uint32_t nextStartTime = 0;
+
+    char *true_ = "1";
+
+    valvesDecValue = 0;
+    checkSoilWetness = false;
+    checkRainSensor = false;
+    checkTemperature = false;
+    activeRule = false;
+    wateringDurationTime = 0;
+
+    printf("Unix Date Now: %d\n", unixDateNow);
+
+    for (uint8_t i = 0; i < keysNum; i++) {
+        ruleValue = EMPTY_STRING;
+        sdCard->getValueFromIni(WATERING_RULES_SECTION, ruleNames[i], ruleValue);
+        printf("Rule name: %s - Value: %s\n", ruleNames[i], ruleValue.c_str());
+
+        char *copy = strdup(ruleValue.c_str());
+        char *found;
+        uint8_t j = 0;
+
+        while ((found = strsep(&copy, DELIMITER)) != NULL) {
+            if (j == 0) {  // Checks start date
+                if (unixDateNow < (uint32_t)(strtoul(found, NULL, 10)))
+                    break;
+            } else if (j == 1) {  // Checks end date
+                if (unixDateNow > (uint32_t)(strtoul(found, NULL, 10)))
+                    break;
+            } else if (j == 2) {  // Checks start time
+                uint32_t value = (uint32_t)strtoul(found, NULL, 10);
+                value = value + unixDateNow;
+                if (value <= unixDateTimeNow) {
+                    startTime = value;
+                } else {
+                    if (nextStartTime == 0) {
+                        nextStartTime = value;
+                    } else {
+                        if (nextStartTime > value) {
+                            nextStartTime = value;
+                        }
+                    }
+                    break;
+                }
+            } else if (j == 3) {  // Checks end time
+                uint32_t value = (uint32_t)(strtoul(found, NULL, 10));
+                value = value + unixDateNow;
+                if (value >= unixDateTimeNow) {
+                    endTime = value;
+                } else {
+                    break;
+                }
+            } else if (j == 4) {  // Store decimal value of active valves
+                valvesDecValue = (uint8_t)strtol(found, NULL, 10);
+            } else if (j == 5) {  // Store - bool - check soil wetness before watering
+                checkSoilWetness = found && (strcmp(found, true_) == 0);
+            } else if (j == 6) {  // Store - bool - check rain sensor - if rains then stops watering
+                checkRainSensor = found && (strcmp(found, true_) == 0);
+            } else if (j == 7) {  // Store - bool - check temperature during watering - if temperature is above or below the given values stops watering
+                checkTemperature = found && (strcmp(found, true_) == 0);
+            } else if (j == 8) {  // Store - low temperaure - if temperature is below the given value stops watering
+                lowTemperature = (int8_t)atoi(found);
+            } else if (j == 9) {  // Store - high temperaure - if temperature is above the given value stops watering
+                highTemperature = (int8_t)atoi(found);
+                activeRuleName = strdup(ruleNames[i]);
+                activeRule = true;
+                break;
+            }
+            j++;
+        }
+    }
+    if (activeRule) {
+        printf("ACTIVE RULE\n");
+        printf("Rule name: %s\n", activeRuleName);
+        printf("Start time: %d\n", startTime);
+        printf("End time: %d\n", endTime);
+        printf("Valves: %d\n", valvesDecValue);
+        printf("SoilWetness: %d\n", checkSoilWetness);
+        printf("RainSensor: %d\n", checkRainSensor);
+        printf("Temperature: %d\n", checkTemperature);
+        printf("Low Temp: %d\n", lowTemperature);
+        printf("High Temp: %d\n", highTemperature);
+        wateringDurationTime = endTime - unixDateTimeNow;
+        printf("Watering Duration Time: %d seconds\n", wateringDurationTime);
+    } else {
+        printf("NO ACTIVE RULE\n");
+        wateringDurationTime = nextStartTime - unixDateTimeNow;
+        printf("Next watering rule in: %d seconds\n", wateringDurationTime);
+    }
+
+    // Freeing alocated memory for ruleNames
+    for (uint8_t i = 0; i < keysNum; i++)
+        free(ruleNames[i]);
+ 
+    free(ruleNames);
+
+    return true;
 }
- */
-/* 
+
+/*
 bool Controller::controllerWiFi32sInit() {
     String *apHidden = new String();
     String *apSSID = new String();
