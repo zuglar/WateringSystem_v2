@@ -405,7 +405,8 @@ bool Controller::controllerPrepareWatering() {
         minutes = (wateringDurationTime % 3600) / 60;
         seconds = (wateringDurationTime % 60);
         printf("Next watering rule in: %d days, %d hours, %d minutes, %d seconds. Total seconds: %d\n", days, hours, minutes, seconds, wateringDurationTime);
-        valvesTurnOffOn(ALL_VALVES_OFF);
+        newValvesDecValue = ALL_VALVES_OFF;
+        valvesTurnOffOn(newValvesDecValue);
     }
     return true;
 }
