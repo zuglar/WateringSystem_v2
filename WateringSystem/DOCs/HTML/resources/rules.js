@@ -180,6 +180,7 @@ function getSetGlobalData() {
                             } else if (data.result == 1) {
                                 // Upload finished successfully
                                 Alert.render("Success!", "Rule setting has been saved / deleted!", okColor);
+                                window.location.reload();
                             } else {
                                 // Warning occurred while uploading
                                 Alert.render("Warning!", "Rule setting has not been saved / deleted!", warningColor);
@@ -463,7 +464,7 @@ function checkGlobalSettings() {
         }
     }
 
-    if (!isNumeric(document.getElementById("refresh-interval"), 5, 60)) {
+    if (!isNumeric(document.getElementById("refresh-interval"), 2, 15)) {
         return false;
     }
 

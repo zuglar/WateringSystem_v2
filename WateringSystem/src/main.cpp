@@ -53,6 +53,7 @@ void setup() {
     delay(DELAY_2SEC);
     /* Start Watering */
     controller->controllerPrepareWatering();
+    controller->controllerGetSensorsValue();
     // ESP.getFreePsram();
 }
 
@@ -86,20 +87,33 @@ void loop() {
         }
 
         if (controller->activeRuleExists) {
-            if (controller->checkTemperature) {
-                printf("System Checks Temperature!\n");
-                controller->controllerCheckTemperature();
-            }
-
             if (controller->checkRainSensor) {
                 printf("System Checks Rain Sensor!\n");
-                controller->controllerCheckTemperature();
+                controller->controllerCheckRains();
+            } else {
+                if (controller->checkTemperature) {
+                    printf("System Checks Temperature!\n");
+                    controller->controllerCheckTemperature();
+                } else {
+                    if (controller->checkSoilWetness) {
+                        printf("System Checks Soil Wetness!\n");
+                    }
+                }
             }
+            // if (controller->checkTemperature) {
+            //     printf("System Checks Temperature!\n");
+            //     controller->controllerCheckTemperature();
+            // }
 
-            if (controller->checkSoilWetness) {
-                printf("System Checks Soil Wetness!\n");
-                controller->controllerCheckTemperature();
-            }
+            // if (controller->checkRainSensor) {
+            //     printf("System Checks Rain Sensor!\n");
+            //     controller->controllerCheckTemperature();
+            // }
+
+            // if (controller->checkSoilWetness) {
+            //     printf("System Checks Soil Wetness!\n");
+            //     controller->controllerCheckTemperature();
+            // }
         }
 
         systemTimer1Interrupt = 0;

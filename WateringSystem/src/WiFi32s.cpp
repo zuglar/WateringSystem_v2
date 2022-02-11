@@ -166,8 +166,10 @@ void WiFi32s::startWebHtm() {
     });
     // Sends data to show values of weather, of wetness of soil and of state of valves and rain sensor
     server.on("/getWeather", HTTP_GET, [this](AsyncWebServerRequest *request) {
+        asyncTcpWdt = true; 
         logWebTraffic(request, EMPTY_STRING);
         cntrl->controllerGetAht20Bmp280Data();
+        cntrl->controllerGetSensorsValue();
         // Simple option to create json
         // AsyncResponseStream *response = request->beginResponseStream("application/json");
         // DynamicJsonDocument json(1024);
@@ -187,8 +189,9 @@ void WiFi32s::startWebHtm() {
         root["temp"] = String(cntrl->temperature, 2);
         root["hum"] = String(cntrl->relativeHumidity, 2);
         root["atm"] = String((cntrl->airPressure / 1000), 2);
-        root["valves"] = 79;
-        root["sensors"] = "100;50;20;10;30;60;70;80;1";
+        root["valves"] = cntrl->newValvesDecValue;
+        // root["sensors"] = "100;50;20;10;30;60;70;80;1";measuredSensorsValueString
+        root["sensors"] = cntrl->measuredSensorsValueString;
 
         jsonOutput = String();
         serializeJson(root, jsonOutput);
@@ -288,7 +291,7 @@ void WiFi32s::startWebHtm() {
             // printf("3. unixDateNow: %d\n", unixDateNow);
 
             char firstRuleValue[RULE_VALUE_BUFFER] = "";
-            String firstvalue = String(unixDateNow) + ";" + String(unixDateNow) + ";0;0;0;0;0;0;-40;50";
+            String firstvalue = String(unixDateNow) + ";" + String(unixDateNow + 15778458) + ";0;0;0;0;0;0;-40;50";
             strncpy(firstRuleValue, firstvalue.c_str(), RULE_VALUE_BUFFER);
             cntrl->getSdCard()->saveValueToIni(WATERING_RULES_SECTION, "FirstRule", firstRuleValue);
             logWebTraffic(request, "Base rule value: " + firstvalue + " added to FirstRule.");
@@ -453,6 +456,7 @@ void WiFi32s::startWebHtm() {
                     } else {
                         // sendResponseToClient(request, 202, CORRECT_HTM_FILE +String("?asd=1"));
                         logWebTraffic(request, "New Rule setting has been saved!");
+                        cntrl->controllerPrepareWatering();
                         result = 1;
                     }
                 } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_GLOBAL) == 0)) {

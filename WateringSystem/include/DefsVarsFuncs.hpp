@@ -4,7 +4,8 @@
 #include <stdio.h>
 
 /* Main Defines */
-#define DELAY_03_SEC 300 /* Delay of LED flash 0.3ms */
+#define DELAY_03_SEC 300 /* Delay of LED flash 0.3s */
+#define DELAY_005_SEC 50 /* Delay of LED flash 0.05s */
 #define DELAY_1SEC 1000  /* Delay of LED flash 1s */
 #define DELAY_2SEC 2000  /* Delay of LED flash 2s */
 /* Digital Output Defines */
@@ -80,7 +81,8 @@
 #define DELIMITER ";"
 #define RULE_VALUE_BUFFER 56
 #define RULE_NAME_BUFFER 11
-/* WiFi32s Defines */
+#define INTERVAL_MIN_VALUE 2
+/* WiFi32s Web Paths and Pages Defines */
 #define PAGE_WIFI "wifi"
 #define PAGE_RULES "rules"
 #define PAGE_ADMIN "admin"
@@ -96,6 +98,8 @@
 #define FTP_PASSWORD "ftp"
 // #define MAX_WIFI_INPUTS_BUFFER 165
 
+
+#define AFTER_MIDNIGHT 86400
 /* Main Variables */
 extern volatile bool mainAppError;
 extern volatile bool asyncTcpWdt;

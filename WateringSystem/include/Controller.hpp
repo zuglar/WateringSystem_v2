@@ -9,6 +9,7 @@
 #include "Aht20Bmp280.hpp"
 #include "AnalogInput.hpp"
 #include "WiFi32s.hpp"
+#include "InterruptTimer1.hpp"
 
 class WiFi32s;
 
@@ -32,6 +33,9 @@ private:
     AnalogInput *analogInputs;
     /* Private method - Convert analog input value to percentage */
     int valueToPercentage(int analogInputValue_);
+
+    /* Private property - To store decimal value of active valves of rule from ini file */
+    uint8_t valvesDecValue;
  
 
     char **ruleNames;
@@ -54,8 +58,8 @@ public:
     bool controllerAnalogInputsInit();
     /* Public method - Save Analog Sensors threshold value to array */
     bool analogSensorsThresholdValues();
-    /* Public method - Read values of analog inputs and store in an array */
-    void controllerReadAnalogInputValue(const gpio_num_t powerChannel_);
+    // /* Public method - Read values of analog inputs and store in an array */
+    // void controllerReadAnalogInputValue(const gpio_num_t powerChannel_);
     /* Public method - To store/get max dryness and wetness values of soil and refresh interval of system from ws.ini file */
     bool getSystemGlobalValues();
     /* Public method - Turn Off/On watering valves */
@@ -66,10 +70,14 @@ public:
     bool controllerWiFi32sInit();
     /* Public method - search and prepare rules to start watering */
     bool controllerPrepareWatering();
-    /* Public method - search and prepare rules to start watering */
-    void controllerCheckTemperature();
-    /* Public method - gets analog wetness and rain sensors meassured values */
+    /* Public method - checks temperature */
+    bool controllerCheckTemperature();
+    /* Public method - checks rains */
+    bool controllerCheckRains();
+    /* Public method - gets analog wetness and rain sensors meassured values and store in an array */
     void controllerGetSensorsValue();
+    /* Public method - Checks rains, temperature, wetness - all in one */
+    bool controllerCheckWateringRules();
 
     // /* Public method - Set value of valvesNumber. Calculate which valves will be turn On or Off */
     // void setActiveValves();
@@ -93,8 +101,8 @@ public:
 
     /* Public property - To store measured values of Analog Sensors to String */
     String measuredSensorsValueString;
-    /* Public property - To store decimal value of active valves of rule from ini file */
-    uint8_t valvesDecValue;
+    /* Public property - To store decimal value of active valves of rule when is changed during checking the temperature, rains, wetness */
+    uint8_t newValvesDecValue;
     /* Public property - Array to store measured values of rain and wetness sensors */
     int measuredValueAnalogSensorsArray[ANALOG_DATA_ARRAY_SIZE];
     /* Public property - Array to store threshold values of rain and wetness sensors */
