@@ -45,12 +45,12 @@ $(document).ready(function () {
         console.log("FETCH - END");
     });
 })
-/* Gets sensors data and valves status every 5 minutes  */
+/* Gets sensors data and valves status every 1 minute  */
 setInterval(() => {
     if (page == "" || page == "index.htm") {
         getWeatherData();
     }
-}, 300000)
+}, 100000)
 /* Function to send a request to get new values of sensors states */
 function getWeatherData() {
     let newServerURL = serverURL + "/getWeather";

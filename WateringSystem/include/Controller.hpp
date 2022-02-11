@@ -36,6 +36,18 @@ private:
 
     /* Private property - To store decimal value of active valves of rule from ini file */
     uint8_t valvesDecValue;
+
+
+    /* Public property - Variable to store to check soil wetnes before watering - if soil is dry then starts watering */
+    bool checkSoilWetness;
+    /* Public property - Variable to store to check rain sensor during watering - if rains then stops watering */
+    bool checkRainSensor;
+    /* Public property - Variable to store to check temperature during watering - if temperature is above or below than the given values stops watering */
+    bool checkTemperature;
+    /* Public property - Store less temperature value - if temperature is below than the given value stops watering */
+    int8_t lowTemperature;
+    /* Public property - Store high temperature value - if temperature is above than the given value stops watering */
+    int8_t highTemperature;
  
 
     char **ruleNames;
@@ -70,19 +82,11 @@ public:
     bool controllerWiFi32sInit();
     /* Public method - search and prepare rules to start watering */
     bool controllerPrepareWatering();
-    /* Public method - checks temperature */
-    bool controllerCheckTemperature();
-    /* Public method - checks rains */
-    bool controllerCheckRains();
     /* Public method - gets analog wetness and rain sensors meassured values and store in an array */
     void controllerGetSensorsValue();
     /* Public method - Checks rains, temperature, wetness - all in one */
-    bool controllerCheckWateringRules();
+    void controllerCheckWateringRules();
 
-    // /* Public method - Set value of valvesNumber. Calculate which valves will be turn On or Off */
-    // void setActiveValves();
-    /* Public method - Get keys and values of watering rules */
-    //void controllerGetKeysValuesRules();
 
     
 
@@ -102,7 +106,7 @@ public:
     /* Public property - To store measured values of Analog Sensors to String */
     String measuredSensorsValueString;
     /* Public property - To store decimal value of active valves of rule when is changed during checking the temperature, rains, wetness */
-    uint8_t newValvesDecValue;
+    // uint8_t newValvesDecValue;
     /* Public property - Array to store measured values of rain and wetness sensors */
     int measuredValueAnalogSensorsArray[ANALOG_DATA_ARRAY_SIZE];
     /* Public property - Array to store threshold values of rain and wetness sensors */
@@ -119,21 +123,15 @@ public:
     int maxDryness;
     /* Public property - To store/get value of max wetness of soil from ini file */
     int maxWetness;
-    /* Public property - Variable to store to check soil wetnes before watering - if soil is dry then starts watering */
-    bool checkSoilWetness;
-    /* Public property - Variable to store to check rain sensor during watering - if rains then stops watering */
-    bool checkRainSensor;
-    /* Public property - Variable to store to check temperature during watering - if temperature is above or below than the given values stops watering */
-    bool checkTemperature;
-    /* Public property - Store less temperature value - if temperature is below than the given value stops watering */
-    int8_t lowTemperature;
-    /* Public property - Store high temperature value - if temperature is above than the given value stops watering */
-    int8_t highTemperature;
+    
+
+
     /* Public property - Variable to store if we have an active watering rule */
     bool activeRuleExists;
     /* Public property - Variable to store duration of time of watering or to store duration of time to the next watering time */
     uint32_t wateringDurationTime;
-
+    /* Public property - variable of active valves during watering */
+    uint8_t newValvesDecValue;
     /* WiFi32s object */
     WiFi32s *wifi32s;
 };

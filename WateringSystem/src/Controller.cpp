@@ -405,78 +405,44 @@ bool Controller::controllerPrepareWatering() {
         minutes = (wateringDurationTime % 3600) / 60;
         seconds = (wateringDurationTime % 60);
         printf("Next watering rule in: %d days, %d hours, %d minutes, %d seconds. Total seconds: %d\n", days, hours, minutes, seconds, wateringDurationTime);
-        newValvesDecValue = ALL_VALVES_OFF;
-        valvesTurnOffOn(newValvesDecValue);
+        valvesTurnOffOn(ALL_VALVES_OFF);
     }
     return true;
 }
 
-bool Controller::controllerCheckTemperature() {
-    this->controllerGetAht20Bmp280Data();
-    if ((int8_t)this->temperature <= this->lowTemperature || (int8_t)this->temperature >= this->highTemperature) {
-        return true;
-    }
-    return false;
-}
-
-bool Controller::controllerCheckRains() {
-    this->controllerGetSensorsValue();
-    if (measuredSensorsValueString.endsWith("1")) {
-        printf("measuredSensorsValueString.endsWith(\"1\") ... OK\n");
-        return true;
-    }
-    return false;
-}
-
-bool Controller::controllerCheckWateringRules() {
+void Controller::controllerCheckWateringRules() {
     newValvesDecValue = valvesDecValue;
 
     if (!checkSoilWetness && !checkRainSensor && !checkTemperature) {
         valvesTurnOffOn(newValvesDecValue);
-        return true;
+        return;
     }
 
+    this->controllerGetSensorsValue();
+
     if (checkRainSensor) {
-        if (controllerCheckRains()) {
+        if (measuredSensorsValueString.endsWith("1")) {
             newValvesDecValue = ALL_VALVES_OFF;
             valvesTurnOffOn(newValvesDecValue);
-            return true;
-        } else {
-            if (checkTemperature) {
-                if (controllerCheckTemperature()) {
-                    newValvesDecValue = ALL_VALVES_OFF;
-                    valvesTurnOffOn(newValvesDecValue);
-                    return true;
-                }
-            }
-
-            if (checkSoilWetness) {
-                ///////////////////////////////////
-                return true;
-            }
+            return;
         }
     }
 
     if (checkTemperature) {
-        if (controllerCheckTemperature()) {
+        this->controllerGetAht20Bmp280Data();
+        if ((int8_t)this->temperature <= this->lowTemperature || (int8_t)this->temperature >= this->highTemperature) {
             newValvesDecValue = ALL_VALVES_OFF;
             valvesTurnOffOn(newValvesDecValue);
-            return true;
-        } else {
-            if (checkSoilWetness) {
-                ///////////////////////////////////
-                return true;
-            }
+            return;
         }
     }
 
     if (checkSoilWetness) {
         ///////////////////////////////////
-        return true;
+        // return;
     }
 
     valvesTurnOffOn(newValvesDecValue);
-    return true;
 }
 
 void Controller::controllerGetSensorsValue() {

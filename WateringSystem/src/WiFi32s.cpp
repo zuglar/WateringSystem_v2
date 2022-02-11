@@ -275,7 +275,6 @@ void WiFi32s::startWebHtm() {
         String interval;
         uint8_t numOfKeys = cntrl->getSdCard()->getNumKeysInSection(WATERING_RULES_SECTION);
 
-        printf("NUM_OF_KEYS = %d\n", numOfKeys);
         logWebTraffic(request, "NUM_OF_KEYS = " + String(numOfKeys));
 
         DynamicJsonDocument ruleArrayDoc(1024);

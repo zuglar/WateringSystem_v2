@@ -87,33 +87,7 @@ void loop() {
         }
 
         if (controller->activeRuleExists) {
-            if (controller->checkRainSensor) {
-                printf("System Checks Rain Sensor!\n");
-                controller->controllerCheckRains();
-            } else {
-                if (controller->checkTemperature) {
-                    printf("System Checks Temperature!\n");
-                    controller->controllerCheckTemperature();
-                } else {
-                    if (controller->checkSoilWetness) {
-                        printf("System Checks Soil Wetness!\n");
-                    }
-                }
-            }
-            // if (controller->checkTemperature) {
-            //     printf("System Checks Temperature!\n");
-            //     controller->controllerCheckTemperature();
-            // }
-
-            // if (controller->checkRainSensor) {
-            //     printf("System Checks Rain Sensor!\n");
-            //     controller->controllerCheckTemperature();
-            // }
-
-            // if (controller->checkSoilWetness) {
-            //     printf("System Checks Soil Wetness!\n");
-            //     controller->controllerCheckTemperature();
-            // }
+            controller->controllerCheckWateringRules();
         }
 
         systemTimer1Interrupt = 0;
