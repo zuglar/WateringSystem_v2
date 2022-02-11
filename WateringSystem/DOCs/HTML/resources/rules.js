@@ -120,7 +120,8 @@ function getSetGlobalData() {
                                 Alert.render("Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor);
                             } else if (data.result == 1) {
                                 // Upload finished successfully
-                                Alert.render("Success!", "New Global setting has been saved!", okColor);
+                                setTimeout(Alert.render("Success!", "New Global setting has been saved!", okColor), 5000);
+                                window.location.reload();
                             } else {
                                 // Warning occurred while uploading
                                 Alert.render("Warning!", "New Global setting has not been saved!", warningColor);
@@ -179,7 +180,7 @@ function getSetGlobalData() {
                                 Alert.render("Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor);
                             } else if (data.result == 1) {
                                 // Upload finished successfully
-                                Alert.render("Success!", "Rule setting has been saved / deleted!", okColor);
+                                setTimeout(Alert.render("Success!", "Rule setting has been saved / deleted!", okColor), 5000);
                                 window.location.reload();
                             } else {
                                 // Warning occurred while uploading
