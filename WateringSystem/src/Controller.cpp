@@ -441,6 +441,25 @@ void Controller::controllerCheckWateringRules() {
     if (checkSoilWetness) {
         ///////////////////////////////////
         // return;
+        char binResult[9];
+        newValvesDecValue = ALL_VALVES_OFF;
+        strcpy(binResult, String(valvesDecValue, BIN).c_str());
+        // printf("binResult: %s\n", binResult);
+        uint8_t value = 0;
+
+        size_t lenght = strlen(binResult);
+        for (int i = lenght - 1, j = 0; i >= 0; i--, j++) {
+            // Serial.print(binResult[i]);
+            if (binResult[i] == '1') {
+                value = valueToPercentage(measuredValueAnalogSensorsArray[j]);
+                if ((uint8_t)thresholdAnalogSensorsArray[j] > value) {
+                    // printf("j: %d - threshold[j]: %d - measured[j] %d - value: %d\n", j, thresholdAnalogSensorsArray[j], measuredValueAnalogSensorsArray[i], value);
+                    newValvesDecValue += (uint8_t)(pow(2, j) + 0.5);
+                }
+            }
+        }
+        // printf("newValvesDecValue: %d\n", newValvesDecValue);
+        valvesTurnOffOn(newValvesDecValue);
     }
 
     valvesTurnOffOn(newValvesDecValue);

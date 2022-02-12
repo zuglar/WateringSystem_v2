@@ -1,5 +1,5 @@
 /* Import main functions, variables from main.js */
-import { warningColor, errorColor, okColor, scalePage, getvals, CustomAlertDialog } from '/resources/main.js';
+import { warningColor, errorColor, okColor, scalePage, getvals, CustomDialog } from '/resources/main.js';
 
 /* Global variables */
 var serverIP;   // IP address of server
@@ -10,7 +10,7 @@ var tbl;
 var row;
 var cell;
 
-var Alert = new CustomAlertDialog();
+var dialog = new CustomDialog();
 
 /* Scale page to screen size */
 $(function () {
@@ -32,17 +32,17 @@ $(document).ready(function () {
         }
 
         serverURL = "http://" + serverURL;
-        console.log("FETCH - Server URL: " + serverURL);
-        console.log("FETCH - IP Address: " + serverIP);
+        // console.log("FETCH - Server URL: " + serverURL);
+        // console.log("FETCH - IP Address: " + serverIP);
 
         var path = window.location.pathname;
         page = path.split("/").pop();
-        console.log("page: " + page);
+        // console.log("page: " + page);
 
         if (page == "" || page == "index.htm") {
             getWeatherData();
         }
-        console.log("FETCH - END");
+        // console.log("FETCH - END");
     });
 })
 /* Gets sensors data and valves status every 1 minute  */
@@ -82,7 +82,7 @@ function getWeatherData() {
             // response.sensors - percentage of soil wetness per sensors (JSON string)
             wetnessRainSensorsState(response.sensors);
         } else {
-            Alert.render("Error!", "Error occurred during getting weather data!", errorColor);
+            dialog.render(0, "Error!", "Error occurred during getting weather data!", errorColor, function (result) {});
         }
     });
 }
@@ -102,7 +102,7 @@ function valvesState(valvesDecimal) {
     const valves = dec2bin(valvesDecimal);
 
     if (valves.length != 8) {
-        alert("\tERROR!!!\nUnable to get data of state of valves!");
+        dialog.render(0, "Error!", "Unable to get data of state of valves!", errorColor, function (result) {});
         return;
     }
     // get the reference for the div
@@ -173,8 +173,7 @@ function wetnessRainSensorsState(sensors) {
     // console.log("wetnessRainSensorsState - typeof(sensors): " + typeof (sensors) + ", value: " + sensors);
     const valueArray = sensors.split(';');
     if (valueArray.length != 9) {
-        // alert("ERROR!!!\nUnable to read wetness and rain sensors values!!!");
-        showAlert("ERROR! Unable to read wetness and rain sensors values!", errorColor);
+        dialog.render(0, "Error!", "Unable to read wetness and rain sensors values!", errorColor, function (result) {});
         return;
     }
     // get the reference for the div

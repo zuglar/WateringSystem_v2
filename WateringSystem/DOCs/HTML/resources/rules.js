@@ -1,5 +1,5 @@
 /* Import main functions, variables from main.js */
-import { warningColor, errorColor, okColor, scalePage, getvals, CustomAlertDialog, CustomConfirmDialog } from '/resources/main.js';
+import { warningColor, errorColor, okColor, scalePage, getvals, CustomDialog } from '/resources/main.js';
 
 /* Global variables */
 var serverIP;   // IP address of server
@@ -13,8 +13,7 @@ var cell;
 var input;
 const VALVES_NUMBER = 8;
 
-var Alert = new CustomAlertDialog();
-var confirm = new CustomConfirmDialog();
+var dialog = new CustomDialog();
 
 $(document).ready(function () {
     $('.navbar').load("./resources/navbar.htm");
@@ -35,21 +34,21 @@ $(document).ready(function () {
         }
 
         serverURL = "http://" + serverURL;
-        console.log("FETCH - Server URL: " + serverURL);
-        console.log("FETCH - IP Address: " + serverIP);
+        // console.log("FETCH - Server URL: " + serverURL);
+        // console.log("FETCH - IP Address: " + serverIP);
 
         var path = window.location.pathname;
         page = path.split("/").pop();
-        console.log("page: " + page);
+        // console.log("page: " + page);
 
         if (page == "rules.htm") {
-            console.log("page: rules.htm");
+            // console.log("page: rules.htm");
 
             addValvesTable();
             createThresholdsInput();
             getSetGlobalData();
         }
-        console.log("FETCH - END");
+        // console.log("FETCH - END");
     });
 })
 /* Function to get, set Global data and add name of rule to select element */
@@ -90,8 +89,7 @@ function getSetGlobalData() {
                     return false;
                 }
 
-                confirm.render(1, "Global Setting Information", "Do you want to save the Global Setting?", warningColor, function (result) {
-                    console.log("......result: " + result);
+                dialog.render(1, "Global Setting Information", "Do you want to save the Global Setting?", warningColor, function (result) {ß
                     if (result === 0) {
                         return false;
                     }
@@ -102,7 +100,7 @@ function getSetGlobalData() {
                         document.forms['global-form'].action = "http://127.0.0.1:3001/update";
                     }
                     // Just for testing on Mockoon - END //
-                    console.log(document.forms['global-form'].action);
+                    // console.log(document.forms['global-form'].action);
                     // TODO do something here to show user that form is being submitted
                     fetch(event.target.action, {
                         method: 'POST',
@@ -117,19 +115,26 @@ function getSetGlobalData() {
                         .then((data) => {
                             if (data.result == 2) {
                                 // Error occurred while uploading
-                                Alert.render("Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor);
+                                dialog.render(0, "Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor, function (result) {});
                             } else if (data.result == 1) {
                                 // Upload finished successfully
-                                setTimeout(Alert.render("Success!", "New Global setting has been saved!", okColor), 5000);
-                                window.location.reload();
+                                dialog.render(0, "Success!", "New Global setting has been saved!", okColor, function (result) {
+                                    dialog.render(1, "Information!", "To apply the new settings you have to restart the system.<br>Do you want to do it now?", warningColor, function (result) {
+                                        if (result == 0) {
+                                            return;
+                                        } else {
+                                            
+                                        }
+                                    });
+                                });
                             } else {
                                 // Warning occurred while uploading
-                                Alert.render("Warning!", "New Global setting has not been saved!", warningColor);
+                                dialog.render(0, "Warning!", "New Global setting has not been saved!", warningColor, function (result) {});
                             }
                         })
                         .catch(error => {
                             console.warn(error);
-                            Alert.render("Error!", error, errorColor);
+                            dialog.render(0, "Error!", error, errorColor, function (result) {});
                         });
                 });
 
@@ -144,7 +149,7 @@ function getSetGlobalData() {
                     return false;
                 }
 
-                confirm.render(2, "Rule Setting Information", "Do you want to save or delete the rule?", warningColor, function (result) {
+                dialog.render(2, "Rule Setting Information", "Do you want to save or delete the rule?", warningColor, function (result) {
                     if (result === 0) {
                         // DELETE RULE
                         document.getElementById("save-delete").value = "0";
@@ -162,7 +167,7 @@ function getSetGlobalData() {
                         document.forms['rule-form'].action = "http://127.0.0.1:3001/upload";
                     }
                     // Just for testing on Mockoon - END //
-                    console.log(document.forms['rule-form'].action);
+                    // console.log(document.forms['rule-form'].action);
                     // TODO do something here to show user that form is being submitted
                     fetch(event.target.action, {
                         method: 'POST',
@@ -177,26 +182,27 @@ function getSetGlobalData() {
                         .then((data) => {
                             if (data.result == 2) {
                                 // Error occurred while uploading
-                                Alert.render("Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor);
+                                dialog.render(0, "Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor, function (result) {});
                             } else if (data.result == 1) {
                                 // Upload finished successfully
-                                setTimeout(Alert.render("Success!", "Rule setting has been saved / deleted!", okColor), 5000);
-                                window.location.reload();
+                                dialog.render(0, "Success!", "Rule setting has been saved / deleted!", okColor, function (result) {
+                                    window.location.reload();
+                                });
                             } else {
                                 // Warning occurred while uploading
-                                Alert.render("Warning!", "Rule setting has not been saved / deleted!", warningColor);
+                                dialog.render(0, "Warning!", "Rule setting has not been saved / deleted!", warningColor, function (result) {});
                             }
                         })
                         .catch(error => {
                             console.warn(error);
-                            Alert.render("Error!", error, errorColor);
+                            dialog.render(0, "Error!", error, errorColor, function (result) {});
                         });
                 });
             });
             setGlobalData(response);
             selectedRule();
         } else {
-            Alert.render("Error!", "Error occurred during getting Global Data!", errorColor);
+            dialog.render(0, "Error!", "Error occurred during getting Global Data!", errorColor, function (result) {});
         }
     });
 }
@@ -218,7 +224,7 @@ function selectedRule() {
         newServerURL = 'http://127.0.0.1:3001/getRuleValue?ruleName=' + selectedRuleItemText;
     }
     // Just for testing on Mockoon - END //
-    console.log("*** newServerURL: " + newServerURL);
+    // console.log("*** newServerURL: " + newServerURL);
     // get rule name from json global data data
     getvals(newServerURL).then(response => {
         if (response !== undefined) {
@@ -226,7 +232,7 @@ function selectedRule() {
             //console.log(response);
             setRuleData(response);
         } else {
-            Alert.render("Error!", "Error occurred during getting Rule Data!", errorColor);
+            dialog.render(0, "Error!", "Error occurred during getting Rule Data!", errorColor, function (result) {});
         }
     });
 }
@@ -391,7 +397,7 @@ function dateToUnixTime(element) {
     let date = document.getElementById(element).value;
 
     if (date == null || date == "") {
-        Alert.render("Error!", "Invalid date! " + element.id, errorColor);
+        dialog.render(0, "Error!", "Invalid date! " + element.id, errorColor, function (result) {});
         document.getElementById(element).focus();
         return 0;
     }
@@ -420,7 +426,7 @@ function isNumeric(element, minValue, maxValue) {
     // console.log("parseInt(element.value, 10): " + parseInt(element.value, 10))
     if (element.value === "" || element.value === " " || element.value === "  " || element.value === "   " || isNaN(parseInt(element.value, 10)) ||
         (parseInt(element.value, 10) < parseInt(minValue, 10)) || (parseInt(element.value, 10) > parseInt(maxValue, 10))) {
-        Alert.render("Error!", "Invalid value of " + element.id + ". <br>Min value: " + minValue + " - Max value: " + maxValue, errorColor);
+        dialog.render(0, "Error!", "Invalid value of " + element.id + ". <br>Min value: " + minValue + " - Max value: " + maxValue, errorColor, function (result) {});
         return false;
     }
 
@@ -429,16 +435,13 @@ function isNumeric(element, minValue, maxValue) {
 /* https://www.delftstack.com/howto/javascript/javascript-convert-timestamp-to-date/ */
 // Function to convert unit time to date format
 function unixtimeToDate(element, unix_timestamp) {
-    console.log("unix_timestamp: " + unix_timestamp);
+    // console.log("unix_timestamp: " + unix_timestamp);
     var date = new Date(unix_timestamp * 1000);
-    //console.log(date.toISOString());
-    // date = date.toISOString().split("T");
-    // element.value = date[0];
     let month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
     let dayDate = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
-    console.log(date.getFullYear() + "-" + month + "-" + dayDate);
+    // console.log(date.getFullYear() + "-" + month + "-" + dayDate);
     element.value = date.getFullYear() + "-" + month + "-" + dayDate;
-    console.log(element.value);
+    // console.log(element.value);
 }
 /* Function for temperature checkbox */
 function tempCheckBox(checkbox) {
@@ -480,7 +483,7 @@ function checkGlobalSettings() {
     console.log(thresholds);
     // console.log("thresholds: " + document.getElementById("new-thresholds").value);
     if (document.getElementById("adm-pwd-2").value.length < 8) {
-        Alert.render("Warning!", "Invalid administrator password.<br>Minimum 8 characters.", warningColor);
+        dialog.render(0, "Warning!", "Invalid administrator password.<br>Minimum 8 characters.", warningColor, function (result) {});
         return false;
     }
 
@@ -500,13 +503,13 @@ function checkRuleData() {
         return false;
 
     if (startDate >= endDate) {
-        Alert.render("Warning!", "Invalid date.<br>Start date is greater than End date.", warningColor);
+        dialog.render(0, "Warning!", "Invalid date.<br>Start date is greater than End date.", warningColor, function (result) {});
         return false;
     }
     // Gets value of start time and convert it in unix timestamp format
     let startTime = document.getElementById("start-time").value;
     if (startTime == "" || startTime == null) {
-        Alert.render("Warning!", "Invalid start time value.", warningColor);
+        dialog.render(0, "Warning!", "Invalid start time value.", warningColor, function (result) {});
         return false;
     }
     startTime = startTime.split(":");
@@ -547,7 +550,7 @@ function checkRuleData() {
         }
 
         if (parseInt(document.getElementById("min-temp").value, 10) >= parseInt(document.getElementById("max-temp").value, 10)) {
-            Alert.render("Warning!", "The less value of temperature cannot be equal or greater than more value of temperature.", warningColor);
+            dialog.render(0, "Warning!", "The less value of temperature cannot be equal or greater than more value of temperature.", warningColor, function (result) {});
             return false;
         }
 
@@ -558,14 +561,12 @@ function checkRuleData() {
     }
 
     if (document.getElementById("adm-pwd").value.length < 8) {
-        Alert.render("Warning!", "Invalid administrator password.<br>Minimum 8 characters.", warningColor);
+        dialog.render(0, "Warning!", "Invalid administrator password.<br>Minimum 8 characters.", warningColor, function (result) {});
         return false;
     }
 
     document.getElementById("new-rule-values").value = rule;
-    console.log("rule: " + document.getElementById("new-rule-values").value);
-
-    // document.getElementById("save-delete").value = "1";
+    // console.log("rule: " + document.getElementById("new-rule-values").value);
 
     return true;
 }

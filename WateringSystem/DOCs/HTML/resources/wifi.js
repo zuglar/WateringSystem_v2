@@ -1,13 +1,12 @@
 /* Import main functions, variables from main.js */
-import { warningColor, errorColor, okColor, scalePage, getvals, CustomAlertDialog, CustomConfirmDialog } from '/resources/main.js';
+import { warningColor, errorColor, okColor, scalePage, getvals, CustomDialog } from '/resources/main.js';
 
 /* Global variables */
 var serverIP;   // IP address of server
 var serverURL;  // URL of server
 var page;
 
-var Alert = new CustomAlertDialog();
-var confirm = new CustomConfirmDialog();
+var dialog = new CustomDialog();
 /* Scale page to screen size */
 $(function () {
     scalePage();
@@ -31,17 +30,17 @@ $(document).ready(function () {
         serverURL = "http://" + serverURL;
         // document.getElementById("ip").textContent = "IP: " + serverIP;
         // document.getElementById("url").textContent = "URL: " + serverURL;
-        console.log("FETCH - Server URL: " + serverURL);
-        console.log("FETCH - IP Address: " + serverIP);
+        // console.log("FETCH - Server URL: " + serverURL);
+        // console.log("FETCH - IP Address: " + serverIP);
 
         var path = window.location.pathname;
         page = path.split("/").pop();
-        console.log("page: " + page);
+        // console.log("page: " + page);
 
         if (page == "wifi.htm") {
             showWifiPage();
         }
-        console.log("FETCH - END");
+        // console.log("FETCH - END");
     });
 })
 /* Function to show wifi data from json object */
@@ -99,7 +98,7 @@ function showWifiPage() {
                     return false;
                 }
 
-                confirm.render(1, "WiFi Setting Information", "Do you want to save the WiFi Setting?", warningColor, function (confirmed) {
+                dialog.render(1, "WiFi Setting Information", "Do you want to save the WiFi Setting?", warningColor, function (confirmed) {
                     if (confirmed === 0) {
                         return false;
                     }
@@ -128,23 +127,23 @@ function showWifiPage() {
                         .then((data) => {
                             if (data.result == 2) {
                                 // Error occurred while uploading
-                                Alert.render("Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor);
+                                dialog.render(0, "Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor, function (result) {});
                             } else if (data.result == 1) {
                                 // Upload finished successfully
-                                Alert.render("Success", "New WiFi setting has been saved!", okColor);
+                                dialog.render(0, "Success", "New WiFi setting has been saved!", okColor, function (result) {});
                             } else {
                                 // Warning occurred while uploading
-                                Alert.render("WARNING!", "New WiFi setting has not been saved!", warningColor);
+                                dialog.render(0, "WARNING!", "New WiFi setting has not been saved!", warningColor, function (result) {});
                             }
                         })
                         .catch(error => {
                             console.warn(error);
-                            Alert.render("Error!", error, errorColor);
+                            dialog.render(0, "Error!", error, errorColor, function (result) {});
                         });
                 });
             });
         } else {
-            Alert.render("Error!", "Error occurred during getting wifi data!", errorColor);
+            dialog.render(0, "Error!", "Error occurred during getting wifi data!", errorColor, function (result) {});
         }
     });
 }
@@ -296,7 +295,7 @@ function enableSave() {
 /* Function to check value length of element by element id */
 function checkValueLenght(elementValue, minChar) {
     if (elementValue.length < minChar) {
-        Alert.render("Warning!", "Minimum " + minChar + " charachters.", warningColor);
+        dialog.render(0, "Warning!", "Minimum " + minChar + " charachters.", warningColor, function (result) {});
         return false;
     }
     return true;
@@ -304,7 +303,7 @@ function checkValueLenght(elementValue, minChar) {
 /* Function to compare two strings */
 function compareStr(str1, str2) {
     if (str1.localeCompare(str2) != 0) {
-        Alert.render("Warning!", "Passwords do not match.", warningColor);
+        dialog.render(0, "Warning!", "Passwords do not match.", warningColor, function (result) {});
         return false;
     }
     return true;
@@ -314,6 +313,6 @@ function checkIPaddress(ipaddress) {
     if (/^(?!\.)((^|\.)([1-9]?\d|1\d\d|2(5[0-5]|[0-4]\d))){4}$/.test(ipaddress)) {
         return true;
     }
-    Alert.render("Warning!", "You have entered an invalid IP address.", warningColor);
+    dialog.render(0, "Warning!", "You have entered an invalid IP address.", warningColor, function (result) {});
     return false;
 }
