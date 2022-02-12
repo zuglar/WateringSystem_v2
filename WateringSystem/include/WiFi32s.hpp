@@ -60,7 +60,7 @@ public:
     Controller *cntrl;
     /* Public property - Checks memory allocation for htmFile */
     bool htmlFileMemoryAllocated;
-    /* Public method - Start FTP server. Browse SDCard */
+    /* Public method - Saves activities in log file on SD Card */
     void logWebTraffic(AsyncWebServerRequest *request, const String message);
     /* Public property - get client data for logging and checking for saving server data */
     WiFiClient client;

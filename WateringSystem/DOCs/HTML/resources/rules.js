@@ -65,6 +65,15 @@ function getSetGlobalData() {
         if (response !== undefined) {
             console.log("json global data loaded");
             const rulesSelect = document.getElementById("rules-select");
+
+            var length = rulesSelect.options.length;
+            if (length > 0) {
+                console.log("length > 0");
+                for (i = length - 1; i >= 0; i--) {
+                    rulesSelect.options[i] = null;
+                }
+            }
+
             const ruleNames = response.rulename;
             for (var i = 0; i < ruleNames.length; i++) {
                 var opt = document.createElement("option");
@@ -89,7 +98,8 @@ function getSetGlobalData() {
                     return false;
                 }
 
-                dialog.render(1, "Global Setting Information", "Do you want to save the Global Setting?", warningColor, function (result) {ß
+                dialog.render(1, "Global Setting Information", "Do you want to save the Global Setting?", warningColor, function (result) {
+                    
                     if (result === 0) {
                         return false;
                     }
@@ -115,26 +125,21 @@ function getSetGlobalData() {
                         .then((data) => {
                             if (data.result == 2) {
                                 // Error occurred while uploading
-                                dialog.render(0, "Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor, function (result) {});
+                                dialog.render(0, "Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor, function (result) { });
                             } else if (data.result == 1) {
                                 // Upload finished successfully
                                 dialog.render(0, "Success!", "New Global setting has been saved!", okColor, function (result) {
-                                    dialog.render(1, "Information!", "To apply the new settings you have to restart the system.<br>Do you want to do it now?", warningColor, function (result) {
-                                        if (result == 0) {
-                                            return;
-                                        } else {
-                                            
-                                        }
-                                    });
+                                    
+                                    getSetGlobalData();
                                 });
                             } else {
                                 // Warning occurred while uploading
-                                dialog.render(0, "Warning!", "New Global setting has not been saved!", warningColor, function (result) {});
+                                dialog.render(0, "Warning!", "New Global setting has not been saved!", warningColor, function (result) { });
                             }
                         })
                         .catch(error => {
                             console.warn(error);
-                            dialog.render(0, "Error!", error, errorColor, function (result) {});
+                            dialog.render(0, "Error!", error, errorColor, function (result) { });
                         });
                 });
 
@@ -164,7 +169,7 @@ function getSetGlobalData() {
                     // Just for testing on Mockoon - START //
                     if (serverURL.includes("localhost") || serverURL.includes("127.0.0.1")) {
                         // true - contains localhost or 127.0.0.1 add new serverURL;
-                        document.forms['rule-form'].action = "http://127.0.0.1:3001/upload";
+                        document.forms['rule-form'].action = "http://127.0.0.1:3001/update";
                     }
                     // Just for testing on Mockoon - END //
                     // console.log(document.forms['rule-form'].action);
@@ -182,27 +187,28 @@ function getSetGlobalData() {
                         .then((data) => {
                             if (data.result == 2) {
                                 // Error occurred while uploading
-                                dialog.render(0, "Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor, function (result) {});
+                                dialog.render(0, "Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor, function (result) { });
                             } else if (data.result == 1) {
                                 // Upload finished successfully
                                 dialog.render(0, "Success!", "Rule setting has been saved / deleted!", okColor, function (result) {
-                                    window.location.reload();
+                                    // window.location.reload();
+                                    getSetGlobalData();
                                 });
                             } else {
                                 // Warning occurred while uploading
-                                dialog.render(0, "Warning!", "Rule setting has not been saved / deleted!", warningColor, function (result) {});
+                                dialog.render(0, "Warning!", "Rule setting has not been saved / deleted!", warningColor, function (result) { });
                             }
                         })
                         .catch(error => {
                             console.warn(error);
-                            dialog.render(0, "Error!", error, errorColor, function (result) {});
+                            dialog.render(0, "Error!", error, errorColor, function (result) { });
                         });
                 });
             });
             setGlobalData(response);
             selectedRule();
         } else {
-            dialog.render(0, "Error!", "Error occurred during getting Global Data!", errorColor, function (result) {});
+            dialog.render(0, "Error!", "Error occurred during getting Global Data!", errorColor, function (result) { });
         }
     });
 }
@@ -232,7 +238,7 @@ function selectedRule() {
             //console.log(response);
             setRuleData(response);
         } else {
-            dialog.render(0, "Error!", "Error occurred during getting Rule Data!", errorColor, function (result) {});
+            dialog.render(0, "Error!", "Error occurred during getting Rule Data!", errorColor, function (result) { });
         }
     });
 }
@@ -397,7 +403,7 @@ function dateToUnixTime(element) {
     let date = document.getElementById(element).value;
 
     if (date == null || date == "") {
-        dialog.render(0, "Error!", "Invalid date! " + element.id, errorColor, function (result) {});
+        dialog.render(0, "Error!", "Invalid date! " + element.id, errorColor, function (result) { });
         document.getElementById(element).focus();
         return 0;
     }
@@ -426,7 +432,7 @@ function isNumeric(element, minValue, maxValue) {
     // console.log("parseInt(element.value, 10): " + parseInt(element.value, 10))
     if (element.value === "" || element.value === " " || element.value === "  " || element.value === "   " || isNaN(parseInt(element.value, 10)) ||
         (parseInt(element.value, 10) < parseInt(minValue, 10)) || (parseInt(element.value, 10) > parseInt(maxValue, 10))) {
-        dialog.render(0, "Error!", "Invalid value of " + element.id + ". <br>Min value: " + minValue + " - Max value: " + maxValue, errorColor, function (result) {});
+        dialog.render(0, "Error!", "Invalid value of " + element.id + ". <br>Min value: " + minValue + " - Max value: " + maxValue, errorColor, function (result) { });
         return false;
     }
 
@@ -483,7 +489,7 @@ function checkGlobalSettings() {
     console.log(thresholds);
     // console.log("thresholds: " + document.getElementById("new-thresholds").value);
     if (document.getElementById("adm-pwd-2").value.length < 8) {
-        dialog.render(0, "Warning!", "Invalid administrator password.<br>Minimum 8 characters.", warningColor, function (result) {});
+        dialog.render(0, "Warning!", "Invalid administrator password.<br>Minimum 8 characters.", warningColor, function (result) { });
         return false;
     }
 
@@ -503,13 +509,13 @@ function checkRuleData() {
         return false;
 
     if (startDate >= endDate) {
-        dialog.render(0, "Warning!", "Invalid date.<br>Start date is greater than End date.", warningColor, function (result) {});
+        dialog.render(0, "Warning!", "Invalid date.<br>Start date is greater than End date.", warningColor, function (result) { });
         return false;
     }
     // Gets value of start time and convert it in unix timestamp format
     let startTime = document.getElementById("start-time").value;
     if (startTime == "" || startTime == null) {
-        dialog.render(0, "Warning!", "Invalid start time value.", warningColor, function (result) {});
+        dialog.render(0, "Warning!", "Invalid start time value.", warningColor, function (result) { });
         return false;
     }
     startTime = startTime.split(":");
@@ -550,7 +556,7 @@ function checkRuleData() {
         }
 
         if (parseInt(document.getElementById("min-temp").value, 10) >= parseInt(document.getElementById("max-temp").value, 10)) {
-            dialog.render(0, "Warning!", "The less value of temperature cannot be equal or greater than more value of temperature.", warningColor, function (result) {});
+            dialog.render(0, "Warning!", "The less value of temperature cannot be equal or greater than more value of temperature.", warningColor, function (result) { });
             return false;
         }
 
@@ -561,7 +567,7 @@ function checkRuleData() {
     }
 
     if (document.getElementById("adm-pwd").value.length < 8) {
-        dialog.render(0, "Warning!", "Invalid administrator password.<br>Minimum 8 characters.", warningColor, function (result) {});
+        dialog.render(0, "Warning!", "Invalid administrator password.<br>Minimum 8 characters.", warningColor, function (result) { });
         return false;
     }
 

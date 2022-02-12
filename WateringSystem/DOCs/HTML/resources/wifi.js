@@ -71,17 +71,17 @@ function showWifiPage() {
             setTooltip();
             document.getElementById('ap-save-chb').addEventListener('click', () => {
                 apCheckBox(document.getElementById('ap-save-chb'));
-                
+
             });
 
             document.getElementById('sta-static-chb').addEventListener('click', () => {
                 staStaticCheckBox(document.getElementById('sta-static-chb'));
-                
+
             });
 
             document.getElementById('sta-chb').addEventListener('click', () => {
                 staCheckBox(document.getElementById('sta-chb'));
-                
+
             });
 
             document.forms['wifi-form'].addEventListener('submit', (event) => {
@@ -91,10 +91,10 @@ function showWifiPage() {
                 let checkedSettings = wifiSettingsSave();
                 if (!checkedSettings[0]) {
                     checkedSettings[1].style.background = "red";
-                    setTimeout(function(){  
+                    setTimeout(function () {
                         checkedSettings[1].style.background = "none";
                     }, 5000);
-                   
+
                     return false;
                 }
 
@@ -127,23 +127,33 @@ function showWifiPage() {
                         .then((data) => {
                             if (data.result == 2) {
                                 // Error occurred while uploading
-                                dialog.render(0, "Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor, function (result) {});
+                                dialog.render(0, "Error!", "Access denied!<br>You don't have permission to change the settings!", errorColor, function (result) { });
                             } else if (data.result == 1) {
                                 // Upload finished successfully
-                                dialog.render(0, "Success", "New WiFi setting has been saved!", okColor, function (result) {});
+                                dialog.render(0, "Success", "New WiFi setting has been saved!", okColor, function (result) {
+                                    if (result === 1) {
+                                        dialog.render(1, "Information!", "To apply the new settings you have to restart the system.<br>Do you want to do it now?", warningColor, function (result) {
+                                            if (result == 0) {
+                                                return;
+                                            } else {
+        
+                                            }
+                                        });
+                                    }
+                                });
                             } else {
                                 // Warning occurred while uploading
-                                dialog.render(0, "WARNING!", "New WiFi setting has not been saved!", warningColor, function (result) {});
+                                dialog.render(0, "WARNING!", "New WiFi setting has not been saved!", warningColor, function (result) { });
                             }
                         })
                         .catch(error => {
                             console.warn(error);
-                            dialog.render(0, "Error!", error, errorColor, function (result) {});
+                            dialog.render(0, "Error!", error, errorColor, function (result) { });
                         });
                 });
             });
         } else {
-            dialog.render(0, "Error!", "Error occurred during getting wifi data!", errorColor, function (result) {});
+            dialog.render(0, "Error!", "Error occurred during getting wifi data!", errorColor, function (result) { });
         }
     });
 }
@@ -295,7 +305,7 @@ function enableSave() {
 /* Function to check value length of element by element id */
 function checkValueLenght(elementValue, minChar) {
     if (elementValue.length < minChar) {
-        dialog.render(0, "Warning!", "Minimum " + minChar + " charachters.", warningColor, function (result) {});
+        dialog.render(0, "Warning!", "Minimum " + minChar + " charachters.", warningColor, function (result) { });
         return false;
     }
     return true;
@@ -303,7 +313,7 @@ function checkValueLenght(elementValue, minChar) {
 /* Function to compare two strings */
 function compareStr(str1, str2) {
     if (str1.localeCompare(str2) != 0) {
-        dialog.render(0, "Warning!", "Passwords do not match.", warningColor, function (result) {});
+        dialog.render(0, "Warning!", "Passwords do not match.", warningColor, function (result) { });
         return false;
     }
     return true;
@@ -313,6 +323,6 @@ function checkIPaddress(ipaddress) {
     if (/^(?!\.)((^|\.)([1-9]?\d|1\d\d|2(5[0-5]|[0-4]\d))){4}$/.test(ipaddress)) {
         return true;
     }
-    dialog.render(0, "Warning!", "You have entered an invalid IP address.", warningColor, function (result) {});
+    dialog.render(0, "Warning!", "You have entered an invalid IP address.", warningColor, function (result) { });
     return false;
 }

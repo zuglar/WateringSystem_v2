@@ -1,31 +1,5 @@
 #include "WiFi32s.hpp"
 
-// part of chunk code
-// size_t onStaticDownLoad(uint8_t *buffer, size_t maxLen, size_t index) {
-//     asyncTcpWdt = true;
-//     static char *filename = WIFI_HTM_FILE;
-//     static File chunkfile;
-//     static size_t dnlLen = 2048;     // limit to buffer size
-//     uint32_t countbytes = 0;  // bytes to be returned
-//     if (index == 0) {
-//         printf("onStaticDownLoad: START filename: %s index: %6i maxLen: %5i\n", filename, index, maxLen);
-//         chunkfile = SD.open(filename);
-//     }
-//     if(chunkfile) {
-//         printf("chunkfile opened\n");
-//     }
-//     chunkfile.seek(index);
-//     countbytes = chunkfile.read(buffer, min(dnlLen, maxLen));
-
-//     if (countbytes == 0) {
-//         chunkfile.close();
-//         printf("chunkfile closed\n");
-//     }
-//     printf("onStaticDownLoad: f: %s index: %6u maxLen: %5u countb: %5u \n", filename, index, maxLen, countbytes);
-
-//     return countbytes;
-// }
-
 volatile bool updateNewSettingsProccess;
 
 WiFi32s::WiFi32s(/* args */ Controller *cntrl_) {
@@ -132,32 +106,6 @@ bool WiFi32s::stringToIPAdress(const char *data_, IPAddress *address_) {
 }
 
 void WiFi32s::startWebHtm() {
-    /*
-        // Code if we use PLACEHOLDER in html file -- IN HTML FILE YOU CANNOT USE '%' character
-        // https://stackoverflow.com/questions/59575326/passing-a-function-as-a-parameter-within-a-class
-        server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
-                    logWebTraffic(request);
-                    cntrl->controllerGetAht20Bmp280Data();
-                    openHtm(INDEX_HTM_FILE);
-                    handleRequest(request); });
-
-        server.on("/wifi.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
-                logWebTraffic(request);
-                openHtm(WIFI_HTM_FILE);
-                handleRequest(request); });
-
-        server.on("/rules.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
-                logWebTraffic(request);
-                cntrl->controllerGetKeysValuesRules();
-                openHtm(RULES_HTM_FILE);
-                handleRequest(request); });
-
-        server.on("/admin.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
-                logWebTraffic(request);
-                openHtm(ADMIN_HTM_FILE);
-                handleRequest(request); });
-    */
-
     // Opens index.htm file
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
         asyncTcpWdt = true;
@@ -166,7 +114,7 @@ void WiFi32s::startWebHtm() {
     });
     // Sends data to show values of weather, of wetness of soil and of state of valves and rain sensor
     server.on("/getWeather", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        asyncTcpWdt = true; 
+        asyncTcpWdt = true;
         logWebTraffic(request, EMPTY_STRING);
         cntrl->controllerGetAht20Bmp280Data();
         cntrl->controllerGetSensorsValue();
@@ -190,7 +138,6 @@ void WiFi32s::startWebHtm() {
         root["hum"] = String(cntrl->relativeHumidity, 2);
         root["atm"] = String((cntrl->airPressure / 1000), 2);
         root["valves"] = cntrl->newValvesDecValue;
-        // root["sensors"] = "100;50;20;10;30;60;70;80;1";measuredSensorsValueString
         root["sensors"] = cntrl->measuredSensorsValueString;
 
         jsonOutput = String();
@@ -206,22 +153,6 @@ void WiFi32s::startWebHtm() {
         logWebTraffic(request, EMPTY_STRING);
         sendResponseToClient(request, 200, WIFI_HTM_FILE);
     });
-
-    // CHUNKED
-    // AsyncWebServerResponse *response = request->beginChunkedResponse("text/plain", [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
-    //     // Write up to "maxLen" bytes into "buffer" and return the amount written.
-    //     // index equals the amount of bytes that have been already sent
-    //     // You will be asked for more data until 0 is returned
-    //     // Keep in mind that you can not delay or yield waiting for more data!
-    //     return mySource.read(buffer, maxLen);
-    // });
-    // response->addHeader("Server", "ESP Async Web Server");
-    // request->send(response);
-    // server.on("/wifi.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
-    //     asyncTcpWdt = true;
-    //     logWebTraffic(request, EMPTY_STRING);
-    //     request->sendChunked("text/html", onStaticDownLoad);
-    // });
     // Sends data to show values of wifi settings
     server.on("/getWiFi", HTTP_GET, [this](AsyncWebServerRequest *request) {
         logWebTraffic(request, EMPTY_STRING);
@@ -284,10 +215,7 @@ void WiFi32s::startWebHtm() {
             logWebTraffic(request, "Couldn't find rule name. Base rule with name FirstRule created.");
             uint32_t unixDateNow = cntrl->getDs3231rtc()->getUnixTimeNow();
 
-            // printf("1. unixDateNow: %d\n", unixDateNow);
-            // printf("2. unixDateNows rest: %d\n", unixDateNow % 86400);
             unixDateNow = unixDateNow - (unixDateNow % 86400);
-            // printf("3. unixDateNow: %d\n", unixDateNow);
 
             char firstRuleValue[RULE_VALUE_BUFFER] = "";
             String firstvalue = String(unixDateNow) + ";" + String(unixDateNow + 15778458) + ";0;0;0;0;0;0;-40;50";
@@ -305,8 +233,6 @@ void WiFi32s::startWebHtm() {
         cntrl->getSdCard()->getKeysArray(WATERING_RULES_SECTION, keysArray);
 
         for (int i = 0; i < numOfKeys; i++) {
-            // printf("*************keysArray[%d]: %s\n", i, keysArray[i]);
-            // logWebTraffic(request, keysArray[i]);
             ruleArray.add(keysArray[i]);
         }
 
@@ -339,12 +265,6 @@ void WiFi32s::startWebHtm() {
     });
     // Sends data to show values of rule settings in rule.htm
     server.on("/getRuleValue", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        // List all parameters (Compatibility)
-        // int args = request->args();
-        // printf("...args: %d\n", args);
-        // for (int i = 0; i < args; i++) {
-        //     printf("ARG[%s]: %s\n", request->argName(i).c_str(), request->arg(i).c_str());
-        // }
         if (request->hasParam("ruleName", false) && request->getParam("ruleName", false)->value() != "") {
             String rulevalue;
             const String rulename = request->getParam("ruleName", false)->value();
@@ -352,12 +272,7 @@ void WiFi32s::startWebHtm() {
             JsonObject root = response->getRoot();
 
             cntrl->getSdCard()->getValueFromIni(WATERING_RULES_SECTION, rulename, rulevalue);
-            // if (rulevalue == EMPTY_STRING) {
-            //     root["rulevalue"] = firstRuleValue;
-            // } else {
-            //     root["rulevalue"] = rulevalue;
-            // }
-
+            
             root["rulevalue"] = rulevalue;
 
             jsonOutput = String();
@@ -367,46 +282,33 @@ void WiFi32s::startWebHtm() {
             request->send(response);
         }
     });
-    // For testing
-    // server.on("/json.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
-    //     asyncTcpWdt = true;
-    //     logWebTraffic(request);
-    //     /* List all parameters (Compatibility) */
-    //    //  int args = request->args();
-    //     printf("...args: %d\n", args);
-    //     for (int i = 0; i < args; i++)
-    //     {
-    //         printf("ARG[%s]: %s\n", request->argName(i).c_str(), request->arg(i).c_str());
-    //     }
-    //     openHtm("/json.htm");
-    //     request->send(202, "text/html", htmFile);
-
-    //     AsyncResponseStream *response = request->beginResponseStream("application/json");
-    //     DynamicJsonDocument json(1024);
-    //     json["status"] = "ok";
-    //     json["ssid"] = WiFi.SSID();
-    //     json["ip"] = WiFi.localIP().toString();
-    //     serializeJson(json, *response);
-    //     response->addHeader("Access-Control-Allow-Origin", "*");
-    //     response->addHeader("Access-Control-Max-Age", "600");
-    //     response->addHeader("Access-Control-Allow-Methods", "PUT,POST,GET,OPTIONS");
-    //     response->addHeader("Access-Control-Allow-Headers", "*");
-    //     request->send(response); });
-
-    server.on("/restart", HTTP_POST, [this](AsyncWebServerRequest *request) {
+    // Restarts the system
+    server.on("/restart.htm", HTTP_POST, [this](AsyncWebServerRequest *request) {
         asyncTcpWdt = true;
-        // POST
-        if (request->hasParam("restart", true)) {
-            if (request->getParam("restart", true)->value().compareTo("1") == 0) {
-                logWebTraffic(request, "The system restarts.");
-                ESP.restart();
-            } else {
-                sendResponseToClient(request, 404, NOTFOUND_HTM_FILE);
-            }
+        if (ON_AP_FILTER(request)) {
+            printf("RESTART - ON_AP_FILTER\n");
+            logWebTraffic(request, "The system restarts.");
+            printf("The system restarts.\n");
+            sendResponseToClient(request, 200, RESTART_HTM_FILE);
+            ESP.restart();
         } else {
             logWebTraffic(request, "The system has not been restarted.");
+            printf("The system has not been restarted.\n");
             sendResponseToClient(request, 404, NOTFOUND_HTM_FILE);
         }
+
+        // POST
+        // if (request->hasParam("restart", true)) {
+        //     if (request->getParam("restart", true)->value().compareTo("1") == 0) {
+        //         logWebTraffic(request, "The system restarts.");
+        //         ESP.restart();
+        //     } else {
+        //         sendResponseToClient(request, 404, NOTFOUND_HTM_FILE);
+        //     }
+        // } else {
+        //     logWebTraffic(request, "The system has not been restarted.");
+        //     sendResponseToClient(request, 404, NOTFOUND_HTM_FILE);
+        // }
     });
 
     server.on("/update", HTTP_POST, [this](AsyncWebServerRequest *request) {
@@ -419,21 +321,19 @@ void WiFi32s::startWebHtm() {
         for (int i = 0; i < args; i++) {
             printf("ARG[%s]: %s\n", request->argName(i).c_str(), request->arg(i).c_str());
         }
+        
         if (ON_AP_FILTER(request)) {
-            printf("ON_AP_FILTER\n");
+            printf("UPDATE - ON_AP_FILTER\n");
             // Compare given admin password with pasword which is stored in 24C32 EEPROM of DS3231RTC
             if ((request->hasParam("adm_pwd", true)) && !(request->getParam("adm_pwd", true)->value().compareTo(cntrl->getDs3231rtc()->getAdminPwd()) != 0)) {
                 logWebTraffic(request, "Invalid admin password: " + request->getParam("adm_pwd", true)->value());
                 result = 2;
-                // sendResponseToClient(request, 404, ERROR_HTM_FILE);
             } else {
                 if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_WIFI) == 0)) {
                     if (!saveWifiSettings(request)) {
                         logWebTraffic(request, "New WiFi setting has not been saved!");
-                        // sendResponseToClient(request, 404, ERROR_HTM_FILE);
                     } else {
                         logWebTraffic(request, "New WiFi setting has been saved!");
-                        // sendResponseToClient(request, 202, CORRECT_HTM_FILE);
                         result = 1;
                     }
                 } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_ADMIN) == 0)) {
@@ -441,19 +341,15 @@ void WiFi32s::startWebHtm() {
                         // Save admin password in to 24C32 EEPROM of DS3231RTC
                         if (!cntrl->getDs3231rtc()->setAdminPwd(request->getParam("new_pwd_1", true)->value())) {
                             logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has not been saved.");
-                            // sendResponseToClient(request, 404, ERROR_HTM_FILE);
                         } else {
                             logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has been saved.");
-                            // sendResponseToClient(request, 202, CORRECT_HTM_FILE);
                             result = 1;
                         }
                     }
                 } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_RULES) == 0)) {
                     if (!saveDelRuleSettings(request)) {
                         logWebTraffic(request, "New Rule setting has not been saved!");
-                        // sendResponseToClient(request, 404, ERROR_HTM_FILE);
                     } else {
-                        // sendResponseToClient(request, 202, CORRECT_HTM_FILE +String("?asd=1"));
                         logWebTraffic(request, "New Rule setting has been saved!");
                         cntrl->controllerPrepareWatering();
                         result = 1;
@@ -472,7 +368,7 @@ void WiFi32s::startWebHtm() {
         }
 
         updateNewSettingsProccess = false;
-        
+
         AsyncJsonResponse *response = new AsyncJsonResponse();
         // response->addHeader("Access-Control-Allow-Origin", "*");
         // response->addHeader("Access-Control-Max-Age", "600");
@@ -504,7 +400,7 @@ void WiFi32s::openHtm(String htmFileName_) {
         free(htmFile);
         htmlFileMemoryAllocated = false;
     }
-
+    // Opens htm file which is stored on SD Card
     File file = SD.open(htmFileName_);
     if (file) {
         size_t fileSize = file.size();
@@ -616,7 +512,7 @@ bool WiFi32s::saveGlobalSettings(AsyncWebServerRequest *request_) {
         }
         logWebTraffic(request_, "New thresholds: " + request_->getParam("new_thresholds", true)->value() + " has been saved.");
     }
-    // Save new thresholds
+    // Save refresh_interval
     if ((request_->hasParam("refresh_interval", true)) && (request_->getParam("refresh_interval", true)->value() != EMPTY_STRING)) {
         if (!cntrl->getSdCard()->saveValueToIni(TIME_INTERVAL_CHECKING_SECTION, INTERVAL_KEY, request_->getParam("refresh_interval", true)->value())) {
             logWebTraffic(request_, "New refresh time: " + request_->getParam("refresh_interval", true)->value() + " has not been saved.");
@@ -624,7 +520,7 @@ bool WiFi32s::saveGlobalSettings(AsyncWebServerRequest *request_) {
         }
         logWebTraffic(request_, "New  refresh time: " + request_->getParam("refresh_interval", true)->value() + " has been saved.");
     }
-
+    // Save wetness_sensitivity
     if ((request_->hasParam("wetness_sensitivity", true)) && (request_->getParam("wetness_sensitivity", true)->value() != EMPTY_STRING)) {
         if (!cntrl->getSdCard()->saveValueToIni(WETNESS_DRYNESS_SECTION, WETNESS_KEY, request_->getParam("wetness_sensitivity", true)->value())) {
             logWebTraffic(request_, "New wetness sensytivity: " + request_->getParam("wetness_sensitivity", true)->value() + " has not been saved.");
@@ -632,7 +528,7 @@ bool WiFi32s::saveGlobalSettings(AsyncWebServerRequest *request_) {
         }
         logWebTraffic(request_, "New wetness sensytivity: " + request_->getParam("wetness_sensitivity", true)->value() + " has been saved.");
     }
-
+    // Save dryness_sensitivity
     if ((request_->hasParam("dryness_sensitivity", true)) && (request_->getParam("dryness_sensitivity", true)->value() != EMPTY_STRING)) {
         if (!cntrl->getSdCard()->saveValueToIni(WETNESS_DRYNESS_SECTION, DRYNESS_KEY, request_->getParam("dryness_sensitivity", true)->value())) {
             logWebTraffic(request_, "New dryness sensytivity: " + request_->getParam("dryness_sensitivity", true)->value() + " has not been saved.");
@@ -721,3 +617,98 @@ String WiFi32s::processor(const String &var) {
     return String();
 }
  */
+
+
+// For testing
+    // server.on("/json.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
+    //     asyncTcpWdt = true;
+    //     logWebTraffic(request);
+    //     /* List all parameters (Compatibility) */
+    //    //  int args = request->args();
+    //     printf("...args: %d\n", args);
+    //     for (int i = 0; i < args; i++)
+    //     {
+    //         printf("ARG[%s]: %s\n", request->argName(i).c_str(), request->arg(i).c_str());
+    //     }
+    //     openHtm("/json.htm");
+    //     request->send(202, "text/html", htmFile);
+
+    //     AsyncResponseStream *response = request->beginResponseStream("application/json");
+    //     DynamicJsonDocument json(1024);
+    //     json["status"] = "ok";
+    //     json["ssid"] = WiFi.SSID();
+    //     json["ip"] = WiFi.localIP().toString();
+    //     serializeJson(json, *response);
+    //     response->addHeader("Access-Control-Allow-Origin", "*");
+    //     response->addHeader("Access-Control-Max-Age", "600");
+    //     response->addHeader("Access-Control-Allow-Methods", "PUT,POST,GET,OPTIONS");
+    //     response->addHeader("Access-Control-Allow-Headers", "*");
+    //     request->send(response); });
+
+    // CHUNKED
+    // AsyncWebServerResponse *response = request->beginChunkedResponse("text/plain", [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
+    //     // Write up to "maxLen" bytes into "buffer" and return the amount written.
+    //     // index equals the amount of bytes that have been already sent
+    //     // You will be asked for more data until 0 is returned
+    //     // Keep in mind that you can not delay or yield waiting for more data!
+    //     return mySource.read(buffer, maxLen);
+    // });
+    // response->addHeader("Server", "ESP Async Web Server");
+    // request->send(response);
+    // server.on("/wifi.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
+    //     asyncTcpWdt = true;
+    //     logWebTraffic(request, EMPTY_STRING);
+    //     request->sendChunked("text/html", onStaticDownLoad);
+    // });
+
+    /*
+        // Code if we use PLACEHOLDER in html file -- IN HTML FILE YOU CANNOT USE '%' character
+        // https://stackoverflow.com/questions/59575326/passing-a-function-as-a-parameter-within-a-class
+        server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
+                    logWebTraffic(request);
+                    cntrl->controllerGetAht20Bmp280Data();
+                    openHtm(INDEX_HTM_FILE);
+                    handleRequest(request); });
+
+        server.on("/wifi.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
+                logWebTraffic(request);
+                openHtm(WIFI_HTM_FILE);
+                handleRequest(request); });
+
+        server.on("/rules.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
+                logWebTraffic(request);
+                cntrl->controllerGetKeysValuesRules();
+                openHtm(RULES_HTM_FILE);
+                handleRequest(request); });
+
+        server.on("/admin.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
+                logWebTraffic(request);
+                openHtm(ADMIN_HTM_FILE);
+                handleRequest(request); });
+    */
+
+// part of chunk code
+// size_t onStaticDownLoad(uint8_t *buffer, size_t maxLen, size_t index) {
+//     asyncTcpWdt = true;
+//     static char *filename = WIFI_HTM_FILE;
+//     static File chunkfile;
+//     static size_t dnlLen = 2048;     // limit to buffer size
+//     uint32_t countbytes = 0;  // bytes to be returned
+//     if (index == 0) {
+//         printf("onStaticDownLoad: START filename: %s index: %6i maxLen: %5i\n", filename, index, maxLen);
+//         chunkfile = SD.open(filename);
+//     }
+//     if(chunkfile) {
+//         printf("chunkfile opened\n");
+//     }
+//     chunkfile.seek(index);
+//     countbytes = chunkfile.read(buffer, min(dnlLen, maxLen));
+
+//     if (countbytes == 0) {
+//         chunkfile.close();
+//         printf("chunkfile closed\n");
+//     }
+//     printf("onStaticDownLoad: f: %s index: %6u maxLen: %5u countb: %5u \n", filename, index, maxLen, countbytes);
+
+//     return countbytes;
+// }
