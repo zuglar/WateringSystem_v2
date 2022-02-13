@@ -395,8 +395,8 @@ bool Controller::controllerPrepareWatering() {
         // printf("Watering Duration Time: %d seconds\n", wateringDurationTime);
 
         printf(
-            "ACTIVE RULE: %s, Start time: %02d:%02d:%02d, End time: %02d:%02d:%02d, Valves: %d, Check soil wetness: %d, Check the rain: %d, \
-                Check temperatue: %d, Low temperature: %d, High temperature: %d, Duration time %d seconds\n",
+            "ACTIVE RULE: %s, Start time: %02d:%02d:%02d, End time: %02d:%02d:%02d, Valves: %d, Check soil wetness: %d, Check the rain: %d,"
+            "Check temperatue: %d, Low temperature: %d, High temperature: %d, Duration time %d seconds\n",
             activeRuleName, ((startTime % 86400) / 3600), ((startTime % 3600) / 60), (startTime % 60), ((endTime % 86400) / 3600),
             ((endTime % 3600) / 60), (endTime % 60), valvesDecValue, checkSoilWetness, checkRainSensor, checkTemperature, lowTemperature,
             highTemperature, wateringDurationTime);
