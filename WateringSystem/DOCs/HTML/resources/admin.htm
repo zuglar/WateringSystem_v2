@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title> Watering System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="description" content="Watering System">
+  <link rel="stylesheet" href="./resources/style.css">
+  <script src="./resources/jquery-3.6.0.min.js"></script>
+  
+  <script type="module" src="./resources/admin.js"></script>
+
+  <link rel="icon" type="image/png" href="./icons/garden.png" sizes="24x24">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <div id="container">
+    <div class="navbar" style="padding: 1px;"></div>
+    <div>
+      <form action="/update" method="post" id="admin-form">
+        <input type="hidden" name="page" value="admin" />
+        <table class="content-table">
+          <tr>
+            <td colspan="2" class="td-padding"><img src="./icons/user.png" alt="user"></td>
+          </tr>
+          <tr class="info-tr">
+            <td colspan="2" class="td-padding" style="font-size: 20px; text-decoration: underline">Admin Password Setting
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding">Old password</td>
+            <td class="td-padding"><input type="password" id="adm-pwd" name="adm_pwd" maxlength="25" style="text-align: center;"></td>
+          </tr>
+          <tr>
+            <td class="td-padding">New Password</td>
+            <td class="td-padding"><input type="password" id="new-pwd-1" name="new_pwd_1" maxlength="25" style="text-align: center;"></td>
+          </tr>
+          <tr>
+            <td class="td-padding">New Password Again</td>
+            <td class="td-padding"><input type="password" id="new-pwd-2" maxlength="25" style="text-align: center;"></td>
+          </tr>
+          <!-- Save button -->
+          <tr>
+            <td class="td-padding" colspan="2">
+              <!-- onclick="return newAdminPwd()" -->
+              <button type="submit" class="save-btn" id="save-adm-btn" >Save</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <div id="dialogoverlay"></div>
+    <div id="dialogbox">
+      <div>
+        <div id="dialogboxhead"></div>
+        <div id="dialogboxbody"></div>
+        <div id="dialogboxfoot"></div>
+      </div>
+  </div>
+  <script>
+    
+  </script>
+</body>
+
+</html>

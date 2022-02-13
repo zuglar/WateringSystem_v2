@@ -99,7 +99,7 @@ function getSetGlobalData() {
                 }
 
                 dialog.render(1, "Global Setting Information", "Do you want to save the Global Setting?", warningColor, function (result) {
-                    
+
                     if (result === 0) {
                         return false;
                     }
@@ -129,7 +129,7 @@ function getSetGlobalData() {
                             } else if (data.result == 1) {
                                 // Upload finished successfully
                                 dialog.render(0, "Success!", "New Global setting has been saved!", okColor, function (result) {
-                                    
+
                                     getSetGlobalData();
                                 });
                             } else {
@@ -432,7 +432,14 @@ function isNumeric(element, minValue, maxValue) {
     // console.log("parseInt(element.value, 10): " + parseInt(element.value, 10))
     if (element.value === "" || element.value === " " || element.value === "  " || element.value === "   " || isNaN(parseInt(element.value, 10)) ||
         (parseInt(element.value, 10) < parseInt(minValue, 10)) || (parseInt(element.value, 10) > parseInt(maxValue, 10))) {
+
         dialog.render(0, "Error!", "Invalid value of " + element.id + ". <br>Min value: " + minValue + " - Max value: " + maxValue, errorColor, function (result) { });
+
+        document.getElementById(element.id).style.background = "red";
+        setTimeout(function () {
+            document.getElementById(element.id).style.background = "none";
+        }, 5000);
+        
         return false;
     }
 

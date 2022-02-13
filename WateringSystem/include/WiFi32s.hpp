@@ -45,7 +45,7 @@ public:
     /* Public method - create htm file and start web server */
     void startWebHtm();
     /* Public method - Start FTP server. Browse SDCard */
-    void startFTPServer();
+    bool startFTPServer();
     /* Public method - save wifi settings */
     bool saveWifiSettings(AsyncWebServerRequest *request_);
     /* Public method - save / delete rule settings */
@@ -54,7 +54,7 @@ public:
     bool saveGlobalSettings(AsyncWebServerRequest *request_);
     /* Public property - char array of html file */
     char *htmFile;
-    /* Fublic - FTP Object */
+    /* Public - FTP Object */
     FTPServer *ftp;
     /* Public Controller object */
     Controller *cntrl;
@@ -71,7 +71,6 @@ public:
     void notFound(AsyncWebServerRequest *request);
 
     String jsonOutput;
-    //char firstRuleValue[55] = ""; // = "1640995200;1640995200;0;0;0;0;0;0;-40;50";   
 
     String apIPString;
     String staIPString;

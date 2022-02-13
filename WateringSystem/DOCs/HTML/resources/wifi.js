@@ -136,7 +136,17 @@ function showWifiPage() {
                                             if (result == 0) {
                                                 return;
                                             } else {
-        
+                                                var newServerURL;
+                                                // Just for testing on Mockoon - START //
+                                                if (serverURL.includes("localhost") || serverURL.includes("127.0.0.1")) {
+                                                    // true - contains localhost or 127.0.0.1 add new serverURL;
+                                                    newServerURL = "http://127.0.0.1:3001/restart.htm";
+                                                    // Just for testing on Mockoon - END //
+                                                } else {
+                                                    newServerURL = serverURL + "/restart.htm";
+                                                }
+
+                                                window.open(newServerURL,"_self");
                                             }
                                         });
                                     }

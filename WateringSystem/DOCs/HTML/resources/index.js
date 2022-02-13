@@ -151,9 +151,9 @@ function valvesState(valvesDecimal) {
                 // creates a <img> element
                 var img = document.createElement("img");
                 if (valves[j] == "0") {
-                    img.src = "./icons/switch-off.png";
+                    img.src = "./icons/watering_off.png";
                 } else {
-                    img.src = "./icons/switch-on.png";
+                    img.src = "./icons/watering_on.png";
                 }
                 // appends <img> into <td>
                 cell.appendChild(img);

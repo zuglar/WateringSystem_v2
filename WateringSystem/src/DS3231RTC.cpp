@@ -85,12 +85,14 @@ String DS3231RTC::getAdminPwd()
 
 bool DS3231RTC::setAdminPwd(String str_)
 {
+     printf("str_ NEW ADMIN PWD: %s\n", str_.c_str());
     /* Length (with one extra character for the null terminator) */
     int str_len = str_.length() + 1;
     /* Prepare the character array (the buffer) */
     char char_array[str_len];
     /* Copy it over */
     str_.toCharArray(char_array, str_len);
+    printf("char_array NEW ADMIN PWD: %s\n", char_array);
     if(i2c24C32EEPROMWritePage((byte *)char_array, sizeof(char_array)) != 0)
     {
         return false;
@@ -114,13 +116,19 @@ byte DS3231RTC::i2c24C32EEPROMReadByte(unsigned int eepromaddress_)
 uint8_t DS3231RTC::i2c24C32EEPROMWritePage(byte *data_, byte length_)
 {
     uint8_t result = 0;
+    printf("DATA: %s - lenght: %d\n", data_, length_);
     Wire.beginTransmission(EEPROM_24C32_ADDRESS);
     Wire.write((int)(EEPROM_24C32_READ_START_ADDRESS >> 8));   // MSB
     Wire.write((int)(EEPROM_24C32_READ_START_ADDRESS & 0xFF)); // LSB
     byte c;
-    for (c = 0; c < length_; c++)
-        Wire.write(data_[c]);
+    for (c = 0; c < length_; c++) {
+         printf("DATA: %d - c: %d\n", data_[c], c);
+         Wire.write(data_[c]);
+    }
+        
     result = Wire.endTransmission();
+
+    printf("result %d\n", result);
 
     return result;
 }
