@@ -297,7 +297,7 @@ bool Controller::controllerPrepareWatering() {
     wateringDurationTime = 0;
     wateringTimer1Interrupt = 0;
 
-    printf("Unix Date Now: %d\n", unixDateNow);
+    // printf("Unix Date Now: %d\n", unixDateNow);
 
     for (uint8_t i = 0; i < keysNum; i++) {
         ruleValue = EMPTY_STRING;
@@ -375,36 +375,52 @@ bool Controller::controllerPrepareWatering() {
 
     free(ruleNames);
 
-    uint8_t days;
-    uint8_t hours;
-    uint8_t minutes;
-    uint8_t seconds;
+    // uint8_t days;
+    // uint8_t hours;
+    // uint8_t minutes;
+    // uint8_t seconds;
 
     if (activeRuleExists) {
-        printf("ACTIVE RULE\n");
-        printf("Rule name: %s\n", activeRuleName);
-        printf("Start time: %d\n", startTime);
-        printf("End time: %d\n", endTime);
-        printf("Valves: %d\n", valvesDecValue);
-        printf("SoilWetness: %d\n", checkSoilWetness);
-        printf("RainSensor: %d\n", checkRainSensor);
-        printf("Temperature: %d\n", checkTemperature);
-        printf("Low Temp: %d\n", lowTemperature);
-        printf("High Temp: %d\n", highTemperature);
+        // printf("ACTIVE RULE\n");
+        // printf("Rule name: %s\n", activeRuleName);
+        // printf("Start time: %d\n", startTime);
+        // printf("End time: %d\n", endTime);
+        // printf("Valves: %d\n", valvesDecValue);
+        // printf("SoilWetness: %d\n", checkSoilWetness);
+        // printf("RainSensor: %d\n", checkRainSensor);
+        // printf("Temperature: %d\n", checkTemperature);
+        // printf("Low Temp: %d\n", lowTemperature);
+        // printf("High Temp: %d\n", highTemperature);
         wateringDurationTime = endTime - unixDateTimeNow;
-        printf("Watering Duration Time: %d seconds\n", wateringDurationTime);
+        // printf("Watering Duration Time: %d seconds\n", wateringDurationTime);
 
+        printf(
+            "ACTIVE RULE: %s, Start time: %02d:%02d:%02d, End time: %02d:%02d:%02d, Valves: %d, Check soil wetness: %d, Check the rain: %d, \
+                Check temperatue: %d, Low temperature: %d, High temperature: %d, Duration time %d seconds\n",
+            activeRuleName, ((startTime % 86400) / 3600), ((startTime % 3600) / 60), (startTime % 60), ((endTime % 86400) / 3600),
+            ((endTime % 3600) / 60), (endTime % 60), valvesDecValue, checkSoilWetness, checkRainSensor, checkTemperature, lowTemperature,
+            highTemperature, wateringDurationTime);
+
+        mainAppError = sdCard->writeLogFile("ACTIVE RULE: " + String(activeRuleName) + ", Start time: " + String(((startTime % 86400) / 3600)) + ":" +
+                                            String(((startTime % 3600) / 60)) + ":" + String(startTime % 60) + ", End time: " + String(((endTime % 86400) / 3600)) + ":" +
+                                            String(((endTime % 3600) / 60)) + ":" + String(endTime % 60) + ", Valves: " + String(valvesDecValue) + ", Check soil wetness: " +
+                                            String(checkSoilWetness) + ", Check the rain: " + String(checkRainSensor) + ", Check temperatue: " + String(checkTemperature) +
+                                            ", Low temperature: " + String(lowTemperature) + ", High temperature: " + String(highTemperature) + ", Duration time: " +
+                                            String(wateringDurationTime) + " seconds.");
         controllerCheckWateringRules();
-
     } else {
-        printf("NO ACTIVE RULE\n");
         wateringDurationTime = nextStartTime - unixDateTimeNow;
-        // printf("nextStartTime: %d - unixDateTimeNow: %d = wateringDurationTime: %d\n", nextStartTime, unixDateTimeNow, wateringDurationTime);
-        days = wateringDurationTime / 86400;
-        hours = (wateringDurationTime % 86400) / 3600;
-        minutes = (wateringDurationTime % 3600) / 60;
-        seconds = (wateringDurationTime % 60);
-        printf("Next watering rule in: %d days, %d hours, %d minutes, %d seconds. Total seconds: %d\n", days, hours, minutes, seconds, wateringDurationTime);
+        // days = wateringDurationTime / 86400;
+        // hours = (wateringDurationTime % 86400) / 3600;
+        // minutes = (wateringDurationTime % 3600) / 60;
+        // seconds = (wateringDurationTime % 60);
+        printf("NO ACTIVE RULE - Next watering rule in: %d days, Time: %02d:%02d:%02d. Total seconds: %d\n", (wateringDurationTime / 86400),
+               ((wateringDurationTime % 86400) / 3600), ((wateringDurationTime % 3600) / 60), (wateringDurationTime % 60), wateringDurationTime);
+
+        mainAppError = sdCard->writeLogFile("NO ACTIVE RULE - Next watering rule in: " + String((wateringDurationTime / 86400)) + " days, Time: " +
+                                            String(((wateringDurationTime % 86400) / 3600)) + ":" + String((wateringDurationTime % 3600) / 60) + ":" +
+                                            String(wateringDurationTime % 60) + ". Total seconds: " + String(wateringDurationTime));
+
         newValvesDecValue = ALL_VALVES_OFF;
         valvesTurnOffOn(newValvesDecValue);
     }

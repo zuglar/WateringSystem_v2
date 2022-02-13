@@ -311,7 +311,7 @@ void WiFi32s::startWebHtm() {
     server.on("/admin.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
         logWebTraffic(request, ADMIN_HTM_FILE);
         asyncTcpWdt = true;
-        //sendResponseToClient(request, 200, ADMIN_HTM_FILE);
+        // sendResponseToClient(request, 200, ADMIN_HTM_FILE);
         if (ON_AP_FILTER(request)) {
             sendResponseToClient(request, 200, ADMIN_HTM_FILE);
         } else {
@@ -326,7 +326,7 @@ void WiFi32s::startWebHtm() {
         updateNewSettingsProccess = true;
         int result = 0;
         logWebTraffic(request, EMPTY_STRING);
-        
+
         /* List all parameters (Compatibility) */
         int args = request->args();
         printf("...args: %d\n", args);
@@ -335,8 +335,14 @@ void WiFi32s::startWebHtm() {
         }
 
         if (ON_AP_FILTER(request)) {
+            String ds3231Pwd = cntrl->getDs3231rtc()->getAdminPwd();
+            String admPwd = "";
+            if (request->hasParam("adm_pwd", true)) {
+                admPwd = request->getParam("adm_pwd", true)->value();
+            }
+
             // Compare given admin password with pasword which is stored in 24C32 EEPROM of DS3231RTC
-            if ((request->hasParam("adm_pwd", true)) && !(request->getParam("adm_pwd", true)->value().compareTo(cntrl->getDs3231rtc()->getAdminPwd()) != 0)) {
+            if (admPwd.compareTo(ds3231Pwd) != 0) {
                 logWebTraffic(request, "Invalid admin password: " + request->getParam("adm_pwd", true)->value());
                 result = 2;
             } else {
@@ -349,11 +355,14 @@ void WiFi32s::startWebHtm() {
                     }
                 } else if ((request->hasParam("page", true)) && (request->getParam("page", true)->value().compareTo(PAGE_ADMIN) == 0)) {
                     if (request->hasParam("new_pwd_1"), true) {
+                        printf("************* SAVING PWD\n");
                         // Save admin password in to 24C32 EEPROM of DS3231RTC
                         if (!cntrl->getDs3231rtc()->setAdminPwd(request->getParam("new_pwd_1", true)->value())) {
+                            printf("************* PWD NOT SAVED\n");
                             logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has not been saved.");
                         } else {
                             logWebTraffic(request, "New admin password: " + request->getParam("new_pwd_1", true)->value() + " has been saved.");
+                            printf("************* PWD SAVED\n");
                             result = 1;
                         }
                     }
