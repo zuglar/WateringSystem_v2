@@ -70,13 +70,13 @@ void loop() {
         return;
     }
 
-    if (asyncTcpWdt) {
-        printf("1. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
-        /* controller->wifi32s->getClientData(); */
-        asyncTcpWdt = false;
-        delay(1);
-        printf("2. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
-    }
+    // if (asyncTcpWdt) {
+    //     printf("1. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
+    //     /* controller->wifi32s->getClientData(); */
+    //     asyncTcpWdt = false;
+    //     delay(1);
+    //     printf("2. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
+    // }
     delay(1);
     controller->wifi32s->ftp->handle();
 

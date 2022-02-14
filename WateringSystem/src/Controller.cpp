@@ -375,24 +375,9 @@ bool Controller::controllerPrepareWatering() {
 
     free(ruleNames);
 
-    // uint8_t days;
-    // uint8_t hours;
-    // uint8_t minutes;
-    // uint8_t seconds;
 
     if (activeRuleExists) {
-        // printf("ACTIVE RULE\n");
-        // printf("Rule name: %s\n", activeRuleName);
-        // printf("Start time: %d\n", startTime);
-        // printf("End time: %d\n", endTime);
-        // printf("Valves: %d\n", valvesDecValue);
-        // printf("SoilWetness: %d\n", checkSoilWetness);
-        // printf("RainSensor: %d\n", checkRainSensor);
-        // printf("Temperature: %d\n", checkTemperature);
-        // printf("Low Temp: %d\n", lowTemperature);
-        // printf("High Temp: %d\n", highTemperature);
         wateringDurationTime = endTime - unixDateTimeNow;
-        // printf("Watering Duration Time: %d seconds\n", wateringDurationTime);
 
         printf(
             "ACTIVE RULE: %s, Start time: %02d:%02d:%02d, End time: %02d:%02d:%02d, Valves: %d, Check soil wetness: %d, Check the rain: %d,"
@@ -410,10 +395,6 @@ bool Controller::controllerPrepareWatering() {
         controllerCheckWateringRules();
     } else {
         wateringDurationTime = nextStartTime - unixDateTimeNow;
-        // days = wateringDurationTime / 86400;
-        // hours = (wateringDurationTime % 86400) / 3600;
-        // minutes = (wateringDurationTime % 3600) / 60;
-        // seconds = (wateringDurationTime % 60);
         printf("NO ACTIVE RULE - Next watering rule in: %d days, Time: %02d:%02d:%02d. Total seconds: %d\n", (wateringDurationTime / 86400),
                ((wateringDurationTime % 86400) / 3600), ((wateringDurationTime % 3600) / 60), (wateringDurationTime % 60), wateringDurationTime);
 
@@ -519,7 +500,7 @@ void Controller::controllerGetSensorsValue() {
                 }
             }
         }
-        printf("Sensor: %d - Measured: %d - Threshold: %d - Percentage: %d\n", i + 1, measuredValueAnalogSensorsArray[i], thresholdAnalogSensorsArray[i], value);
+        // printf("Sensor: %d - Measured: %d - Threshold: %d - Percentage: %d\n", i + 1, measuredValueAnalogSensorsArray[i], thresholdAnalogSensorsArray[i], value);
     }
 
     printf("measuredSensorsValueString: %s\n", measuredSensorsValueString.c_str());
