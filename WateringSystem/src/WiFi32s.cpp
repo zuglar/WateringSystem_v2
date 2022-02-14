@@ -2,6 +2,31 @@
 
 volatile bool updateNewSettingsProccess;
 
+size_t onStaticDownLoad(uint8_t *buffer, size_t maxLen, size_t index) {
+    asyncTcpWdt = true;
+    static char *filename = WIFI_HTM_FILE;
+    static File chunkfile;
+    static size_t dnlLen = 2048;     // limit to buffer size
+    uint32_t countbytes = 0;  // bytes to be returned
+    if (index == 0) {
+        printf("onStaticDownLoad: START filename: %s index: %6i maxLen: %5i\n", filename, index, maxLen);
+        chunkfile = SD.open(filename);
+    }
+    if(chunkfile) {
+        printf("chunkfile opened\n");
+    }
+    chunkfile.seek(index);
+    countbytes = chunkfile.read(buffer, min(dnlLen, maxLen));
+
+    if (countbytes == 0) {
+        chunkfile.close();
+        printf("chunkfile closed\n");
+    }
+    printf("onStaticDownLoad: f: %s index: %6u maxLen: %5u countb: %5u \n", filename, index, maxLen, countbytes);
+
+    return countbytes;
+}
+
 WiFi32s::WiFi32s(/* args */ Controller *cntrl_) {
     cntrl = cntrl_;
 }
@@ -107,10 +132,17 @@ bool WiFi32s::stringToIPAdress(const char *data_, IPAddress *address_) {
 
 void WiFi32s::startWebHtm() {
     // Opens index.htm file
+
+    // server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
+    //     asyncTcpWdt = true;
+    //     logWebTraffic(request, EMPTY_STRING);
+    //     sendResponseToClient(request, 200, INDEX_HTM_FILE);
+    // });
+
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
         asyncTcpWdt = true;
         logWebTraffic(request, EMPTY_STRING);
-        sendResponseToClient(request, 200, INDEX_HTM_FILE);
+        request->sendChunked("text/html", onStaticDownLoad);
     });
     // Sends data to show values of weather, of wetness of soil and of state of valves and rain sensor
     server.on("/getWeather", HTTP_GET, [this](AsyncWebServerRequest *request) {
@@ -593,6 +625,8 @@ void WiFi32s::sendResponseToClient(AsyncWebServerRequest *request_, int hhtpCode
     openHtm(htmFileName_);
     request_->send(hhtpCode_, "text/html", htmFile);
 }
+
+
 
 // void WiFi32s::setCrossOrigin(AsyncResponseStream *response) {
 //     response->addHeader("Access-Control-Allow-Origin", "*");
