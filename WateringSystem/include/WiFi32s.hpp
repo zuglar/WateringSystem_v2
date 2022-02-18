@@ -10,6 +10,8 @@
 #include <ArduinoJson.h>
 #include "Controller.hpp"
 #include <AsyncJson.h>
+#include <EasyDDNS.h>
+#include "HTTPClient.h"
 
 class Controller;
 
@@ -39,7 +41,8 @@ public:
     /* Public method - init WiFi32s - if initialization successful the return is TRUE else FALSE */
     bool init(int apHidden_, const char *apSSID_, const char *apPWD_, int apChannel_, int apMaxConnection_, int staSet_,
               const char *staSSID_, const char *staPWD_, int staStaticIp_, const char *staIP_, const char *staSubnet_,
-              const char *staGateway_, const char *staDNS_);
+              const char *staGateway_, const char *staDNS_, int ddns_, const char * ddnsProvider_, const char *ddnsHost_,
+              const char *ddnsUserName_, const char *ddnsPassword_);
     /* AsyncWebServer object */
     AsyncWebServer server = AsyncWebServer(80);
     /* Public method - create htm file and start web server */
@@ -76,6 +79,7 @@ public:
     String staIPString;
     int staEnabled;
     int staStaticIP;
+    
 /* 
     // https://www.mischianti.org/2020/07/15/how-to-create-a-rest-server-on-esp8266-or-esp32-cors-request-option-and-get-part-4/
     // void setCrossOrigin(AsyncResponseStream *response);

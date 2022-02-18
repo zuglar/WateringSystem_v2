@@ -51,7 +51,6 @@ String DS3231RTC::getDateTimeNow() {
 
 uint32_t DS3231RTC::getUnixTimeNow() {
     DateTime dateTimeNow = rtc.now();
-    printf("dateTimeNow.unixtime(): %d\n", dateTimeNow.unixtime());
     return dateTimeNow.unixtime();
 }
 

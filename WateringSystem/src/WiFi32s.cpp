@@ -10,11 +10,13 @@ WiFi32s::~WiFi32s() {}
 
 bool WiFi32s::init(int apHidden_, const char *apSSID_, const char *apPWD_, int apChannel_, int apMaxConnection_, int staSet_,
                    const char *staSSID_, const char *staPWD_, int staStaticIp_, const char *staIP_, const char *staSubnet_,
-                   const char *staGateway_, const char *staDNS_) {
+                   const char *staGateway_, const char *staDNS_, int ddns_, const char *ddnsProvider_, const char *ddnsHost_,
+                   const char *ddnsUserName_, const char *ddnsPassword_) {
     bool result = false;
 
     staEnabled = staSet_;
     staStaticIP = staStaticIp_;
+    cntrl->ddnsEnabled = false;
 
     // WiFi mode to Access Point and to Station
     WiFi.mode(WIFI_AP_STA);
@@ -89,6 +91,18 @@ bool WiFi32s::init(int apHidden_, const char *apSSID_, const char *apPWD_, int a
             staIPString = WiFi.localIP().toString();
             printf("ESP32 connected to: %s, IP: %s\n", staSSID_, staIPString.c_str());
             mainAppError = cntrl->getSdCard()->writeLogFile("ESP32 connected to: " + String(staSSID_) + ", IP: " + staIPString);
+
+            if (ddns_ == 1) {
+                cntrl->ddnsEnabled = true;
+                printf("EasyDDNS - Enabled - DDNS Host: %s\n", ddnsHost_);
+                mainAppError = cntrl->getSdCard()->writeLogFile("EasyDDNS - Enabled - DDNS Host: " + String(ddnsHost_));
+                EasyDDNS.service(String(ddnsProvider_));
+                EasyDDNS.client(String(ddnsHost_), String(ddnsUserName_), String(ddnsPassword_));
+                EasyDDNS.onUpdate([&](const char *oldIP, const char *newIP) {
+                    printf("EasyDDNS - IP Change Detected: %s\n", newIP);
+                    mainAppError = cntrl->getSdCard()->writeLogFile("EasyDDNS - IP Change Detected: " + String(newIP));
+                });
+            }
             result = true;
         }
     }
@@ -566,6 +580,8 @@ bool WiFi32s::startFTPServer() {
     ftp->addUser(FTP_USER, FTP_PASSWORD);
     ftp->addFilesystem("SD", &SD);
 
+    cntrl->ftpServerStarted = false;
+
     if (!ftp->begin()) {
         printf("ESP32 FTP server starting error!\n");
         logWebTraffic(nullptr, "ESP32 FTP server starting error!");
@@ -574,6 +590,7 @@ bool WiFi32s::startFTPServer() {
 
     printf("ESP32 FTP server has been started successfully.\n");
     logWebTraffic(nullptr, "FTP server has been started successfully.");
+    cntrl->ftpServerStarted = true;
     return true;
 }
 
@@ -594,8 +611,6 @@ void WiFi32s::sendResponseToClient(AsyncWebServerRequest *request_, int hhtpCode
     openHtm(htmFileName_);
     request_->send(hhtpCode_, "text/html", htmFile);
 }
-
-
 
 // void WiFi32s::setCrossOrigin(AsyncResponseStream *response) {
 //     response->addHeader("Access-Control-Allow-Origin", "*");

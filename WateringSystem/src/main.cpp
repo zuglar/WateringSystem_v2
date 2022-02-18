@@ -46,6 +46,7 @@ void setup() {
     wateringTimer1Interrupt = 0;
     // printf("3. mainInitErmainAppErrorror: %d\n", mainAppError);
     printf("APP SETUP End.\n");
+
     /* When the setup has been finished successfully the green LED turns ON */
     delay(DELAY_03_SEC);
     mainAppError = controller->getSdCard()->writeLogFile("Watering System MCU Started.");
@@ -78,7 +79,9 @@ void loop() {
     //     printf("2. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
     // }
     delay(1);
-    controller->wifi32s->ftp->handle();
+    if (controller->ftpServerStarted) {
+        controller->wifi32s->ftp->handle();
+    }
 
     if ((controller->systemRefreshInterval * 60) == systemTimer1Interrupt) {
         printf("System Duration Time reached!\n");
@@ -91,6 +94,11 @@ void loop() {
         }
 
         systemTimer1Interrupt = 0;
+
+        if (controller->ddnsEnabled) {
+            // Check for new public IP every 10 seconds
+            EasyDDNS.update(10000);
+        }
     }
 
     if (controller->wateringDurationTime == wateringTimer1Interrupt) {
@@ -191,9 +199,6 @@ bool startUp(void) {
     ledFlashMessage(controller->getRedLED(), 2, DELAY_03_SEC);
     delay(DELAY_1SEC);
 
-    /* Start Web Htm */
-    /* controller->controllerStartWebHtm(); */
-    // printf("Date NOW: %s\n", controller-);
     return true;
 }
 

@@ -233,18 +233,30 @@ bool Controller::controllerWiFi32sInit() {
     sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_GATEWAY_KEY, staGateway);
     String staDns;
     sdCard->getValueFromIni(WIFI_STA_SECTION, WIFI_DNS_KEY, staDns);
-
+    String ddnsEnabled;
+    sdCard->getValueFromIni(WIFI_DDNS_SECTION, WIFI_DDNSSET_KEY, ddnsEnabled);
+    String ddnsProvider;
+    sdCard->getValueFromIni(WIFI_DDNS_SECTION, WIFI_DDNSPROVIDER_KEY, ddnsProvider);
+    String ddnsHost;
+    sdCard->getValueFromIni(WIFI_DDNS_SECTION, WIFI_DDNSHOST_KEY, ddnsHost);
+    String ddnsUserName;
+    sdCard->getValueFromIni(WIFI_DDNS_SECTION, WIFI_DDNSUSERNAME_KEY, ddnsUserName);
+    String ddnsUserPwd;
+    sdCard->getValueFromIni(WIFI_DDNS_SECTION, WIFI_DDNSPASSWORD_KEY, ddnsUserPwd);
+    
     wifi32s = new WiFi32s(this);
 
     if (staEnabled.toInt()) {
         if (!wifi32s->init(apHidden.toInt(), apSSID.c_str(), apPwd.c_str(), apChannel.toInt(), apMaxConnection.toInt(),
                            staEnabled.toInt(), staSSID.c_str(), staPwd.c_str(), staStaticIpEnabled.toInt(), staIP.c_str(),
-                           staSubnet.c_str(), staGateway.c_str(), staDns.c_str())) {
+                           staSubnet.c_str(), staGateway.c_str(), staDns.c_str(), ddnsEnabled.toInt(), ddnsProvider.c_str(),
+                           ddnsHost.c_str(), ddnsUserName.c_str(), ddnsUserPwd.c_str())) {
             return false;
         }
     } else {
         if (!wifi32s->init(apHidden.toInt(), apSSID.c_str(), apPwd.c_str(), apChannel.toInt(), apMaxConnection.toInt(),
-                           0, NULL, NULL, NULL, NULL, NULL, NULL, NULL)) {
+                           0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ddnsEnabled.toInt(), ddnsProvider.c_str(),
+                           ddnsHost.c_str(), ddnsUserName.c_str(), ddnsUserPwd.c_str())) {
             return false;
         }
     }
@@ -457,6 +469,7 @@ void Controller::controllerCheckWateringRules() {
         }
         // printf("newValvesDecValue: %d\n", newValvesDecValue);
         valvesTurnOffOn(newValvesDecValue);
+        return;
     }
 
     valvesTurnOffOn(newValvesDecValue);

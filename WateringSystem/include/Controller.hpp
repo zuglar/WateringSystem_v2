@@ -38,17 +38,17 @@ private:
     uint8_t valvesDecValue;
 
 
-    /* Public property - Variable to store to check soil wetnes before watering - if soil is dry then starts watering */
+    /* Private property - Variable to store to check soil wetnes before watering - if soil is dry then starts watering */
     bool checkSoilWetness;
-    /* Public property - Variable to store to check rain sensor during watering - if rains then stops watering */
+    /* Private property - Variable to store to check rain sensor during watering - if rains then stops watering */
     bool checkRainSensor;
-    /* Public property - Variable to store to check temperature during watering - if temperature is above or below than the given values stops watering */
+    /* Private property - Variable to store to check temperature during watering - if temperature is above or below than the given values stops watering */
     bool checkTemperature;
-    /* Public property - Store less temperature value - if temperature is below than the given value stops watering */
+    /* Private property - Store less temperature value - if temperature is below than the given value stops watering */
     int8_t lowTemperature;
-    /* Public property - Store high temperature value - if temperature is above than the given value stops watering */
+    /* Private property - Store high temperature value - if temperature is above than the given value stops watering */
     int8_t highTemperature;
- 
+    
 
     char **ruleNames;
     uint8_t keysNum;
@@ -132,6 +132,10 @@ public:
     uint32_t wateringDurationTime;
     /* Public property - variable of active valves during watering */
     uint8_t newValvesDecValue;
+    /* Public property - Variable to store when the ftp has been started successfully */
+    bool ftpServerStarted;
+    /* Public property - Variable to store when the ddns has been set */
+    bool ddnsEnabled;
     /* WiFi32s object */
     WiFi32s *wifi32s;
 };
