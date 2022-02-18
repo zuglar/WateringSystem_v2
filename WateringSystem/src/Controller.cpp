@@ -480,13 +480,13 @@ void Controller::controllerGetSensorsValue() {
 
     getPowerSensorsCH1()->setLevel(HIGH);
     printf("Controler Power Channel: %d switched on.\n", POWER_SENORS_1_5_CH1);
-    delay(DELAY_005_SEC);
+    delay(DELAY_05_SEC);
     // mainAppError = sdCard->writeLogFile("Controler Power Channel: " + String(POWER_SENORS_1_5_CH1) + " switched on.");
     analogInputs->storeAnalogInputPinValue(POWER_SENORS_1_5_CH1, measuredValueAnalogSensorsArray);
     getPowerSensorsCH1()->setLevel(LOW);
     getPowerSensorsCH2()->setLevel(HIGH);
     printf("Controler Power Channel: %d switched on.\n", POWER_SENORS_6_10_CH2);
-    delay(DELAY_005_SEC);
+    delay(DELAY_05_SEC);
     // mainAppError = sdCard->writeLogFile("Controler Power Channel: " + String(POWER_SENORS_6_10_CH2) + " switched on.");
     analogInputs->storeAnalogInputPinValue(POWER_SENORS_6_10_CH2, measuredValueAnalogSensorsArray);
     getPowerSensorsCH2()->setLevel(LOW);

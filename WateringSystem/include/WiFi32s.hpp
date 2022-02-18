@@ -23,6 +23,7 @@ private:
     IPAddress *staSubnet;     /* Station Subnet */
     IPAddress *staGateway;    /* Station Gateway */
     IPAddress *staPrimaryDNS; /* Station Primary DNS */
+    
     /* Private method - Convert string to IPAddress */
     bool stringToIPAdress(const char *data_, IPAddress *address_);
 /* 
@@ -41,7 +42,7 @@ public:
     /* Public method - init WiFi32s - if initialization successful the return is TRUE else FALSE */
     bool init(int apHidden_, const char *apSSID_, const char *apPWD_, int apChannel_, int apMaxConnection_, int staSet_,
               const char *staSSID_, const char *staPWD_, int staStaticIp_, const char *staIP_, const char *staSubnet_,
-              const char *staGateway_, const char *staDNS_, int ddns_, const char * ddnsProvider_, const char *ddnsHost_,
+              const char *staGateway_, const char *staDNS_, int ddns_, const char *ddnsProvider_, const char *ddnsHost_,
               const char *ddnsUserName_, const char *ddnsPassword_);
     /* AsyncWebServer object */
     AsyncWebServer server = AsyncWebServer(80);
@@ -79,6 +80,8 @@ public:
     String staIPString;
     int staEnabled;
     int staStaticIP;
+    String ddnsProvider;
+    String ddnsHost;
     
 /* 
     // https://www.mischianti.org/2020/07/15/how-to-create-a-rest-server-on-esp8266-or-esp32-cors-request-option-and-get-part-4/

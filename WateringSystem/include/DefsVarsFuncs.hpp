@@ -5,7 +5,7 @@
 
 /* Main Defines */
 #define DELAY_03_SEC 300 /* Delay of LED flash 0.3s */
-#define DELAY_005_SEC 50 /* Delay of LED flash 0.05s */
+#define DELAY_05_SEC 500 /* Delay of LED flash 0.5s */
 #define DELAY_1SEC 1000  /* Delay of LED flash 1s */
 #define DELAY_2SEC 2000  /* Delay of LED flash 2s */
 /* Digital Output Defines */

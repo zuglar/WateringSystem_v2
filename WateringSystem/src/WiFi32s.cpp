@@ -16,6 +16,8 @@ bool WiFi32s::init(int apHidden_, const char *apSSID_, const char *apPWD_, int a
 
     staEnabled = staSet_;
     staStaticIP = staStaticIp_;
+    ddnsProvider = String(ddnsProvider_);
+    ddnsHost = String(ddnsHost_);
     cntrl->ddnsEnabled = false;
 
     // WiFi mode to Access Point and to Station
@@ -182,13 +184,13 @@ void WiFi32s::startWebHtm() {
         JsonArray wifiArray = wifiArrayDoc.to<JsonArray>();
         wifiArray.add(WiFi.softAPSSID());
         wifiArray.add(WiFi.softAPIP().toString());
-        // wifiArray.add(String(staStaticIP));
         wifiArray.add(WiFi.localIP().toString());
         wifiArray.add(WiFi.subnetMask().toString());
         wifiArray.add(WiFi.gatewayIP().toString());
         wifiArray.add(WiFi.dnsIP().toString());
-        // wifiArray.add(String(staEnabled));
         wifiArray.add(WiFi.SSID());
+        wifiArray.add(ddnsProvider);
+        wifiArray.add(ddnsHost);
 
         root["wifi"] = wifiArrayDoc;
         // char buffer[5000];
@@ -502,6 +504,31 @@ bool WiFi32s::saveWifiSettings(AsyncWebServerRequest *request_) {
             if (!cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_SSID_KEY, request_->getParam("sta_ssid", true)->value()) ||
                 !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_PWD_KEY, request_->getParam("sta_newpwd_1", true)->value()) ||
                 !cntrl->getSdCard()->saveValueToIni(WIFI_STA_SECTION, WIFI_STASET_KEY, "1")) {
+                return false;
+            }
+        }
+    }
+    // Save new DDNS data
+    if (request_->hasParam("ddns_chb", true) && request_->getParam("ddns_chb", true)->value().compareTo("on") == 0) {
+        if (!(request_->hasParam("ddns_provider", true)) || !(request_->hasParam("ddns_host", true)) ||
+            !(request_->hasParam("ddns_user", true)) || !(request_->hasParam("ddns_pwd", true))) {
+            return false;
+        }
+
+        if (request_->getParam("ddns_provider", true)->value().compareTo("") == 0) {
+            if (!cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSPROVIDER_KEY, "") ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSHOST_KEY, "") ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSUSERNAME_KEY, "") ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSPASSWORD_KEY, "") ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSSET_KEY, "0")) {
+                return false;
+            }
+        } else {
+            if (!cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSPROVIDER_KEY, request_->getParam("ddns_provider", true)->value()) ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSHOST_KEY, request_->getParam("ddns_host", true)->value()) ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSUSERNAME_KEY, request_->getParam("ddns_user", true)->value()) ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSPASSWORD_KEY, request_->getParam("ddns_pwd", true)->value()) ||
+                !cntrl->getSdCard()->saveValueToIni(WIFI_DDNS_SECTION, WIFI_DDNSSET_KEY, "1")) {
                 return false;
             }
         }

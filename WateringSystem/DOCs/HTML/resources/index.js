@@ -2,7 +2,7 @@
 import { warningColor, errorColor, okColor, scalePage, getvals, CustomDialog } from '/resources/main.js';
 
 /* Global variables */
-var serverIP;   // IP address of server
+// var serverIP;   // IP address of server
 var serverURL;  // URL of server
 var page;
 var hr;
@@ -24,12 +24,12 @@ $(document).ready(function () {
 
     getvals(ipRequestUrl).then(response => {
         serverURL = $(location).attr('hostname');
-        if (response !== undefined) {
-            serverIP = response.ip;
-        } else {
-            console.log("response undefined");
-            serverIP = "192.168.4.1";
-        }
+        // if (response !== undefined) {
+        //     serverIP = response.ip;
+        // } else {
+        //     console.log("response undefined");
+        //     serverIP = "192.168.4.1";
+        // }
 
         serverURL = "http://" + serverURL;
         // console.log("FETCH - Server URL: " + serverURL);

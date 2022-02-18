@@ -2,7 +2,7 @@
 import { warningColor, errorColor, okColor, scalePage, getvals, CustomDialog } from '/resources/main.js';
 
 /* Global variables */
-var serverIP;   // IP address of server
+// var serverIP;   // IP address of server
 var serverURL;  // URL of server
 var page;
 
@@ -19,19 +19,15 @@ $(document).ready(function () {
 
     getvals(ipRequestUrl).then(response => {
         serverURL = $(location).attr('hostname');
-        if (response !== undefined) {
-            //console.log(response.ip);
-            serverIP = response.ip;
-        } else {
-            console.log("response undefined");
-            serverIP = "192.168.4.1";
-        }
+        // if (response !== undefined) {
+        //     //console.log(response.ip);
+        //     serverIP = response.ip;
+        // } else {
+        //     console.log("response undefined");
+        //     serverIP = "192.168.4.1";
+        // }
 
         serverURL = "http://" + serverURL;
-        // document.getElementById("ip").textContent = "IP: " + serverIP;
-        // document.getElementById("url").textContent = "URL: " + serverURL;
-        // console.log("FETCH - Server URL: " + serverURL);
-        // console.log("FETCH - IP Address: " + serverIP);
 
         var path = window.location.pathname;
         page = path.split("/").pop();
@@ -68,7 +64,6 @@ function showWifiPage() {
             document.getElementById("ddns-host").value = response.wifi[8];
 
             document.getElementById("server-url").value = serverURL;
-            document.getElementById("server-ip").value = serverIP;
 
             setTooltip();
             document.getElementById('ap-save-chb').addEventListener('click', () => {
