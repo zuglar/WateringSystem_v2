@@ -121,7 +121,7 @@
               <label class="switch">
                 <!-- onclick="staCheckBox(this)" -->
                 <input type="checkbox" id="sta-chb" name="sta_chb" >
-                <span class=" slider round"></span>
+                <span class="slider round"></span>
               </label>
             </td>
           </tr>
@@ -151,6 +151,51 @@
               <hr class="hr">
             </td>
           </tr>
+
+
+          <tr>
+            <td colspan="2" class="td-padding ddns-save">
+              <label for="ddns-chb"> Set DDNS</label><br>
+              <label class="switch">
+                <!-- onclick="staCheckBox(this)" -->
+                <input type="checkbox" id="ddns-chb" name="ddns_chb" >
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="td-padding" style="font-size: 14px; color: lightgray; background-color: #698d19;">
+              Supported DDNS providers:<br>duckdns, noip, dyndns, dynu, enom, all-inkl, selfhost.de, dyndns.it, strato, freemyip, afraid.org
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding">DDNS Provider</td>
+            <td class="td-padding"><input type="text" id="ddns-provider" name="ddns_provider" maxlength="25"
+                style="text-align: center;" disabled></td>
+          </tr>
+          <tr>
+            <td class="td-padding">DDNS Host name</td>
+            <td class="td-padding"><input type="text" id="ddns-host" maxlength="25" name="ddns_host"
+                style="text-align: center;" disabled>
+            </td>
+          </tr>
+          <tr>
+            <td class="td-padding">DDNS User name</td>
+            <td class="td-padding"><input type="text" id="ddns-user" maxlength="25" name="ddns_user"
+                style="text-align: center;" disabled></td>
+          </tr>
+          <tr>
+            <td class="td-padding">DDNS Password</td>
+            <td class="td-padding password"><input type="password" id="ddns-pwd" maxlength="25" name="ddns_pwd"
+                style="text-align: center;" disabled></td>
+          </tr>
+          <tr>
+            <td colspan="2" class="td-padding">
+              <hr class="hr">
+            </td>
+          </tr>
+
+
           <tr>
             <td class="td-padding">Server URL</td>
             <td class="td-padding"><input type="text" id="server-url" maxlength="15"

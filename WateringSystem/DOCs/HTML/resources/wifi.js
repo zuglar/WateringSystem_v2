@@ -64,6 +64,8 @@ function showWifiPage() {
             document.getElementById("sta-gateway").value = response.wifi[4];
             document.getElementById("sta-dns").value = response.wifi[5];
             document.getElementById("sta-ssid").value = response.wifi[6];
+            document.getElementById("ddns-provider").value = response.wifi[7];
+            document.getElementById("ddns-host").value = response.wifi[8];
 
             document.getElementById("server-url").value = serverURL;
             document.getElementById("server-ip").value = serverIP;
@@ -81,6 +83,11 @@ function showWifiPage() {
 
             document.getElementById('sta-chb').addEventListener('click', () => {
                 staCheckBox(document.getElementById('sta-chb'));
+
+            });
+
+            document.getElementById('ddns-chb').addEventListener('click', () => {
+                ddnsCheckBox(document.getElementById('ddns-chb'));
 
             });
 
@@ -189,6 +196,8 @@ function setTooltip() {
         "No router - Enable the checkbox and leave blank the SSID input.";
     document.getElementsByClassName("sta-static")[0].title = "Static IP - Enable the checkbox and fill in the data.\n" +
         "Dynamic IP - Enable the checkbox and leave blank the IP Address input.";
+    document.getElementsByClassName("ddns-save")[0].title = "Using DDNS  - Enable the checkbox and fill in the data.\n" +
+        "No DDNS - Enable the checkbox and leave blank the DDNS Provider input.";  
 
 }
 /* Function for AP checkbox */
@@ -229,6 +238,21 @@ function staStaticCheckBox(checkbox) {
         document.getElementById("sta-subnet").disabled = true;
         document.getElementById("sta-gateway").disabled = true;
         document.getElementById("sta-dns").disabled = true;
+    }
+    enableSave();
+}
+/* Function for DDNS checkbox */
+function ddnsCheckBox(checkbox) {
+    if (checkbox.checked) {
+        document.getElementById("ddns-provider").disabled = false;
+        document.getElementById("ddns-host").disabled = false;
+        document.getElementById("ddns-user").disabled = false;
+        document.getElementById("ddns-pwd").disabled = false;
+    } else {
+        document.getElementById("ddns-provider").disabled = true;
+        document.getElementById("ddns-host").disabled = true;
+        document.getElementById("ddns-user").disabled = true;
+        document.getElementById("ddns-pwd").disabled = true;
     }
     enableSave();
 }
@@ -289,11 +313,28 @@ function wifiSettingsSave() {
             }
         }
     }
+    /* Check DDNS input values */
+    const ddnsCheckBox = document.getElementById("ddns-chb")
+    if (ddnsCheckBox.checked == true) {
+        if (document.getElementById("ddns-provider").value.length != 0) {
+            if (!checkValueLenght(document.getElementById("ddns-provider").value, 4)) {
+                return [false, document.getElementById("ddns-provider")];
+            }
 
-    if (apCheckBox.checked == true || staCheckBox.checked == true || staStaticIpCheckBox.checked == true) {
+            if (!checkValueLenght(document.getElementById("ddns-host").value, 8)) {
+                return [false, document.getElementById("ddns-host")];
+            }
+
+            if (!checkValueLenght(document.getElementById("ddns-user").value, 4)) {
+                return [false, document.getElementById("ddns-user")];
+            }
+        }
+    }
+
+    if (apCheckBox.checked == true || staCheckBox.checked == true || staStaticIpCheckBox.checked == true || ddnsCheckBox.checked == true)   {
         /* Check admin input value */
         if (!checkValueLenght(document.getElementById("adm-pwd").value, 8)) {
-            document.getElementById("adm-pwd").focus();
+            // document.getElementById("adm-pwd").focus();
             return [false, document.getElementById("adm-pwd")];
         }
 
@@ -303,7 +344,7 @@ function wifiSettingsSave() {
 /* Function to enable or disbale admin password input and save button */
 function enableSave() {
     if (document.getElementById("ap-save-chb").checked || document.getElementById("sta-chb").checked ||
-        document.getElementById("sta-static-chb").checked) {
+        document.getElementById("sta-static-chb").checked || document.getElementById("ddns-chb").checked) {
         document.getElementById("adm-pwd").disabled = false;
         document.getElementById("save-wifi-btn").disabled = false;
         return;
