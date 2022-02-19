@@ -481,7 +481,7 @@ function checkGlobalSettings() {
         }
     }
 
-    if (!isNumeric(document.getElementById("refresh-interval"), 2, 15)) {
+    if (!isNumeric(document.getElementById("refresh-interval"), 1, 10)) {
         return false;
     }
 

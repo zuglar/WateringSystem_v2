@@ -16,6 +16,19 @@ InterruptTimer1 *interruptTimer1 = new InterruptTimer1();
 bool startUp(void);
 /* Function for LED's message */
 void ledFlashMessage(DigitalOutput *digitalOutput_, uint8_t flashTime_, uint16_t delay_);
+/* Function Power On Channel 1 */
+void powerOnCH1();
+/* Function Power On Channel 2 */
+void powerOnCH2();
+/* Function reads analog sensors value On Channel 1 */
+void readValueOnCH1();
+/* Function reads analog sensors value On Channel 2 */
+void readValueOnCH2();
+/* Status of CH1 or CH2 */
+bool channelSwithcedOn = false;
+
+uint32_t lastSystemTimer1Interrupt = 0;
+uint32_t lastWateringTimer1Interrupt = 0;
 
 void setup() {
     // put your setup code here, to run once:
@@ -25,7 +38,7 @@ void setup() {
     mainAppError = false;
     asyncTcpWdt = false;
     updateData = false;
-    // printf("1. mainAppError: %d\n", mainAppError);
+
     /* If startUp function return result is false than the program stops */
     bool startUpFinished = false;
     bool startUpResult = false;
@@ -34,28 +47,33 @@ void setup() {
         startUpFinished = true;
     }
 
-    // printf("1. startUpResult: %d\n", startUpResult);
     if (!startUpResult && startUpFinished) {
-        // printf("2. mainAppError: %d\n", mainAppError);
         mainAppError = true;
         return;
     }
 
     mainAppError = false;
-    systemTimer1Interrupt = 0;
-    wateringTimer1Interrupt = 0;
-    // printf("3. mainInitErmainAppErrorror: %d\n", mainAppError);
+
     printf("APP SETUP End.\n");
 
     /* When the setup has been finished successfully the green LED turns ON */
     delay(DELAY_03_SEC);
     mainAppError = controller->getSdCard()->writeLogFile("Watering System MCU Started.");
     controller->getGreenLED()->setLevel(HIGH);
-    delay(DELAY_2SEC);
     /* Start Watering */
+    systemTimer1Interrupt = 0;
+    wateringTimer1Interrupt = 0;
+    powerOnCH1();
+    delay(DELAY_1SEC);
+    readValueOnCH1();
+    delay(DELAY_1SEC);
+    powerOnCH2();
+    delay(DELAY_1SEC);
+    readValueOnCH2();
+    controller->controllerStoreSensorsValue();
     controller->controllerPrepareWatering();
-    controller->controllerGetSensorsValue();
-    // ESP.getFreePsram();
+    systemTimer1Interrupt = 0;
+    wateringTimer1Interrupt = 0;
 }
 
 void loop() {
@@ -79,33 +97,60 @@ void loop() {
     //     printf("2. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
     // }
     delay(1);
+    // Handle FTP connection
     if (controller->ftpServerStarted) {
         controller->wifi32s->ftp->handle();
+    }
+    // Saving last System and Watering Timer1 Interrupt value
+    lastSystemTimer1Interrupt = systemTimer1Interrupt;
+    lastWateringTimer1Interrupt = wateringTimer1Interrupt;
+
+    // if the new settings of rule and system under upload process we have to wait to be finished
+    // and set the base System and Watering Timer 1 Interrupt value to the last saved value
+    while (updateNewSettingsProccess) {
+        if (systemTimer1Interrupt > lastSystemTimer1Interrupt)
+            systemTimer1Interrupt = lastSystemTimer1Interrupt;
+
+        if (wateringTimer1Interrupt > lastWateringTimer1Interrupt)
+            wateringTimer1Interrupt = lastSystemTimer1Interrupt;
     }
 
     if ((controller->systemRefreshInterval * 60) == systemTimer1Interrupt) {
         printf("System Duration Time reached!\n");
-        // if the new settings of rule and system under upload process we have to wait to be finished
-        while (updateNewSettingsProccess) {
-        }
 
         if (controller->activeRuleExists) {
             controller->controllerCheckWateringRules();
         }
 
-        systemTimer1Interrupt = 0;
-
         if (controller->ddnsEnabled) {
             // Check for new public IP every 10 seconds
             EasyDDNS.update(10000);
         }
+
+        systemTimer1Interrupt = 0;
+        channelSwithcedOn = false;
+    }
+
+    if (systemTimer1Interrupt == POWERON_ANALOG_CH1 && !channelSwithcedOn) {
+        powerOnCH1();
+    }
+
+    if (systemTimer1Interrupt == READ_SENSORS_CH1 && channelSwithcedOn) {
+        readValueOnCH1();
+    }
+
+    if (systemTimer1Interrupt == POWERON_ANALOG_CH2 && !channelSwithcedOn) {
+        powerOnCH2();
+    }
+
+    if (systemTimer1Interrupt == READ_SENSORS_CH2 && channelSwithcedOn) {
+        readValueOnCH2();
+        controller->controllerStoreSensorsValue();
+        controller->controllerCheckWateringRules();
     }
 
     if (controller->wateringDurationTime == wateringTimer1Interrupt) {
         printf("Watering Duration Time reached!\n");
-        // if the new settings of rule and system under upload process we have to wait to be finished
-        while (updateNewSettingsProccess) {
-        }
 
         controller->controllerPrepareWatering();
         wateringTimer1Interrupt = 0;
@@ -171,20 +216,6 @@ bool startUp(void) {
     /* If reading data from sensor has been finished successfully the red led flashes four times */
     ledFlashMessage(controller->getRedLED(), 4, DELAY_03_SEC);
     delay(DELAY_1SEC);
-    /* Read Analog sensors value / power channel */
-    // controller->getPowerSensorsCH1()->setLevel(HIGH);
-    // delay(DELAY_1SEC);
-    // controller->controllerReadAnalogInputPinValue(POWER_SENORS_1_5_CH1);
-    // controller->getPowerSensorsCH1()->setLevel(LOW);
-    // controller->getPowerSensorsCH2()->setLevel(HIGH);
-    // delay(DELAY_1SEC);
-    // controller->controllerReadAnalogInputPinValue(POWER_SENORS_6_10_CH2);
-    // controller->getPowerSensorsCH2()->setLevel(LOW);
-    // delay(DELAY_03_SEC);
-    // controller->setActiveValves();
-    // controller->valvesTurnOffOn();
-    // /* END - Collecting data from ws.ini file and Analog Inputs */
-    // delay(DELAY_1SEC);
     /* Initialization WiFi32s object */
     if (!controller->controllerWiFi32sInit())
         return false;
@@ -209,4 +240,30 @@ void ledFlashMessage(DigitalOutput *digitalOutput_, uint8_t flashTime_, uint16_t
         digitalOutput_->setLevel(LOW);
         delay(delay_);
     }
+}
+
+void powerOnCH1() {
+    channelSwithcedOn = true;
+    printf("Controler Power Channel: %d switched on.\n", POWER_SENORS_1_5_CH1);
+    controller->getPowerSensorsCH1()->setLevel(HIGH);
+}
+
+void powerOnCH2() {
+    channelSwithcedOn = true;
+    printf("Controler Power Channel: %d switched on.\n", POWER_SENORS_6_10_CH2);
+    controller->getPowerSensorsCH2()->setLevel(HIGH);
+}
+
+void readValueOnCH1() {
+    printf("Read sensors value on channel: %d\n", POWER_SENORS_1_5_CH1);
+    channelSwithcedOn = false;
+    controller->getSensorsValueCH1();
+    controller->getPowerSensorsCH1()->setLevel(LOW);
+}
+
+void readValueOnCH2() {
+    printf("Read sensors value on channel: %d\n", POWER_SENORS_6_10_CH2);
+    channelSwithcedOn = false;
+    controller->getSensorsValueCH2();
+    controller->getPowerSensorsCH2()->setLevel(LOW);
 }

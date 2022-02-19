@@ -134,7 +134,7 @@ void WiFi32s::startWebHtm() {
         asyncTcpWdt = true;
         logWebTraffic(request, EMPTY_STRING);
         cntrl->controllerGetAht20Bmp280Data();
-        cntrl->controllerGetSensorsValue();
+        // cntrl->controllerGetSensorsValue();
         // Simple option to create json
         // AsyncResponseStream *response = request->beginResponseStream("application/json");
         // DynamicJsonDocument json(1024);
@@ -155,7 +155,7 @@ void WiFi32s::startWebHtm() {
         root["hum"] = String(cntrl->relativeHumidity, 2);
         root["atm"] = String((cntrl->airPressure / 1000), 2);
         root["valves"] = cntrl->newValvesDecValue;
-        root["sensors"] = cntrl->measuredSensorsValueString;
+        root["sensors"] = cntrl->measuredSensorsValuePercentageString;
 
         jsonOutput = String();
         serializeJson(root, jsonOutput);

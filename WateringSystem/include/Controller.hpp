@@ -70,8 +70,6 @@ public:
     bool controllerAnalogInputsInit();
     /* Public method - Save Analog Sensors threshold value to array */
     bool analogSensorsThresholdValues();
-    // /* Public method - Read values of analog inputs and store in an array */
-    // void controllerReadAnalogInputValue(const gpio_num_t powerChannel_);
     /* Public method - To store/get max dryness and wetness values of soil and refresh interval of system from ws.ini file */
     bool getSystemGlobalValues();
     /* Public method - Turn Off/On watering valves */
@@ -82,13 +80,14 @@ public:
     bool controllerWiFi32sInit();
     /* Public method - search and prepare rules to start watering */
     bool controllerPrepareWatering();
-    /* Public method - gets analog wetness and rain sensors meassured values and store in an array */
-    void controllerGetSensorsValue();
+    /* Public method - stores analog wetness and rain sensors meassured values in the array */
+    void controllerStoreSensorsValue();
     /* Public method - Checks rains, temperature, wetness - all in one */
     void controllerCheckWateringRules();
-
-
-    
+    /* Public method - sgets analog sensors value on CH1 */
+    void getSensorsValueCH1();
+    /* Public method - sgets analog sensors value on CH2 */
+    void getSensorsValueCH2();
 
     /* Getter Green Led Digital Output */
     DigitalOutput *getGreenLED() const;
@@ -103,10 +102,8 @@ public:
     /* Getter - ds3231rtc object */
     DS3231RTC *getDs3231rtc() const;
 
-    /* Public property - To store measured values of Analog Sensors to String */
-    String measuredSensorsValueString;
-    /* Public property - To store decimal value of active valves of rule when is changed during checking the temperature, rains, wetness */
-    // uint8_t newValvesDecValue;
+    /* Public property - To store measured values of Analog Sensors in percentage to String */
+    String measuredSensorsValuePercentageString;
     /* Public property - Array to store measured values of rain and wetness sensors */
     int measuredValueAnalogSensorsArray[ANALOG_DATA_ARRAY_SIZE];
     /* Public property - Array to store threshold values of rain and wetness sensors */
@@ -123,9 +120,6 @@ public:
     int maxDryness;
     /* Public property - To store/get value of max wetness of soil from ini file */
     int maxWetness;
-    
-
-
     /* Public property - Variable to store if we have an active watering rule */
     bool activeRuleExists;
     /* Public property - Variable to store duration of time of watering or to store duration of time to the next watering time */
