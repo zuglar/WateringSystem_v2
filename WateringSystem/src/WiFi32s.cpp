@@ -153,7 +153,7 @@ void WiFi32s::startWebHtm() {
         JsonObject root = response->getRoot();
         root["temp"] = String(cntrl->temperature, 2);
         root["hum"] = String(cntrl->relativeHumidity, 2);
-        root["atm"] = String((cntrl->airPressure / 1000), 2);
+        root["atm"] = String((cntrl->airPressure / 100), 2);
         root["valves"] = cntrl->newValvesDecValue;
         root["sensors"] = cntrl->measuredSensorsValuePercentageString;
 
