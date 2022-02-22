@@ -126,12 +126,10 @@ void WiFi32s::startWebHtm() {
 
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
         logWebTraffic(request, EMPTY_STRING);
-        asyncTcpWdt = true;
         sendResponseToClient(request, 200, INDEX_HTM_FILE);
     });
     // Sends data to show values of weather, of wetness of soil and of state of valves and rain sensor
     server.on("/getWeather", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        asyncTcpWdt = true;
         logWebTraffic(request, EMPTY_STRING);
         cntrl->controllerGetAht20Bmp280Data();
         // cntrl->controllerGetSensorsValue();
@@ -166,7 +164,6 @@ void WiFi32s::startWebHtm() {
     });
     // Opens wifi.htm file
     server.on("/wifi.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        asyncTcpWdt = true;
         logWebTraffic(request, EMPTY_STRING);
         sendResponseToClient(request, 200, WIFI_HTM_FILE);
     });
@@ -204,7 +201,6 @@ void WiFi32s::startWebHtm() {
     });
     // Opens rules.htm file
     server.on("/rules.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        asyncTcpWdt = true;
         logWebTraffic(request, EMPTY_STRING);
         sendResponseToClient(request, 200, RULES_HTM_FILE);
     });
@@ -301,7 +297,6 @@ void WiFi32s::startWebHtm() {
     });
     // Opens restart.htm  - Access Point Filtered
     server.on("/restart.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        asyncTcpWdt = true;
 
         if (ON_AP_FILTER(request)) {
             logWebTraffic(request, EMPTY_STRING);
@@ -310,7 +305,6 @@ void WiFi32s::startWebHtm() {
     });
     // Restarts the system - Access Point Filtered
     server.on("/restart", HTTP_POST, [this](AsyncWebServerRequest *request) {
-        asyncTcpWdt = true;
         if (ON_AP_FILTER(request)) {
             if (request->hasParam("restart", true) && request->getParam("restart", true)->value().compareTo("1") == 0) {
                 logWebTraffic(request, "The system restarts.");
@@ -327,7 +321,6 @@ void WiFi32s::startWebHtm() {
     // Opens admin.htm - Access Point Filtered
     server.on("/admin.htm", HTTP_GET, [this](AsyncWebServerRequest *request) {
         logWebTraffic(request, ADMIN_HTM_FILE);
-        asyncTcpWdt = true;
         // sendResponseToClient(request, 200, ADMIN_HTM_FILE);
         if (ON_AP_FILTER(request)) {
             sendResponseToClient(request, 200, ADMIN_HTM_FILE);
@@ -339,7 +332,6 @@ void WiFi32s::startWebHtm() {
     });
     //  Update new wifi, rule, global settings and admin password - Access Point Filtered
     server.on("/update", HTTP_POST, [this](AsyncWebServerRequest *request) {
-        asyncTcpWdt = true;
         updateNewSettingsProccess = true;
         int result = 0;
         logWebTraffic(request, EMPTY_STRING);

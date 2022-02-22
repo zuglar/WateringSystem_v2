@@ -89,13 +89,7 @@ void loop() {
         return;
     }
 
-    // if (asyncTcpWdt) {
-    //     printf("1. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
-    //     /* controller->wifi32s->getClientData(); */
-    //     asyncTcpWdt = false;
-    //     delay(1);
-    //     printf("2. LOOP: asyncTcpWdt: %d\n", asyncTcpWdt);
-    // }
+    // solution for async_tcp wdt
     delay(1);
     // Handle FTP connection
     if (controller->ftpServerStarted) {

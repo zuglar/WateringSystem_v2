@@ -110,7 +110,6 @@
 #define AFTER_MIDNIGHT 86400
 /* Main Variables */
 extern volatile bool mainAppError;
-extern volatile bool asyncTcpWdt;
 extern volatile bool updateNewSettingsProccess;
 /* Main Functions */
 
