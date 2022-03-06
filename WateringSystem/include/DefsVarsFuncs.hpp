@@ -56,6 +56,7 @@
 #define RAIN_SENSOR_RAINS "1"
 #define RAIN_SENSOR_NOT_RAINS "0"
 #define ALL_VALVES_OFF 0
+#define NO_OF_SAMPLES 16   // Multisampling
 /* ws.ini file SECTIONS and KEYS */
 #define READY_SECTION "Ready"
 #define READY_KEY "READY"

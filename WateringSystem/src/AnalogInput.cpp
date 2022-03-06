@@ -2,21 +2,19 @@
 
 AnalogInput::AnalogInput() {}
 
-AnalogInput::AnalogInput(const adc1_channel_t analogPin_)
-{
+AnalogInput::AnalogInput(const adc1_channel_t analogPin_) {
     analogPin = analogPin_;
     result = adc1_config_channel_atten(analogPin, scaleVoltage);
 }
 
 AnalogInput::~AnalogInput() {}
 
-bool AnalogInput::init()
-{
+bool AnalogInput::init() {
     /* Set ADC1 resolution 12bit (0-4095). If error occurs we stop the program.*/
     if (adc1_config_width(ADC_WIDTH_12Bit) != ESP_OK) /* adc1_config_width(ADC_WIDTH_12Bit) */
         return false;
 
-    /* Create objects for Rain Sensor(1-2) and Wetness Sensors (1-8). If error occurs we stop the program. */
+    /* Create objects for Rain Sensor(1) and Wetness Sensors (1-8). If error occurs we stop the program. */
     rainSensors_1_2 = new AnalogInput(RSG_1_2);
     if (rainSensors_1_2->result != ESP_OK)
         return false;
@@ -41,24 +39,33 @@ bool AnalogInput::init()
     return true;
 }
 
-int AnalogInput::readAnalogInputPinValue(const adc1_channel_t analogPin_) 
-{
-    return adc1_get_raw(analogPin_);
+uint32_t AnalogInput::readAnalogInputPinValue(const adc1_channel_t analogPin_) {
+
+    // return adc1_get_raw(analogPin_);
+    uint32_t adc_reading = 0;
+    printf("*********************\n");
+    // Multisampling
+    for (int i = 0; i < NO_OF_SAMPLES; i++) {
+        adc_reading += adc1_get_raw(analogPin_);
+        printf("adc_reading: %d\n", adc_reading);
+    }
+    adc_reading /= NO_OF_SAMPLES;
+
+    printf("RESULT - adc_reading: %d\n", adc_reading);
+    
+    return adc_reading;
 }
 
-void AnalogInput::storeAnalogInputPinValue(const gpio_num_t powerChannel_, int *array_)
-{
-    if (powerChannel_ == POWER_SENORS_1_5_CH1)
-    {
+void AnalogInput::storeAnalogInputPinValue(const gpio_num_t powerChannel_, int *array_) {
+    if (powerChannel_ == POWER_SENORS_1_5_CH1) {
         array_[RS_1_VALUE_ARRAY_INDEX] = rainSensors_1_2->readAnalogInputPinValue(rainSensors_1_2->analogPin);
         array_[WS_1_VALUE_ARRAY_INDEX] = wetnessSensor_1_5->readAnalogInputPinValue(wetnessSensor_1_5->analogPin);
         array_[WS_2_VALUE_ARRAY_INDEX] = wetnessSensor_2_6->readAnalogInputPinValue(wetnessSensor_2_6->analogPin);
         array_[WS_3_VALUE_ARRAY_INDEX] = wetnessSensor_3_7->readAnalogInputPinValue(wetnessSensor_3_7->analogPin);
         array_[WS_4_VALUE_ARRAY_INDEX] = wetnessSensor_4_8->readAnalogInputPinValue(wetnessSensor_4_8->analogPin);
     }
-    
-    if (powerChannel_ == POWER_SENORS_6_10_CH2)
-    {
+
+    if (powerChannel_ == POWER_SENORS_6_10_CH2) {
         // We use only one rain sensor
         // array_[RS_2_VALUE_ARRAY_INDEX] = rainSensors_1_2->readAnalogInputPinValue(rainSensors_1_2->analogPin);
         array_[WS_5_VALUE_ARRAY_INDEX] = wetnessSensor_1_5->readAnalogInputPinValue(wetnessSensor_1_5->analogPin);
@@ -67,4 +74,3 @@ void AnalogInput::storeAnalogInputPinValue(const gpio_num_t powerChannel_, int *
         array_[WS_8_VALUE_ARRAY_INDEX] = wetnessSensor_4_8->readAnalogInputPinValue(wetnessSensor_4_8->analogPin);
     }
 }
-

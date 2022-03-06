@@ -34,7 +34,7 @@ private:
     /* ID of analog input */
     const char *id;
     /* Private method - Read value of analog input (ADC1_CHANNEL_x) */
-    int readAnalogInputPinValue(const adc1_channel_t analogPin_);
+    uint32_t readAnalogInputPinValue(const adc1_channel_t analogPin_);
     /* Private objects for sensors */
     AnalogInput *rainSensors_1_2;
     AnalogInput *wetnessSensor_1_5;
