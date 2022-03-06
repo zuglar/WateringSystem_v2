@@ -43,15 +43,15 @@ uint32_t AnalogInput::readAnalogInputPinValue(const adc1_channel_t analogPin_) {
 
     // return adc1_get_raw(analogPin_);
     uint32_t adc_reading = 0;
-    printf("*********************\n");
+    // printf("*********************\n");
     // Multisampling
     for (int i = 0; i < NO_OF_SAMPLES; i++) {
         adc_reading += adc1_get_raw(analogPin_);
-        printf("adc_reading: %d\n", adc_reading);
+        // printf("adc_reading: %d\n", adc_reading);
     }
     adc_reading /= NO_OF_SAMPLES;
 
-    printf("RESULT - adc_reading: %d\n", adc_reading);
+    // printf("RESULT - adc_reading: %d\n", adc_reading);
     
     return adc_reading;
 }
