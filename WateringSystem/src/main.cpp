@@ -207,21 +207,18 @@ bool startUp(void) {
     /* If reading data from sensor has been finished successfully the red led flashes three times */
     ledFlashMessage(controller->getRedLED(), 3, DELAY_03_SEC);
     delay(DELAY_1SEC);
-    /* If reading data from sensor has been finished successfully the red led flashes four times */
-    ledFlashMessage(controller->getRedLED(), 4, DELAY_03_SEC);
-    delay(DELAY_1SEC);
     /* Initialization WiFi32s object */
     if (!controller->controllerWiFi32sInit())
         return false;
-    /* If initialization of WiFi32s has been finished successfully the green LED flashes one time.
+    /* If initialization of WiFi32s has been finished successfully the red led flashes four times .
     WEB and FTP servers have been started */
-    ledFlashMessage(controller->getGreenLED(), 1, DELAY_03_SEC);
+    ledFlashMessage(controller->getRedLED(), 4, DELAY_03_SEC);
     delay(DELAY_1SEC);
     /* Initialization InterruptTimer1 object */
     if (!interruptTimer1->initInterruptTimer1())
         return false;
-    /* If initialization of InterruptTimer1 has been finished successfully the green LED flashes two times. */
-    ledFlashMessage(controller->getRedLED(), 2, DELAY_03_SEC);
+    /* If initialization of InterruptTimer1 has been finished successfully the red led flashes five times */
+    ledFlashMessage(controller->getRedLED(), 5, DELAY_03_SEC);
     delay(DELAY_1SEC);
 
     return true;
