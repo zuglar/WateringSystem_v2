@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   x="0px"
+   y="0px"
+   width="23.76px"
+   height="32.551px"
+   viewBox="0 0 23.76 32.551"
+   enable-background="new 0 0 23.76 32.551"
+   xml:space="preserve"
+   sodipodi:docname="DUO_LED_TWO_PINS_RG_breadboard.svg"
+   inkscape:version="1.1.2 (0a00cf5, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs951">
+	
+	
+	
+
+		
+		
+		
+		
+		
+		
+		
+			
+	</defs><sodipodi:namedview
+   id="namedview949"
+   pagecolor="#505050"
+   bordercolor="#eeeeee"
+   borderopacity="1"
+   inkscape:pageshadow="0"
+   inkscape:pageopacity="0"
+   inkscape:pagecheckerboard="0"
+   showgrid="false"
+   inkscape:zoom="21.72"
+   inkscape:cx="11.878453"
+   inkscape:cy="16.252302"
+   inkscape:window-width="1920"
+   inkscape:window-height="1020"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="svg2" />
+<g
+   id="g927">
+		<rect
+   id="connector1pin"
+   x="10.646"
+   y="31.353001"
+   fill="none"
+   width="2.296"
+   height="2.0799999" />
+		<rect
+   id="connector4pin"
+   x="17.892"
+   y="31.572001"
+   fill="none"
+   width="2.1600001"
+   height="1.813" />
+		<rect
+   id="connector0pin"
+   x="3.5120001"
+   y="31.471001"
+   fill="none"
+   width="2.1600001"
+   height="2.0699999" />
+	</g><g
+   id="g1085"><g
+     id="g1067"
+     transform="translate(-22)"><path
+       id="path16"
+       fill="#8c8c8c"
+       d="m 28.963,18.013 c 0,0 0,3.993 0,5.186 0,1.193 -1.271,2.303 -2.39,3.429 -1.462,1.472 -1.061,2.992 -1.061,4.732 v 1.188 0 h 2.16 v 0 -1.022 c 0,-1.096 -0.666,-2.271 0.433,-3.373 1.483,-1.492 3.019,-3.038 3.019,-4.82 V 18.02 Z" /><path
+       id="path20"
+       fill="#8c8c8c"
+       d="m 41.187,26.625 c -1.121,-1.127 -2.392,-2.235 -2.392,-3.429 0,-1.192 0,-5.186 0,-5.186 h -2.16 v 5.313 c 0,1.784 1.535,3.329 3.019,4.822 1.103,1.104 0.238,2.273 0.238,3.373 v 1.021 0 h 2.16 v 0 -1.186 c 0,-1.735 0.595,-3.255 -0.865,-4.728 z" /><polygon
+       id="polygon30"
+       fill="#999999"
+       points="12.981,12.519 15.978,12.519 15.978,13.269 15.978,16.325 16.903,16.325 16.903,8.638 15.692,8.638 16.133,9.154 "
+       transform="translate(22)" /><polygon
+       id="polygon32"
+       fill="#999999"
+       points="8.22,8.921 6.999,9.777 6.999,16.325 8.865,16.323 8.865,12.519 11.563,12.519 14.916,8.921 12.729,8.921 12.223,9.796 10.278,9.796 9.772,8.921 "
+       transform="translate(22)" /><line
+       fill="none"
+       stroke="#8c8c8c"
+       stroke-width="2.16"
+       stroke-linecap="round"
+       x1="26.591999"
+       y1="32.550999"
+       x2="26.591999"
+       y2="53.550999"
+       id="line919" /><line
+       fill="none"
+       stroke="#8c8c8c"
+       stroke-width="2.16"
+       stroke-linecap="round"
+       x1="40.972"
+       y1="32.550999"
+       x2="40.972"
+       y2="53.550999"
+       id="line921" /></g><g
+     id="g945">
+		<path
+   opacity="0.5"
+   fill="#e6e6e6"
+   enable-background="new    "
+   d="M 19.133,13.177 V 7.185 C 19.133,3.217 15.916,0 11.948,0 7.982,0 4.765,3.217 4.765,7.185 v 13.834 c 1.5,1.674 4.153,2.789 7.184,2.789 4.687,0 8.479,-2.658 8.479,-5.938 v -1.547 c 0.005,-1.156 -0.478,-2.234 -1.295,-3.146 z"
+   id="path929" />
+		<path
+   opacity="0.9"
+   fill="#d1d1d1"
+   enable-background="new    "
+   d="m 19.133,13.177 v 3.146 c 0,2.777 -3.217,5.029 -7.185,5.029 -3.966,0 -7.184,-2.252 -7.184,-5.029 v 3.148 1.547 c 1.5,1.672 4.153,2.789 7.184,2.789 4.687,0 8.481,-2.658 8.481,-5.938 v -1.546 c 0.004,-1.156 -0.479,-2.234 -1.296,-3.146 z"
+   id="path931" />
+		<path
+   opacity="0.24"
+   enable-background="new    "
+   d="m 19.133,13.177 v 3.146 c 0,2.777 -3.217,5.029 -7.185,5.029 -3.966,0 -7.184,-2.252 -7.184,-5.029 v 3.148 c 1.5,1.674 4.153,2.789 7.184,2.789 4.687,0 8.481,-2.658 8.481,-5.938 0.004,-1.155 -0.479,-2.233 -1.296,-3.145 z"
+   id="path933" />
+		<ellipse
+   opacity="0.5"
+   fill="#cccccc"
+   enable-background="new    "
+   cx="11.95"
+   cy="16.323"
+   rx="7.1830001"
+   ry="5.0289998"
+   id="ellipse935" />
+		<polygon
+   fill="#999999"
+   points="12.981,12.519 15.978,12.519 15.978,13.269 15.978,16.325 16.903,16.325 16.903,8.638 15.692,8.638 16.133,9.154 "
+   id="polygon937" />
+		<polygon
+   fill="#999999"
+   points="10.278,9.796 9.772,8.921 8.22,8.921 6.999,9.777 6.999,16.325 8.865,16.323 8.865,12.519 11.563,12.519 14.916,8.921 12.729,8.921 12.223,9.796 "
+   id="polygon939" />
+		<path
+   opacity="0.6"
+   fill="#ffffff"
+   enable-background="new    "
+   d="M 15.295,3.802 16.754,3.525 C 15.905,2.376 14.646,1.539 13.166,1.254 l 0.252,1.098 c 0.776,0.273 1.429,0.79 1.877,1.45 z"
+   id="path941" />
+		<path
+   opacity="0.6"
+   fill="#ffffff"
+   enable-background="new    "
+   d="m 15.987,20.482 c -0.264,0.125 -0.537,0.232 -0.821,0.334 -0.06,0.021 -0.119,0.041 -0.181,0.062 -0.569,0.188 -1.185,0.321 -1.821,0.397 -0.076,0.011 -0.154,0.019 -0.229,0.025 -0.322,0.029 -0.647,0.053 -0.983,0.053 -0.148,0 -0.312,-0.01 -0.478,-0.024 C 10.251,21.271 9.112,21.013 8.13,20.579 V 12.072 7.185 c 0,-1.49 0.86,-2.767 2.104,-3.396 L 10.213,3.738 8.946,2.203 C 7.257,3.224 6.115,5.066 6.115,7.183 V 19.25 C 6.066,19.201 5.802,18.938 5.63,18.717 l -0.312,0.698 c 1.426,1.503 3.861,2.497 6.632,2.497 1.703,0 3.277,-0.379 4.572,-1.019 l -0.531,-0.412 c -0.004,10e-4 -0.004,10e-4 -0.004,10e-4 z"
+   id="path943" />
+	</g></g>
+</svg>
