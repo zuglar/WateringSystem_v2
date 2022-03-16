@@ -15,7 +15,7 @@ void IRAM_ATTR timer1ISR(void *arg)
         systemTimer1Interrupt++;
     }
 }
-
+/* 
 String InterruptTimer1::errorMessage(esp_err_t code_) 
 {
     switch (code_)
@@ -47,7 +47,7 @@ String InterruptTimer1::errorMessage(esp_err_t code_)
     }
     return "Unknown ESP_ERR error";
 }
-
+ */
 InterruptTimer1::InterruptTimer1(/* args */) {}
 
 InterruptTimer1::~InterruptTimer1() {}
@@ -85,10 +85,10 @@ bool InterruptTimer1::initInterruptTimer1()
     
     if (errorCode != ESP_OK)
     {
-        printf("ERROR InterruptTimer1: %s...!!!\n", errorMessage(errorCode).c_str());
+        // printf("ERROR InterruptTimer1: %s...!!!\n", errorMessage(errorCode).c_str());
         return false;
     }
-    printf("InterruptTimer1: %s...!!!\n", errorMessage(errorCode).c_str());
+    // printf("InterruptTimer1: %s...!!!\n", errorMessage(errorCode).c_str());
     return true;
 }
 

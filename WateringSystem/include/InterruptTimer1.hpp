@@ -16,7 +16,7 @@ private:
     // esp_err_t error_code;
     /* Timer1 configuration */
     timer_config_t timer1Conf;
-    String errorMessage(esp_err_t code_);
+    // String errorMessage(esp_err_t code_);
     
 public:
     /* Constructor */

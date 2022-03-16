@@ -32,7 +32,7 @@ private:
     /* Voltage scaling factor, scale the voltage between 0-3.6V */
     const adc_atten_t scaleVoltage = ADC_ATTEN_11db;
     /* ID of analog input */
-    const char *id;
+    //const char *id;
     /* Private method - Read value of analog input (ADC1_CHANNEL_x) */
     uint32_t readAnalogInputPinValue(const adc1_channel_t analogPin_);
     /* Private objects for sensors */
