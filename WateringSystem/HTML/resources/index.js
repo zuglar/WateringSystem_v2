@@ -249,7 +249,7 @@ function wetnessRainSensorsState(sensors) {
     // sets attribute of <td> element
     cell.setAttribute("colspan", "4");
     // create text node and appends into <td>
-    cell.appendChild(document.createTextNode("Rain Senor State"));
+    cell.appendChild(document.createTextNode("Rain Sensor State"));
     // appends <td> into <tr>
     row.appendChild(cell);
     // appends <tr> into <table>
