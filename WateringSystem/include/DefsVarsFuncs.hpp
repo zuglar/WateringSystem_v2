@@ -42,7 +42,7 @@
 #define WS_7_VALUE_ARRAY_INDEX 6        /* Array index for value of Wetness sensor 7 */
 #define WS_8_VALUE_ARRAY_INDEX 7        /* Array index for value of Wetness sensor 8 */
 #define RS_1_VALUE_ARRAY_INDEX 8        /* Array index for value of rain sensor 1 */
-#define RS_2_VALUE_ARRAY_INDEX 9        /* Array index for value of rain sensor 2 */
+// #define RS_2_VALUE_ARRAY_INDEX 9        /* Array index for value of rain sensor 2 */
 #define RAIN_SENSORS_QUANTITY 1         /* Number of rain sensors can be used in the system */
 #define POWERON_ANALOG_CH1 10           /* Power On CH1 when the System Refresh Interval reaches desired value - 30 */
 #define READ_SENSORS_CH1 13             /* Reads sensors value on CH1 when the System Refresh Interval reaches desired value 31 */
