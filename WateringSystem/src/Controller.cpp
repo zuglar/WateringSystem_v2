@@ -459,6 +459,10 @@ void Controller::getSensorsValueCH2() {
     analogInputs->storeAnalogInputPinValue(POWER_SENORS_6_10_CH2, measuredValueAnalogSensorsArray);
 }
 
+void Controller::getRainSensorValue() {
+    analogInputs->storeRainSensorPinValue(measuredValueAnalogSensorsArray);
+}
+
 void Controller::controllerStoreSensorsValue() {
     printf("Store analog sensors value percentage and voltage.\n");
     measuredSensorsValuePercentageString = "";

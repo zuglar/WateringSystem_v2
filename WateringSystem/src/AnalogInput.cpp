@@ -58,7 +58,7 @@ uint32_t AnalogInput::readAnalogInputPinValue(const adc1_channel_t analogPin_) {
 
 void AnalogInput::storeAnalogInputPinValue(const gpio_num_t powerChannel_, int *array_) {
     if (powerChannel_ == POWER_SENORS_1_5_CH1) {
-        array_[RS_1_VALUE_ARRAY_INDEX] = rainSensors_1_2->readAnalogInputPinValue(rainSensors_1_2->analogPin);
+        // array_[RS_1_VALUE_ARRAY_INDEX] = rainSensors_1_2->readAnalogInputPinValue(rainSensors_1_2->analogPin);
         array_[WS_1_VALUE_ARRAY_INDEX] = wetnessSensor_1_5->readAnalogInputPinValue(wetnessSensor_1_5->analogPin);
         array_[WS_2_VALUE_ARRAY_INDEX] = wetnessSensor_2_6->readAnalogInputPinValue(wetnessSensor_2_6->analogPin);
         array_[WS_3_VALUE_ARRAY_INDEX] = wetnessSensor_3_7->readAnalogInputPinValue(wetnessSensor_3_7->analogPin);
@@ -73,4 +73,8 @@ void AnalogInput::storeAnalogInputPinValue(const gpio_num_t powerChannel_, int *
         array_[WS_7_VALUE_ARRAY_INDEX] = wetnessSensor_3_7->readAnalogInputPinValue(wetnessSensor_3_7->analogPin);
         array_[WS_8_VALUE_ARRAY_INDEX] = wetnessSensor_4_8->readAnalogInputPinValue(wetnessSensor_4_8->analogPin);
     }
+}
+
+void AnalogInput::storeRainSensorPinValue(int *array_) {
+    array_[RS_1_VALUE_ARRAY_INDEX] = rainSensors_1_2->readAnalogInputPinValue(rainSensors_1_2->analogPin);
 }

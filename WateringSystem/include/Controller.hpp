@@ -84,10 +84,12 @@ public:
     void controllerStoreSensorsValue();
     /* Public method - Checks rains, temperature, wetness - all in one */
     void controllerCheckWateringRules();
-    /* Public method - sgets analog sensors value on CH1 */
+    /* Public method - gets analog sensors value on CH1 */
     void getSensorsValueCH1();
-    /* Public method - sgets analog sensors value on CH2 */
+    /* Public method - gets analog sensors value on CH2 */
     void getSensorsValueCH2();
+    /* Public method - gets analog sensors value of rain sensor */
+    void getRainSensorValue();
 
     /* Getter Green Led Digital Output */
     DigitalOutput *getGreenLED() const;

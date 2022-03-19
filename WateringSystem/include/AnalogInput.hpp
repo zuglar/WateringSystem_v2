@@ -52,5 +52,7 @@ public:
     bool init();
     /* Public method - Store values of analog input pins (ADC1_CHANNEL_x) which are on power chanel 1 or 2 */
     void storeAnalogInputPinValue(const gpio_num_t powerChannel_, int *array_);
+    /* Public method - Store valueof rain sensor*/
+    void storeRainSensorPinValue(int *array_);
 };
 #endif /* __ANALOGINPUT_H__ */

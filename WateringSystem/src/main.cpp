@@ -30,6 +30,14 @@ bool channelSwithcedOn = false;
 uint32_t lastSystemTimer1Interrupt = 0;
 uint32_t lastWateringTimer1Interrupt = 0;
 
+void rainSensorTask(void *parameters) {
+    for (;;) {
+        // gets value of rain sensor every 1 minute
+        controller->getRainSensorValue();
+        vTaskDelay(60000 / portTICK_PERIOD_MS);
+    }
+}
+
 void setup() {
     // put your setup code here, to run once:
 
@@ -63,6 +71,10 @@ void setup() {
     /* Start Watering */
     systemTimer1Interrupt = 0;
     wateringTimer1Interrupt = 0;
+
+    // task to checks value of rain sensor
+    xTaskCreate(rainSensorTask, "RainSensorTask", 1000, NULL, 0, NULL);
+
     powerOnCH1();
     delay(DELAY_1SEC);
     readValueOnCH1();
