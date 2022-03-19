@@ -44,10 +44,10 @@
 #define RS_1_VALUE_ARRAY_INDEX 8        /* Array index for value of rain sensor 1 */
 #define RS_2_VALUE_ARRAY_INDEX 9        /* Array index for value of rain sensor 2 */
 #define RAIN_SENSORS_QUANTITY 1         /* Number of rain sensors can be used in the system */
-#define POWERON_ANALOG_CH1 30           /* Power On CH1 when the System Refresh Interval reaches desired value - 30 */
-#define READ_SENSORS_CH1 31             /* Reads sensors value on CH1 when the System Refresh Interval reaches desired value 31 */
-#define POWERON_ANALOG_CH2 33           /* Power On CH2 when the System Refresh Interval reaches desired value - 33 */
-#define READ_SENSORS_CH2 34             /* Reads sensors value on CH2 when the System Refresh Interval reaches desired value 34 */
+#define POWERON_ANALOG_CH1 10           /* Power On CH1 when the System Refresh Interval reaches desired value - 30 */
+#define READ_SENSORS_CH1 13             /* Reads sensors value on CH1 when the System Refresh Interval reaches desired value 31 */
+#define POWERON_ANALOG_CH2 25           /* Power On CH2 when the System Refresh Interval reaches desired value - 33 */
+#define READ_SENSORS_CH2 28             /* Reads sensors value on CH2 when the System Refresh Interval reaches desired value 34 */
 /* Controller Defines */
 #define ANALOG_DATA_ARRAY_SIZE 9
 #define SN74HC595_STEPS 2
