@@ -30,13 +30,6 @@ bool channelSwithcedOn = false;
 uint32_t lastSystemTimer1Interrupt = 0;
 uint32_t lastWateringTimer1Interrupt = 0;
 
-void rainSensorTask(void *parameters) {
-    for (;;) {
-        // gets value of rain sensor every 1 minute
-        controller->getRainSensorValue();
-        vTaskDelay(60000 / portTICK_PERIOD_MS);
-    }
-}
 
 void setup() {
     // put your setup code here, to run once:
@@ -69,11 +62,8 @@ void setup() {
     mainAppError = controller->getSdCard()->writeLogFile("Watering System MCU Started.");
     controller->getGreenLED()->setLevel(HIGH);
     /* Start Watering */
-    systemTimer1Interrupt = 0;
-    wateringTimer1Interrupt = 0;
-
-    // task to checks value of rain sensor
-    xTaskCreate(rainSensorTask, "RainSensorTask", 1000, NULL, 0, NULL);
+    // systemTimer1Interrupt = 0;
+    // wateringTimer1Interrupt = 0;
 
     powerOnCH1();
     delay(DELAY_1SEC);
@@ -128,10 +118,10 @@ void loop() {
             controller->controllerCheckWateringRules();
         }
 
-        if (controller->ddnsEnabled) {
-            // Check for new public IP every 10 seconds
-            EasyDDNS.update(10000);
-        }
+        // if (controller->ddnsEnabled) {
+        //     // Check for new public IP every 10 seconds
+        //     EasyDDNS.update(10000);
+        // }
 
         systemTimer1Interrupt = 0;
         channelSwithcedOn = false;

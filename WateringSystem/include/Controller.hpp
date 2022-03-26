@@ -88,8 +88,6 @@ public:
     void getSensorsValueCH1();
     /* Public method - gets analog sensors value on CH2 */
     void getSensorsValueCH2();
-    /* Public method - gets analog sensors value of rain sensor */
-    void getRainSensorValue();
 
     /* Getter Green Led Digital Output */
     DigitalOutput *getGreenLED() const;
