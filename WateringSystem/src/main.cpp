@@ -118,10 +118,10 @@ void loop() {
             controller->controllerCheckWateringRules();
         }
 
-        // if (controller->ddnsEnabled) {
-        //     // Check for new public IP every 10 seconds
-        //     EasyDDNS.update(10000);
-        // }
+        if (controller->ddnsEnabled) {
+            // Check for new public IP every 10 seconds
+            EasyDDNS.update(10000);
+        }
 
         systemTimer1Interrupt = 0;
         channelSwithcedOn = false;
