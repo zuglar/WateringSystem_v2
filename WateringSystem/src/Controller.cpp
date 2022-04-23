@@ -279,7 +279,7 @@ bool Controller::controllerPrepareWatering() {
     String ruleValue;
     // Gets unixDateTime now  from DS3231
     uint32_t unixDateTimeNow = getDs3231rtc()->getUnixTimeNow();
-    // Gets unixDate from DS3231-unixtime
+    // Calculate unixDate 
     uint32_t unixDateNow = unixDateTimeNow - (unixDateTimeNow % 86400);
     // Variable to store active rule name
     char *activeRuleName = NULL;
