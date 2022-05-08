@@ -1,0 +1,11 @@
+SDcard ESP-32S      https://diyprojects.io/how-to-store-data-micro-sd-card-arduino-code-esp32-esp8266/#.YU5YcVuxXmg
+AHT20+BMP280        http://embedded-things.blogspot.com/2021/02/test-aht20bmp280-temperature-humidity.html
+74HC595             https://www.youtube.com/watch?v=Ys2fu4NINrA
+                    https://learn.adafruit.com/74hc595/pinouts
+Arduino GPIO setup  https://forum.arduino.cc/t/pinmode-in-class-constructor-seem-not-to-work/370583
+
+
+Capacitive Soil Moisture Sensor https://www.youtube.com/watch?v=QGCrtXf8YSs
+                                https://www.youtube.com/watch?v=pFQaFnqpOtQ
+
+minIni4Arduino      https://github.com/lipoyang/minIni4Arduino
